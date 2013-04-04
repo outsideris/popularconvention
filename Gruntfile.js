@@ -13,10 +13,10 @@ module.exports = function(grunt) {
         src: 'Gruntfile.js'
       },
       src: {
-        src: ['server.js', 'src/**/*.js']
+        src: ['server.coffee', 'src/**/*.coffee']
       },
       test: {
-        src: ['test/**/*.js']
+        src: ['test/**/*.coffee']
       },
     },
     watch: {
@@ -52,7 +52,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'simplemocha']);
+  grunt.registerTask('default', ['simplemocha']);
   grunt.registerTask('test', ['simplemocha']);
 
 
