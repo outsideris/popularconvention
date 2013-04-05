@@ -37,7 +37,7 @@ module.exports = function(grunt) {
       all: {
         src: '<%= jshint.test.src %>',
         options: {
-          timeout: 3000,
+          timeout: 4000,
           ignoreLeaks: false,
           ui: 'bdd',
           reporter: 'spec'
