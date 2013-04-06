@@ -7,6 +7,7 @@
 restler = require 'restler'
 path = require 'path'
 fs = require 'fs'
+helpers = require './helpers'
 
 githubHost = 'https://api.github.com'
 # github.json contained token should be in .tokens directory
@@ -19,7 +20,7 @@ postfix = "?client_id=#{token.cliendId}&client_secret=#{token.clientSecret}"
 module.exports =
   getCommitUrls: (timeline) ->
     # GET /repos/:owner/:repo/commits/:sha
-    timeline = JSON.parse(timeline) if 'string' is extractType timeline
+    timeline = JSON.parse timeline if 'string' is helpers.extractType timeline
 
     repo = timeline.repository
     "/repos/#{repo.owner}/#{repo.name}/commits/#{sha[0]}" for sha in timeline.payload.shas
@@ -33,8 +34,5 @@ module.exports =
              callback data
 
 # private
-extractType = (target) ->
-  Object.prototype.toString.call(target).replace('[object ', '').replace(']', '').toLowerCase()
-
 generateApiUrl = (url) ->
   "#{githubHost}#{url}#{postfix}"

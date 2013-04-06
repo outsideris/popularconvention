@@ -10,7 +10,7 @@ describe 'timeline >', ->
   timelineFixture = ''
 
   before ->
-    timelineFixture  = fs.readFileSync "#{__dirname}/timeFixture.json", 'utf8'
+    timelineFixture  = fs.readFileSync "#{__dirname}/fixture/timelineFixture.json", 'utf8'
 
   it 'generating blob urls from timeline json', ->
     urls = timeline.getCommitUrls timelineFixture
