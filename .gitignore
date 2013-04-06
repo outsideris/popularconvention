@@ -10,3 +10,5 @@ tmp/
 .settings/
 .worksheet/
 .springBeans
+
+.tokens

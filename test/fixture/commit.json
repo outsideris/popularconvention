@@ -1,0 +1,87 @@
+{
+  "sha": "29321fd1ec6a83af4813d7dee76a348e1fe034ed",
+  "commit": {
+    "author": {
+      "name": "Outsider",
+      "email": "outsideris@gmail.com",
+      "date": "2012-12-01T13:09:07Z"
+    },
+    "committer": {
+      "name": "Outsider",
+      "email": "outsideris@gmail.com",
+      "date": "2012-12-01T13:09:07Z"
+    },
+    "message": "라우팅 수정",
+    "tree": {
+      "sha": "cd301564e8c5b03853fe8e4979fc07a2c285c2a1",
+      "url": "https://api.github.com/repos/outsideris/curlybrace/git/trees/cd301564e8c5b03853fe8e4979fc07a2c285c2a1"
+    },
+    "url": "https://api.github.com/repos/outsideris/curlybrace/git/commits/29321fd1ec6a83af4813d7dee76a348e1fe034ed",
+    "comment_count": 0
+  },
+  "url": "https://api.github.com/repos/outsideris/curlybrace/commits/29321fd1ec6a83af4813d7dee76a348e1fe034ed",
+  "html_url": "https://github.com/outsideris/curlybrace/commit/29321fd1ec6a83af4813d7dee76a348e1fe034ed",
+  "comments_url": "https://api.github.com/repos/outsideris/curlybrace/commits/29321fd1ec6a83af4813d7dee76a348e1fe034ed/comments",
+  "author": {
+    "login": "outsideris",
+    "id": 390146,
+    "avatar_url": "https://secure.gravatar.com/avatar/748a6dc8b4eaba0fde62909e39be7987?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+    "gravatar_id": "748a6dc8b4eaba0fde62909e39be7987",
+    "url": "https://api.github.com/users/outsideris",
+    "html_url": "https://github.com/outsideris",
+    "followers_url": "https://api.github.com/users/outsideris/followers",
+    "following_url": "https://api.github.com/users/outsideris/following",
+    "gists_url": "https://api.github.com/users/outsideris/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/outsideris/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/outsideris/subscriptions",
+    "organizations_url": "https://api.github.com/users/outsideris/orgs",
+    "repos_url": "https://api.github.com/users/outsideris/repos",
+    "events_url": "https://api.github.com/users/outsideris/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/outsideris/received_events",
+    "type": "User"
+  },
+  "committer": {
+    "login": "outsideris",
+    "id": 390146,
+    "avatar_url": "https://secure.gravatar.com/avatar/748a6dc8b4eaba0fde62909e39be7987?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+    "gravatar_id": "748a6dc8b4eaba0fde62909e39be7987",
+    "url": "https://api.github.com/users/outsideris",
+    "html_url": "https://github.com/outsideris",
+    "followers_url": "https://api.github.com/users/outsideris/followers",
+    "following_url": "https://api.github.com/users/outsideris/following",
+    "gists_url": "https://api.github.com/users/outsideris/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/outsideris/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/outsideris/subscriptions",
+        "organizations_url": "https://api.github.com/users/outsideris/orgs",
+        "repos_url": "https://api.github.com/users/outsideris/repos",
+        "events_url": "https://api.github.com/users/outsideris/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/outsideris/received_events",
+        "type": "User"
+    },
+    "parents": [
+        {
+            "sha": "c5fd8c50a90a4b7fd549ae6cc113646e5059fd98",
+            "url": "https://api.github.com/repos/outsideris/curlybrace/commits/c5fd8c50a90a4b7fd549ae6cc113646e5059fd98",
+            "html_url": "https://github.com/outsideris/curlybrace/commit/c5fd8c50a90a4b7fd549ae6cc113646e5059fd98"
+        }
+    ],
+    "stats": {
+        "total": 12,
+        "additions": 5,
+        "deletions": 7
+    },
+    "files": [
+        {
+            "sha": "703d2069fdc5f3b131e725684bc5b5d28638fa1e",
+            "filename": "conf/routes.js",
+            "status": "modified",
+            "additions": 5,
+            "deletions": 7,
+            "changes": 12,
+            "blob_url": "https://github.com/outsideris/curlybrace/blob/29321fd1ec6a83af4813d7dee76a348e1fe034ed/conf/routes.js",
+            "raw_url": "https://github.com/outsideris/curlybrace/raw/29321fd1ec6a83af4813d7dee76a348e1fe034ed/conf/routes.js",
+            "contents_url": "https://api.github.com/repos/outsideris/curlybrace/contents/conf/routes.js?ref=29321fd1ec6a83af4813d7dee76a348e1fe034ed",
+            "patch": "@@ -7,17 +7,17 @@ module.exports = function(app, passport) {\n // 질문&답변 관련\n app.get('/', qna.index);\n \n-app.get('/question/form', qna.questionForm);\n+app.get('/question/form', ensureAuthenticated, qna.questionForm);\n \n app.get('/question/:id', qna.questionView);\n \n // 회원관련\n app.get('/login', ensureUnauthenticated, users.loginForm);\n \n-  app.get('/logout', function(req, res){\n-    req.logout();\n-    res.redirect('/');\n-  });\n+app.get('/logout', function(req, res){\n+  req.logout();\n+  res.redirect('/');\n+});\n \n app.get('/auth/twitter', ensureUnauthenticated, passport.authenticate('twitter'));\n \n@@ -84,5 +84,3 @@ function ensureUnauthenticated(req, res, next) {\n   if (req.isUnauthenticated()) { return next(); }\n   res.redirect('/')\n }\n-\n-"
+        }
+    ]
+}
