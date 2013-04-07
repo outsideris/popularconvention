@@ -4,6 +4,19 @@
 # Licensed under the MIT license.
 # <http://outsider.mit-license.org/>
 
+winston = require 'winston'
+
 module.exports =
   extractType: (target) ->
     Object.prototype.toString.call(target).replace('[object ', '').replace(']', '').toLowerCase()
+
+  logger: new (winston.Logger) (
+    transports: [
+      new (winston.transports.Console)(
+        colorize: true
+        timestamp: true
+        prettyPrint: true
+      )
+    ]
+  )
+
