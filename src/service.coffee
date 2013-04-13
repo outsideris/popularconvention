@@ -13,6 +13,7 @@ spawn = require('child_process').spawn
 persistence = require './persistence'
 timeline = require './timeline'
 parser = require './parser/parser'
+schedule = require 'node-schedule'
 
 persistence.open ->
   logger.info 'mongodb is connected'
@@ -21,7 +22,7 @@ archiveDir = "#{__dirname}/archive"
 fs.exists archiveDir, (exist) ->
   if not exist then fs.mkdirSync archiveDir
 
-module.exports =
+service = module.exports =
 
   fetchGithubArchive: (datetime, callback) ->
     (http.get "http://data.githubarchive.org/#{datetime}.json.gz", (res) ->
@@ -95,9 +96,11 @@ module.exports =
                         logger.error 'completeWorklog: ', {err: err}
           callback()
 
+# private
+rule = new schedule.RecurrenceRule()
+rule.hour = [new schedule.Range(0, 23)]
+rule.minute = 0
 
-    # timeline에서 데이터를 가져온다.
-      # 해당 컬렉션에서 데이터를 가져와서
-      # 파싱하면서 정보를 디비에 인서트한다
-      # 완료처리한다.
-      # 해당 컬렉션을 제거한다.
+job = schedule.scheduleJob rule, ->
+  service.progressTimeline ->
+    logger "progressTimeline is DONE!!!"

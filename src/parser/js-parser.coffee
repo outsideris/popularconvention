@@ -32,7 +32,7 @@ jsParser = module.exports =
     last = /.*,\s*$/g
 
     convention.comma.first = convention.comma.first + 1 if first.test line
-    convention.comma.last = convention.comma.last + 1 if /.+,\s*$/.test line
+    convention.comma.last = convention.comma.last + 1 if last.test line
     convention
 
   indent: (line, convention) ->
