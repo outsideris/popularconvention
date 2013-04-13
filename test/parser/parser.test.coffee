@@ -21,3 +21,7 @@ describe 'parser >', ->
   it 'parse token patch for addition', ->
     tokens = parser.parseAdditionTokens JSON.parse(commitFixture).files[0].patch
     tokens.length.should.equal 5
+
+  it 'parse commit', ->
+    conventions = parser.parse commitFixture
+    #console.log require('util').inspect(conventions, false, 5)

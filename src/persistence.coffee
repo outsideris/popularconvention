@@ -8,7 +8,6 @@ MongoClient = (require 'mongodb').MongoClient
 logger = (require './helpers').logger
 
 worklogs = null
-archives = null
 conventions = null
 
 dbserver = null
@@ -19,18 +18,30 @@ module.exports =
       return callback(err) if err
       dbserver = db
       worklogs = dbserver.collection 'worklogs'
-      archives = dbserver.collection 'archives'
       conventions = dbserver.collection 'conventions'
       callback()
 
   insertWorklogs: (doc, callback) ->
     worklogs.insert doc, callback
 
-  progressWorklog: () ->
-    worklogs.update
+  progressWorklog: (id, callback) ->
+    worklogs.update {_id: id}, {$set: {inProgress: true}}, callback
 
-  completeWorklog: ->
-    worklogs.update
+  completeWorklog: (id, callback) ->
+    worklogs.update {_id: id}, {$set: {completed: true}}, callback
+
+  findOneWorklogs: (callback) ->
+    worklogs.findOne({
+      "inProgress": false
+      "completed": false
+    }, callback)
+
+  findTimeline: (coll, callback) ->
+    dbserver.collection(coll).find {type: 'PushEvent', repository: {$exists: true}},
+      {sort: {repository: {watchers: 1, forks: 1}}}, callback
+
+  insertConvention: (conv, callback) ->
+    conventions.insert conv, callback
 
   getTimeline: (callback) ->
     conventions.find().limit 10, callback

@@ -8,8 +8,11 @@ logger = (require './helpers').logger
 http = require 'http'
 fs = require 'fs'
 zlib = require 'zlib'
+path = require 'path'
 spawn = require('child_process').spawn
 persistence = require './persistence'
+timeline = require './timeline'
+parser = require './parser/parser'
 
 persistence.open ->
   logger.info 'mongodb is connected'
@@ -27,7 +30,6 @@ module.exports =
       unzip = res.pipe gzip
       unzip.pipe  fstream
       unzip.on 'end', ->
-        console.log "#{archiveDir}/#{datetime}.json"
         logger.info "downloaded #{datetime}.json"
         args = [
           '--host', '127.0.0.1'
@@ -55,12 +57,47 @@ module.exports =
       logger.error 'fetch githubarchive: ', {err: e}
 
   progressTimeline: (callback) ->
+    persistence.findOneWorklogs (err, worklog) ->
+      logger.error 'findOneWorklogs: ', {err: err} if err?
+      return callback() if err? or not worklog?
+
+      persistence.progressWorklog worklog._id, (err) ->
+        if err?
+          logger.error 'findOneWorklogs: ', {err: err}
+          return callback err
+
+        persistence.findTimeline worklog.file, (err, cursor) ->
+          if err?
+            logger.error 'findOneWorklogs: ', {err: err}
+            return callback err
+
+          cursor.batchSize(3000).each (err, item) ->
+            if item?
+              urls = timeline.getCommitUrls item
+              urls.forEach (url) ->
+                timeline.getCommitInfo url, (err, commit) ->
+                  if err?
+                    logger.error 'getCommitInfo: ', {err: err}
+                  else
+                    conventions = parser.parse commit
+                    conventions.forEach (conv) ->
+                      data =
+                        timestamp: worklog.file
+                        lang: conv.lang
+                        convention: conv
+                        regdate: new Date()
+                        sha: commit.sha
+                      persistence.insertConvention data, (err) ->
+                        logger.error 'insertConvention', {err: err} if err?
+                        logger.info 'insered convention'
+                    persistence.completeWorklog worklog._id, (err) ->
+                      if err?
+                        logger.error 'completeWorklog: ', {err: err}
+          callback()
+
+
     # timeline에서 데이터를 가져온다.
-    # 데이터가 있으면 진행중으로 바꾸고 처리한다
       # 해당 컬렉션에서 데이터를 가져와서
       # 파싱하면서 정보를 디비에 인서트한다
       # 완료처리한다.
       # 해당 컬렉션을 제거한다.
-
-
-

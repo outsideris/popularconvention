@@ -8,6 +8,7 @@ restler = require 'restler'
 path = require 'path'
 fs = require 'fs'
 helpers = require './helpers'
+logger = helpers.logger
 
 githubHost = 'https://api.github.com'
 # github.json contained token should be in .tokens directory
@@ -17,7 +18,7 @@ tokenPath = path.resolve "#{__dirname}", "../.tokens"
 token = JSON.parse(fs.readFileSync "#{tokenPath}/github.json", 'utf8')
 postfix = "?client_id=#{token.cliendId}&client_secret=#{token.clientSecret}"
 
-module.exports =
+tl = module.exports =
   getCommitUrls: (timeline) ->
     # GET /repos/:owner/:repo/commits/:sha
     timeline = JSON.parse timeline if 'string' is helpers.extractType timeline
@@ -28,9 +29,12 @@ module.exports =
   getCommitInfo: (url, callback) ->
     restler.get(generateApiUrl url)
            .on 'success', (data, res) ->
+             #'x-ratelimit-limit': '5000',
+             #'x-ratelimit-remaining': '4986',
+             logger.info "github api limit: #{res.headers['x-ratelimit-remaining']}"
+             logger.error "github api limit: #{res.headers['x-ratelimit-remaining']}" if res.headers['x-ratelimit-remaining'] < '10'
              callback null, data, res
            .on 'fail', (data, res) ->
-             console.log "#{res.statusCode}:", data
              callback data
 
 # private

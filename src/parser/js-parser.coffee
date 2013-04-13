@@ -6,18 +6,27 @@
 
 helpers = require '../helpers'
 
-module.exports =
+jsParser = module.exports =
+
+  parse: (line, convention) ->
+    convention = jsParser.comma line, convention
+    convention = jsParser.indent line, convention
+    convention = jsParser.functiondef line, convention
+    convention = jsParser.argumentdef line, convention
+    convention = jsParser.literaldef line, convention
+    convention = jsParser.conditionstatement line, convention
 
   comma: (line, convention) ->
-    convention = {} unless convention
-    convention.comma =
+    convention = {lang: 'js'} unless convention
+    (convention.comma =
       title: "Last Comma vs. First Comma"
       column: [
         { key: "first", display: "First comma", code: ", key: value" }
         { key: "last", display: "Last comma", code: "key: value," }
       ]
       first: 0
-      last: 0 unless convention.comma
+      last: 0
+    ) unless convention.comma
 
     first = /^\s*,.*/g
     last = /.*,\s*$/g
@@ -27,15 +36,16 @@ module.exports =
     convention
 
   indent: (line, convention) ->
-    convention = {} unless convention
-    convention.indent =
+    convention = {lang: 'js'} unless convention
+    (convention.indent =
       title: "Space vs. Tab"
       column: [
         { key: "tab", display: "Tab", code: "  var a = 1;" }
         { key: "space", display: "Space", code: "{tab}var a = 1;" }
       ]
       tab: 0
-      space: 0 unless convention.indent
+      space: 0
+    ) unless convention.indent
 
     tab = /^\t+.*/g
     space = /^\s+.*/g
@@ -45,15 +55,16 @@ module.exports =
     convention
 
   functiondef: (line, convention) ->
-    convention = {} unless convention
-    convention.functiondef =
+    convention = {lang: 'js'} unless convention
+    (convention.functiondef =
       title: "Function followed by one space vs. Function follwed by no space"
       column: [
         { key: "onespace", display: "One space", code: "function fn () {" }
         { key: "nospace", display: "No space", code: "function fn() {" }
       ]
       onespace: 0
-      nospace: 0 unless convention.functiondef
+      nospace: 0
+    ) unless convention.functiondef
 
     onespace = /function(\s+.)*\s+\(/g
     nospace = /function(\s+.)*\(/g
@@ -63,15 +74,16 @@ module.exports =
     convention
 
   argumentdef: (line, convention) ->
-    convention = {} unless convention
-    convention.argumentdef =
+    convention = {lang: 'js'} unless convention
+    (convention.argumentdef =
       title: "Arguements definition with one space vs. no space"
       column: [
         { key: "onespace", display: "One space", code: "function fn( arg1, arg2 ) {\n//or\nif ( true ) {" }
         { key: "nospace", display: "No space", code: "function fn(arg1, arg2) {\n//or\nif (true) {" }
       ]
       onespace: 0
-      nospace: 0 unless convention.argumentdef
+      nospace: 0
+    ) unless convention.argumentdef
 
     onespace = /(function|if|while|switch)(\s+.)*\s*\(\s+/g
     nospace = /(function|if|while|switch)(\s+.)*\s*\(\S+/g
@@ -81,8 +93,8 @@ module.exports =
     convention
 
   literaldef: (line, convention) ->
-    convention = {} unless convention
-    convention.literaldef =
+    convention = {lang: 'js'} unless convention
+    (convention.literaldef =
       title: "Object Literal Definition types"
       column: [
         { key: "tracespace", display: "Followed by space", code: "key: value"}
@@ -91,7 +103,8 @@ module.exports =
       ]
       tracespace: 0
       bothspace: 0
-      nospace: 0 unless convention.literaldef
+      nospace: 0
+    ) unless convention.literaldef
 
     tracespace = /\w:\s+[\w"'\/]/g
     bothspace = /\w\s+:\s+[\w"'\/]/g
@@ -103,8 +116,8 @@ module.exports =
     convention
 
   conditionstatement: (line, convention) ->
-    convention = {} unless convention
-    convention.conditionstatement =
+    convention = {lang: 'js'} unless convention
+    (convention.conditionstatement =
       title: "How to write if statement"
       column: [
         {
@@ -117,7 +130,8 @@ module.exports =
         }
       ]
       onespace: 0
-      nospace: 0 unless convention.conditionstatement
+      nospace: 0
+    ) unless convention.conditionstatement
 
     onespace = /(if|while|switch)\s+\(/g
     nospace = /(if|while|switch)\(/g
@@ -127,8 +141,8 @@ module.exports =
     convention
 
   blockstatement: (line, convention) ->
-    convention = {} unless convention
-    convention.blockstatement =
+    convention = {lang: 'js'} unless convention
+    (convention.blockstatement =
       title: "How to write block statement"
       column: [
         {
@@ -146,7 +160,8 @@ module.exports =
       ]
       onespace: 0
       nospace: 0
-      newline: 0 unless convention.blockstatement
+      newline: 0
+    ) unless convention.blockstatement
 
     onespace = /((if|while|switch).*\)\s+{)|(}\s+else)/g
     nospace = /((if|while|switch).*\){)|(}else)/g

@@ -7,6 +7,19 @@ service = require '../src/service'
 
 describe 'service >', ->
 
+  before (done) ->
+    setTimeout (->
+      done()
+    ), 1000
+
+
   it.skip 'fetch githubarchive', (done) ->
     service.fetchGithubArchive "2013-04-01-15", (err) ->
       done()
+
+  it 'progress timeline', (done) ->
+    service.progressTimeline (err) ->
+      console.log('called callback')
+      setTimeout (->
+        done()
+      ), 200000
