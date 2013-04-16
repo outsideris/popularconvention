@@ -28,12 +28,18 @@ module.exports =
     worklogs.update {_id: id}, {$set: {inProgress: true}}, callback
 
   completeWorklog: (id, callback) ->
-    worklogs.update {_id: id}, {$set: {completed: true}}, callback
+    worklogs.update {_id: id}, {$set: {completed: true, completeDate: new Date}}, callback
 
-  findOneWorklogs: (callback) ->
+  findOneWorklogToProgress: (callback) ->
     worklogs.findOne({
       "inProgress": false
       "completed": false
+    }, callback)
+
+  findOneWorklogToSummarize: (callback) ->
+    worklogs.findOne({
+      "completed": true
+      "summarize": false
     }, callback)
 
   findTimeline: (coll, callback) ->
@@ -42,6 +48,11 @@ module.exports =
 
   insertConvention: (conv, callback) ->
     conventions.insert conv, callback
+
+  findConvention: (timestamp, callback) ->
+    conventions.find {
+      "timestamp": timestamp
+    }, callback
 
   getTimeline: (callback) ->
     conventions.find().limit 10, callback

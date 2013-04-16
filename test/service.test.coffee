@@ -19,7 +19,12 @@ describe 'service >', ->
 
   it 'progress timeline', (done) ->
     service.progressTimeline (err) ->
-      console.log('called callback')
       setTimeout (->
         done()
       ), 200000
+
+  it 'summarize score', (done) ->
+    service.summarizeScore (err) ->
+      setTimeout (->
+        done()
+      ), 10000

@@ -14,6 +14,7 @@ persistence = require './persistence'
 timeline = require './timeline'
 parser = require './parser/parser'
 schedule = require 'node-schedule'
+_ = require 'underscore'
 
 persistence.open ->
   logger.info 'mongodb is connected'
@@ -49,6 +50,7 @@ service = module.exports =
             file: datetime
             inProgress: false
             completed: false
+            summarize: false
           persistence.insertWorklogs doc, (->
             callback()) if code is 0
           callback(code) if code isnt 0
@@ -58,8 +60,8 @@ service = module.exports =
       logger.error 'fetch githubarchive: ', {err: e}
 
   progressTimeline: (callback) ->
-    persistence.findOneWorklogs (err, worklog) ->
-      logger.error 'findOneWorklogs: ', {err: err} if err?
+    persistence.findOneWorklogToProgress (err, worklog) ->
+      logger.error 'findOneWorklogToProgress: ', {err: err} if err?
       return callback() if err? or not worklog?
 
       persistence.progressWorklog worklog._id, (err) ->
@@ -96,11 +98,61 @@ service = module.exports =
                         logger.error 'completeWorklog: ', {err: err}
           callback()
 
-# private
-rule = new schedule.RecurrenceRule()
-rule.hour = [new schedule.Range(0, 23)]
-rule.minute = 0
+  summarizeScore: (callback) ->
+    persistence.findOneWorklogToSummarize (err, worklog) ->
+      logger.error 'findOneWorklogToSummarize: ', {err: err} if err?
+      return callback() if err? or not worklog?
 
-job = schedule.scheduleJob rule, ->
+      # summarize score in case of completed 2 hours ago
+      if new Date - worklog.completeDate > 7200000
+        persistence.findConvention worklog.file, (err, cursor) ->
+          if err?
+            logger.error 'findConvention: ', {err: err}
+            return
+
+          cursor.toArray (err, docs) ->
+            sum = []
+            docs.forEach (doc, index) ->
+              if hasLang(sum, doc)
+                baseConv = getConventionByLang doc.lang, sum
+                (
+                  if key isnt 'lang'
+                    baseConv.convention[key].column.forEach (elem) ->
+                      if doc.convention[key]?
+                        baseConv.convention[key][elem.key] += doc.convention[key][elem.key]
+                        baseConv.shas.push doc.sha
+                        baseConv.shas = _.uniq baseConv.shas
+                )for key, value of baseConv.convention
+              else
+                doc.shas = []
+                doc.shas.push doc.sha
+                delete doc.sha
+                sum.push doc
+            callback()
+
+# private
+progressRule = new schedule.RecurrenceRule()
+progressRule .hour = [new schedule.Range(0, 23)]
+progressRule .minute = 0
+
+schedule.scheduleJob progressRule , ->
   service.progressTimeline ->
-    logger "progressTimeline is DONE!!!"
+    logger.info "progressTimeline is DONE!!!"
+
+summarizeRule = new schedule.RecurrenceRule()
+summarizeRule.hour = [new schedule.Range(0, 23)]
+summarizeRule.minute = [0, 30]
+
+schedule.scheduleJob summarizeRule, ->
+  service.summarizeScore ->
+    logger.info "summarizeScore is DONE!!!"
+
+hasLang = (sum, elem) ->
+  sum.some (el) ->
+    el.lang is elem.lang
+
+getConventionByLang = (lang, sum) ->
+  result = null
+  sum.forEach (elem) ->
+    result = elem if elem.lang is lang
+  result
