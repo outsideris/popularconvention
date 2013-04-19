@@ -41,6 +41,7 @@
   "dependencies": {
     "express": "~3.1.x",
     "jade": "*",
+    "stylus": "*",
     "restler": "~2.0.1",
     "winston": "~0.6.2",
     "mongodb": "~1.2.14",
