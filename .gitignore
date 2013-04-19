@@ -10,6 +10,7 @@ tmp/
 .settings/
 .worksheet/
 .springBeans
+public/components/
 
 .tokens
 archive/
