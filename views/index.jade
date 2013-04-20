@@ -1,5 +1,45 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .jumbotron
+    .container
+      h1 Popular Convention
+
+  .contents.container
+    .languagebox
+      .language
+        a.icon-prog-js01(href='#')
+      .language
+        a.icon-prog-java(href='#')
+      .language
+        a.icon-prog-python(href='#')
+    section
+      h2
+        span.fui-checkround-24
+        |   Last Comma vs. First Comma
+      .examplebox
+          .example
+            h4
+              span.fui-bubble-16
+              | Last Comma
+              pre
+               code !{highlight1}
+          .example
+            h4
+              span.fui-bubble-16
+              | First Comma
+            pre
+             code !{highlight2}
+  footer
+    .container Made by Outsider (
+      a(href="http://blog.outsider.ne.kr") Blog
+      | ,&nbsp;
+      a(href="https://twitter.com/outsideris") Twitter
+      | )
+      br
+      | Code licenced under&nbsp;
+      a(href="http://opensource.org/licenses/MIT") MIT license
+      | , Managed in&nbsp;
+      a(href="https://github.com/outsideris/popularconvention") Github
+
+

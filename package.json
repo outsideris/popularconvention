@@ -46,6 +46,7 @@
     "winston": "~0.6.2",
     "mongodb": "~1.2.14",
     "node-schedule": "~0.1.8",
-    "underscore": "~1.4.x"
+    "underscore": "~1.4.x",
+    "highlight.js": "~7.3.0"
   }
 }
