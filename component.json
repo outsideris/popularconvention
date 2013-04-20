@@ -5,6 +5,7 @@
     "jquery": "~1.9.1",
     "flight": "~1.0.7",
     "bootstrap": "~2.3.1",
-    "flat-ui": "latest"
+    "flat-ui": "latest",
+    "d3": "~3.1.5"
   }
 }
