@@ -91,11 +91,10 @@ service = module.exports =
                           if err?
                             logger.error 'completeWorklog: ', {err: err}
                     else
-                      logger.info '', {html_url: }
                       conventions = parser.parse commit
                       conventions.forEach (conv) ->
                         data =
-                          timestamp: worklog.file
+                          file: worklog.file
                           lang: conv.lang
                           convention: conv
                           regdate: new Date()
@@ -143,6 +142,7 @@ service = module.exports =
                 delete doc.commiturl
                 delete doc._id
                 doc.regdate = new Date
+                doc.shortfile = doc.file.substr 0, doc.file.lastIndexOf '-'
 
                 sum.push doc
             persistence.insertScore sum, (err) ->
