@@ -9,6 +9,7 @@ logger = (require './helpers').logger
 
 worklogs = null
 conventions = null
+score = null
 
 dbserver = null
 
@@ -19,6 +20,7 @@ module.exports =
       dbserver = db
       worklogs = dbserver.collection 'worklogs'
       conventions = dbserver.collection 'conventions'
+      score = dbserver.collection 'score'
       callback()
 
   insertWorklogs: (doc, callback) ->
@@ -29,6 +31,9 @@ module.exports =
 
   completeWorklog: (id, callback) ->
     worklogs.update {_id: id}, {$set: {completed: true, completeDate: new Date}}, callback
+
+  summarizeWorklog: (id, callback) ->
+    worklogs.update {_id: id}, {$set: {summarize: true}}, callback
 
   findOneWorklogToProgress: (callback) ->
     worklogs.findOne({
@@ -53,6 +58,9 @@ module.exports =
     conventions.find {
       "timestamp": timestamp
     }, callback
+
+  insertScore: (data, callback) ->
+    score.insert data, callback
 
   getTimeline: (callback) ->
     conventions.find().limit 10, callback

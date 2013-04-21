@@ -24,6 +24,8 @@ if 'development' is app.get 'env'
 # routing
 app.get '/', routes.index
 app.get '/fetcharchive', routes.fetcharchive
+app.get '/progress', routes.progressTimeline
+app.get '/summarize', routes.summarizeScore
 
 http.createServer(app).listen app.get('port'), ->
   console.log "Express server listening on port #{app.get('port')}"
