@@ -16,12 +16,19 @@ dbserver = null
 module.exports =
   open: (callback) ->
     MongoClient.connect 'mongodb://localhost:27017/popular_convention', (err, db) ->
-      return callback(err) if err
+      return callback(err) if err?
       dbserver = db
       worklogs = dbserver.collection 'worklogs'
       conventions = dbserver.collection 'conventions'
       score = dbserver.collection 'score'
-      callback()
+
+      # ensure index
+      dbserver.ensureIndex 'conventions', {timestamp: 1}, (err) ->
+        return callback(err) if err?
+        dbserver.ensureIndex 'score', {shortfile: 1, lang: 1}, (err) ->
+          return callback(err) if err?
+
+          callback()
 
   insertWorklogs: (doc, callback) ->
     worklogs.insert doc, callback
