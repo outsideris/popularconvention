@@ -31,7 +31,7 @@ tl = module.exports =
            .on 'success', (data, res) ->
              #'x-ratelimit-limit': '5000',
              #'x-ratelimit-remaining': '4986',
-             logger.info "github api limit: #{res.headers['x-ratelimit-remaining']}"
+             logger.info "github api limit: #{res.headers['x-ratelimit-remaining']}" if res.headers['x-ratelimit-remaining'] % 100 is 0
              logger.error "github api limit: #{res.headers['x-ratelimit-remaining']}" if res.headers['x-ratelimit-remaining'] < '10'
              callback null, data, res
            .on 'fail', (data, res) ->

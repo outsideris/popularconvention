@@ -74,28 +74,42 @@ service = module.exports =
             logger.error 'findOneWorklogs: ', {err: err}
             return callback err
 
+          isNotLimited = true
+          progressCount = 0
+
           cursor.batchSize(3000).each (err, item) ->
             if item?
               urls = timeline.getCommitUrls item
               urls.forEach (url) ->
-                timeline.getCommitInfo url, (err, commit) ->
-                  if err?
-                    logger.error 'getCommitInfo: ', {err: err}
-                  else
-                    conventions = parser.parse commit
-                    conventions.forEach (conv) ->
-                      data =
-                        timestamp: worklog.file
-                        lang: conv.lang
-                        convention: conv
-                        regdate: new Date()
-                        sha: commit.sha
-                      persistence.insertConvention data, (err) ->
-                        logger.error 'insertConvention', {err: err} if err?
-                        logger.info 'insered convention'
-                    persistence.completeWorklog worklog._id, (err) ->
-                      if err?
-                        logger.error 'completeWorklog: ', {err: err}
+                if isNotLimited
+                  timeline.getCommitInfo url, (err, commit) ->
+                    if err?
+                      logger.error 'getCommitInfo: ', {err: err}
+                      isNotLimited = false if /^API Rate Limit Exceeded/.test err.message
+                      if not isNotLimited and progressCount > 3000
+                        persistence.completeWorklog worklog._id, (err) ->
+                          if err?
+                            logger.error 'completeWorklog: ', {err: err}
+                    else
+                      logger.info '', {html_url: }
+                      conventions = parser.parse commit
+                      conventions.forEach (conv) ->
+                        data =
+                          timestamp: worklog.file
+                          lang: conv.lang
+                          convention: conv
+                          regdate: new Date()
+                          commiturl: commit.html_url
+                        persistence.insertConvention data, (err) ->
+                          logger.error 'insertConvention', {err: err} if err?
+                          logger.info 'insered convention'
+                          progressCount += 1
+                          if not isNotLimited and progressCount > 3000
+                            persistence.completeWorklog worklog._id, (err) ->
+                              if err?
+                                logger.error 'completeWorklog: ', {err: err}
+                                return
+                              logger.info 'completed worklog', {file: worklog.file}
           callback()
 
   summarizeScore: (callback) ->
@@ -120,20 +134,34 @@ service = module.exports =
                     baseConv.convention[key].column.forEach (elem) ->
                       if doc.convention[key]?
                         baseConv.convention[key][elem.key] += doc.convention[key][elem.key]
-                        baseConv.shas.push doc.sha
-                        baseConv.shas = _.uniq baseConv.shas
+                        baseConv.commits.push doc.commiturl
+                        baseConv.commits = _.uniq baseConv.commits
                 )for key, value of baseConv.convention
               else
-                doc.shas = []
-                doc.shas.push doc.sha
-                delete doc.sha
+                doc.commits = []
+                doc.commits.push doc.commiturl
+                delete doc.commiturl
+                delete doc._id
+                doc.regdate = new Date
+
                 sum.push doc
+            persistence.insertScore sum, (err) ->
+              if err?
+                logger.error 'insertScore', {err: err}
+                return
+              logger.info 'inserted score'
+              persistence.summarizeWorklog worklog._id, (err) ->
+                if err?
+                  logger.error 'summarizeWorklog', {err: err}
+                  return
+                logger.info 'summarized worklog', {file: worklog.file}
             callback()
+      else callback()
 
 # private
 progressRule = new schedule.RecurrenceRule()
 progressRule .hour = [new schedule.Range(0, 23)]
-progressRule .minute = 0
+progressRule .minute = [0]
 
 schedule.scheduleJob progressRule , ->
   service.progressTimeline ->

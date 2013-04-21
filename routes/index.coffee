@@ -17,3 +17,11 @@ exports.fetcharchive = (req, res) ->
       res.render 'fetcharchive', { msg: 'Something is wrong!!!' }
     else
       res.render 'fetcharchive', { msg: 'Registred' }
+
+exports.progressTimeline = (req, res) ->
+  service.progressTimeline ->
+    res.render 'fetcharchive', { msg: 'progressed' }
+
+exports.summarizeScore = (req, res) ->
+  service.summarizeScore ->
+    res.render 'fetcharchive', { msg: 'summarized' }
