@@ -37,6 +37,15 @@ tl = module.exports =
            .on 'fail', (data, res) ->
              callback data
 
+  checkApiLimit: (callback) ->
+    restler.get(generateApiUrl "/users/whatever")
+           .on 'success', (data, res) ->
+              console.log('success');
+              callback res.headers['x-ratelimit-remaining']
+           .on 'fail', (data, res) ->
+              console.log('fail');
+              callback res.headers['x-ratelimit-remaining']
+
 # private
 generateApiUrl = (url) ->
   "#{githubHost}#{url}#{postfix}"

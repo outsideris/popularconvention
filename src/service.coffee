@@ -66,56 +66,71 @@ service = module.exports =
 
       logger.debug "found worklog to progress : #{worklog.file}"
 
-      persistence.progressWorklog worklog._id, (err) ->
-        if err?
-          logger.error 'findOneWorklogs: ', {err: err}
-          return callback err
+      timeline.checkApiLimit (remainingCount) ->
+        if remainingCount > 0
+          persistence.progressWorklog worklog._id, (err) ->
+            if err?
+              logger.error 'findOneWorklogs: ', {err: err}
+              return callback err
 
-        logger.debug "start progressing : #{worklog.file}"
-        persistence.findTimeline worklog.file, (err, cursor) ->
-          if err?
-            logger.error 'findOneWorklogs: ', {err: err}
-            return callback err
+            logger.debug "start progressing : #{worklog.file}"
+            persistence.findTimeline worklog.file, (err, cursor) ->
+              if err?
+                logger.error 'findOneWorklogs: ', {err: err}
+                return callback err
 
-          logger.debug "found timeline : #{worklog.file}"
+              logger.debug "found timeline : #{worklog.file}"
 
-          isNotLimited = true
-          progressCount = 0
+              cursor.count (err, count) ->
+                logger.debug "timer #{worklog.file} has #{count}"
 
-          cursor.batchSize(3000).each (err, item) ->
-            if item?
-              urls = timeline.getCommitUrls item
-              urls.forEach (url) ->
-                if isNotLimited
-                  timeline.getCommitInfo url, (err, commit) ->
-                    if err?
-                      logger.error 'getCommitInfo: ', {err: err} if isNotLimited
-                      isNotLimited = false if /^API Rate Limit Exceeded/.test err.message
-                      if not isNotLimited and progressCount > 3000
-                        persistence.completeWorklog worklog._id, (err) ->
-                          if err?
-                            logger.error 'completeWorklog: ', {err: err}
-                          logger.debug 'completed worklog case 1', {file: worklog.file}
-                    else
-                      conventions = parser.parse commit
-                      conventions.forEach (conv) ->
-                        data =
-                          file: worklog.file
-                          lang: conv.lang
-                          convention: conv
-                          regdate: new Date()
-                          commiturl: commit.html_url
-                        persistence.insertConvention data, (err) ->
-                          logger.error 'insertConvention', {err: err} if err?
-                          logger.info "insered convention - #{progressCount}"
-                          progressCount += 1
-                          if not isNotLimited and progressCount > 3000
+              isCompleted = false
+              progressCount = 0
+
+              innerLoop = (cur, concurrency) ->
+                innerLoop(cur, concurrency - 1) if concurrency? and concurrency > 1
+                logger.debug "start batch ##{concurrency}" if concurrency? and concurrency > 1
+                progressCount += 1
+
+                cur.nextObject (err, item) ->
+                  if err?
+                    logger.error "in nextObject: ", {err: err}
+                    return
+
+                  if item?
+                    invokedInnerLoop = false
+                    urls = timeline.getCommitUrls item
+                    urls.forEach (url) ->
+                      timeline.getCommitInfo url, (err, commit) ->
+                        if err?
+                          logger.error 'getCommitInfo: ', {err: err}
+                          if /^API Rate Limit Exceeded/.test(err.message) and not isCompleted and progressCount > 3000
+                            isCompleted = true
                             persistence.completeWorklog worklog._id, (err) ->
                               if err?
+                                isCompleted = false
                                 logger.error 'completeWorklog: ', {err: err}
-                                return
-                              logger.debug 'completed worklog case 2', {file: worklog.file}
-          callback()
+                              logger.debug 'completed worklog', {file: worklog.file}
+                        else
+                          conventions = parser.parse commit
+                          conventions.forEach (conv) ->
+                            data =
+                              file: worklog.file
+                              lang: conv.lang
+                              convention: conv
+                              regdate: new Date()
+                              commiturl: commit.html_url
+                            persistence.insertConvention data, (err) ->
+                              logger.error 'insertConvention', {err: err} if err?
+                              logger.info "insered convention - #{progressCount}"
+
+                          if not invokedInnerLoop
+                            innerLoop cur
+                            invokedInnerLoop = true
+
+              innerLoop(cursor, 5)
+
+              callback()
 
   summarizeScore: (callback) ->
     persistence.findOneWorklogToSummarize (err, worklog) ->
