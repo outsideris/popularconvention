@@ -64,15 +64,20 @@ service = module.exports =
       logger.error 'findOneWorklogToProgress: ', {err: err} if err?
       return callback() if err? or not worklog?
 
+      logger.debug "found worklog to progress : #{worklog.file}"
+
       persistence.progressWorklog worklog._id, (err) ->
         if err?
           logger.error 'findOneWorklogs: ', {err: err}
           return callback err
 
+        logger.debug "start progressing : #{worklog.file}"
         persistence.findTimeline worklog.file, (err, cursor) ->
           if err?
             logger.error 'findOneWorklogs: ', {err: err}
             return callback err
+
+          logger.debug "found timeline : #{worklog.file}"
 
           isNotLimited = true
           progressCount = 0
@@ -84,12 +89,13 @@ service = module.exports =
                 if isNotLimited
                   timeline.getCommitInfo url, (err, commit) ->
                     if err?
-                      logger.error 'getCommitInfo: ', {err: err}
+                      logger.error 'getCommitInfo: ', {err: err} if isNotLimited
                       isNotLimited = false if /^API Rate Limit Exceeded/.test err.message
                       if not isNotLimited and progressCount > 3000
                         persistence.completeWorklog worklog._id, (err) ->
                           if err?
                             logger.error 'completeWorklog: ', {err: err}
+                          logger.debug 'completed worklog case 1', {file: worklog.file}
                     else
                       conventions = parser.parse commit
                       conventions.forEach (conv) ->
@@ -101,14 +107,14 @@ service = module.exports =
                           commiturl: commit.html_url
                         persistence.insertConvention data, (err) ->
                           logger.error 'insertConvention', {err: err} if err?
-                          logger.info 'insered convention'
+                          logger.info "insered convention - #{progressCount}"
                           progressCount += 1
                           if not isNotLimited and progressCount > 3000
                             persistence.completeWorklog worklog._id, (err) ->
                               if err?
                                 logger.error 'completeWorklog: ', {err: err}
                                 return
-                              logger.info 'completed worklog', {file: worklog.file}
+                              logger.debug 'completed worklog case 2', {file: worklog.file}
           callback()
 
   summarizeScore: (callback) ->
