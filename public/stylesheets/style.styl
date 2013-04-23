@@ -7,7 +7,7 @@ body
   background-color: #34495E
 
 .jumbotron .container
-  height: 250px
+  height: 200px
   background-image: url(/images/jumbotron-background.gif)
   text-align: center
 
@@ -16,13 +16,26 @@ body
   background-color: rgba(0, 0, 0, 0.5)
   width: 400px
   height: 70px
-  margin: 100px auto 0 auto
+  margin: 50px auto 0 auto
   font-size: 40px
   border-radius: 10px
   line-height: 70px
 
 .contents
   margin-bottom: 30px
+
+.head
+  text-align: center
+  color: #ffffff
+
+.desc
+  text-align: center
+  margin-top: 40px
+  color: #CFCFCF
+
+.desc span
+  font-size: 15px
+  display: block
 
 .languagebox
   text-align: center
@@ -52,12 +65,81 @@ body
 .container section h2
   boder-bottom: 1px solid #34668d
   margin-left: -31px
+  margin-bottom: 10px
+
+.container section h2 span
+  margin-right: 10px
+
+.graph
+  margin-bottom: 20px
+
+.graph:after,
+.graph .sidebar:after
+  clear: both
+  display: table
+  line-height: 0
+  content: ""
 
 .graph .chart
   text-align: center
+  background-color: #2980B9
+  width: 600px
+  height: 400px
+  float: left
+  margin-left: 26px
+  border-radius: 10px 0 0 0
 
-.graph .desc
+.graph .sidebar
+  background-color: #34495E
+  width: 273px
+  height: 400px
+  float: left
+  color: #1ABC9C
+  border-radius: 0 10px 0 0
 
+.graph .sidebar ul
+  margin: 0
+
+.graph .sidebar > ul > li
+  list-style-type: none
+  border-bottom: 2px solid #2C3E50
+  height: 80px
+  padding-left: 10px
+  font-weight: 400
+  overflow: hidden
+
+.graph .sidebar li .icons
+  float: left
+  padding: 29px 15px 0 5px
+  font-size: 25px
+
+.graph .sidebar li .text
+  font-size: 15px
+
+.graph .sidebar li .text h3
+  font-size: 30px
+  padding: 10px 0 0 0
+  margin-bottom: 0
+
+.graph .sidebar li.commits
+  font-size: 20px
+  line-height: 80px
+  text-align: center
+
+.graph .sidebar li.navi
+  border-bottom: none
+
+.graph .sidebar li.navi .pager
+  background-color: #1ABC9C
+  margin: 20px 0 0 35px
+
+.graph .filter
+  width: 873px
+  height: 150px
+  float: left
+  background-color: #2C3E50
+  margin-left: 26px
+  border-radius: 0 0 10px 10px
 
 .example .fui-bubble-16
   font-size: 14px

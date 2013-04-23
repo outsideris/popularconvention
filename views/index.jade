@@ -6,6 +6,8 @@ block content
       h1 Popular Convention
 
   .contents.container
+    .head
+      h2 Analyze Github commit to know which convention is popular.
     .languagebox
       .language
         a.icon-prog-js01(href='#')
@@ -16,13 +18,32 @@ block content
     section
       h2
         span.fui-checkround-24
-        |   Last Comma vs. First Comma
-      .graph.row
-        .chart.span5
-        .desc.span6
-         | base on 2,403 commit of Github
-         br
-         | from 04/10/2013 - 04/15/2013
+        | Last Comma vs. First Comma
+      .graph
+        .chart
+        .sidebar
+          ul
+            li
+              .icons.fui-menu-24
+              .text
+                h3 300
+                | Last Comma
+            li
+              .icons.fui-menu-24
+              .text
+                h3 3,000
+                | First Comma
+            li.commits base on 2,403 commits
+            li.navi
+              ul.pager
+                li.previous
+                  a(href="#")
+                    img(src="/components/flat-ui/images/pager/previous.png")
+                    | Pie Chart
+                li.next
+                  a(href="#")
+                    img(src="/components/flat-ui/images/pager/next.png")
+        .filter
       .examplebox
           .example
             h4
@@ -36,6 +57,9 @@ block content
               | First Comma
             pre
              code !{highlight2}
+    .desc
+      span last update: 2013-04-15
+      span Analyzed commit count: 3000 (2013-04-15 - 2013-04-20)
   footer
     .container.
       Made by Outsider (<a href="http://blog.outsider.ne.kr">Blog</a>,

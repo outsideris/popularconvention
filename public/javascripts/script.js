@@ -7,8 +7,8 @@ $(document).ready(function() {
     comma: [1034, 348]
   };
 
-  var width = 300,
-    height = 300,
+  var width = 600,
+    height = 400,
     radius = Math.min(width, height) / 2;
 
   var color = d3.scale.ordinal()
