@@ -67,7 +67,7 @@ service = module.exports =
       logger.debug "found worklog to progress : #{worklog.file}"
 
       timeline.checkApiLimit (remainingCount) ->
-        if remainingCount > 0
+        if remainingCount > 2500
           persistence.progressWorklog worklog._id, (err) ->
             if err?
               logger.error 'findOneWorklogs: ', {err: err}
@@ -98,21 +98,33 @@ service = module.exports =
                     return
 
                   if item?
-                    invokedInnerLoop = false
+                    logger.debug "found item", {item: item._id}
+
                     urls = timeline.getCommitUrls item
+                    logger.debug "urls: #{urls.length} - ", {urls: urls}
+
+                    if urls.length is 0
+                      innerLoop cur
+                      return
+
+                    invokedInnerLoop = false
                     urls.forEach (url) ->
                       timeline.getCommitInfo url, (err, commit) ->
                         if err?
-                          logger.error 'getCommitInfo: ', {err: err}
-                          if /^API Rate Limit Exceeded/.test(err.message) and not isCompleted and progressCount > 3000
+                          logger.error 'getCommitInfo: ', {err: err, limit: /^API Rate Limit Exceeded/.test(err.message), isCompleted: isCompleted, progressCount: progressCount}
+                          if /^API Rate Limit Exceeded/.test(err.message) and not isCompleted and progressCount > 2000
                             isCompleted = true
                             persistence.completeWorklog worklog._id, (err) ->
                               if err?
                                 isCompleted = false
                                 logger.error 'completeWorklog: ', {err: err}
                               logger.debug 'completed worklog', {file: worklog.file}
+                          else if not /^API Rate Limit Exceeded/.test(err.message)
+                            innerLoop cur
                         else
+                          logger.debug "parsing commit #{url} - #{item}"
                           conventions = parser.parse commit
+                          logger.debug "get conventions #{conventions}"
                           conventions.forEach (conv) ->
                             data =
                               file: worklog.file
@@ -124,9 +136,20 @@ service = module.exports =
                               logger.error 'insertConvention', {err: err} if err?
                               logger.info "insered convention - #{progressCount}"
 
+                          logger.debug "before callback #{invokedInnerLoop} - #{item._id}"
                           if not invokedInnerLoop
+                            logger.debug "call recurrsive - #{item._id}"
                             innerLoop cur
                             invokedInnerLoop = true
+                  else
+                    logger.debug "no item - #{progressCount}"
+                    if not isCompleted and progressCount > 2000
+                      isCompleted = true
+                      persistence.completeWorklog worklog._id, (err) ->
+                        if err?
+                          isCompleted = false
+                          logger.error 'completeWorklog: ', {err: err}
+                        logger.debug 'completed worklog', {file: worklog.file}
 
               innerLoop(cursor, 5)
 
@@ -182,7 +205,7 @@ service = module.exports =
 # private
 progressRule = new schedule.RecurrenceRule()
 progressRule .hour = [new schedule.Range(0, 23)]
-progressRule .minute = [0]
+progressRule .minute = [10, 40]
 
 schedule.scheduleJob progressRule , ->
   service.progressTimeline ->

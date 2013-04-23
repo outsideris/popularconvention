@@ -31,7 +31,7 @@ tl = module.exports =
            .on 'success', (data, res) ->
              #'x-ratelimit-limit': '5000',
              #'x-ratelimit-remaining': '4986',
-             logger.info "github api limit: #{res.headers['x-ratelimit-remaining']}" if res.headers['x-ratelimit-remaining'] % 100 is 0
+             logger.info "github api limit: #{res.headers['x-ratelimit-remaining']}" if res.headers['x-ratelimit-remaining'] % 50 is 0
              logger.error "github api limit: #{res.headers['x-ratelimit-remaining']}" if res.headers['x-ratelimit-remaining'] < '10'
              callback null, data, res
            .on 'fail', (data, res) ->
@@ -40,10 +40,10 @@ tl = module.exports =
   checkApiLimit: (callback) ->
     restler.get(generateApiUrl "/users/whatever")
            .on 'success', (data, res) ->
-              console.log('success');
+              logger.debug "API rate ramained #{res.headers['x-ratelimit-remaining']}"
               callback res.headers['x-ratelimit-remaining']
            .on 'fail', (data, res) ->
-              console.log('fail');
+              logger.debug "API rate ramained #{res.headers['x-ratelimit-remaining']}"
               callback res.headers['x-ratelimit-remaining']
 
 # private

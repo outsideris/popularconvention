@@ -7,6 +7,7 @@
 helpers = require '../helpers'
 path = require 'path'
 jsParser = require './js-parser'
+logger = (require '../helpers').logger
 
 parser = module.exports =
   parsePatch: (commit) ->
@@ -19,11 +20,10 @@ parser = module.exports =
 
   parse: (commit) ->
     commit = JSON.parse commit if 'string' is helpers.extractType commit
-    convention = {lang: 'js'} unless convention
     conventions = []
     commit.files.forEach (file) ->
       ext = path.extname file.filename
-      if isSupportExt ext
+      if isSupportExt(ext) and file.patch?
         convention = {lang: ext.substr(1)}
         psr = getParser ext
         lines = parser.parseAdditionTokens file.patch
