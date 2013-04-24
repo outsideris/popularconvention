@@ -61,9 +61,9 @@ module.exports =
   insertConvention: (conv, callback) ->
     conventions.insert conv, callback
 
-  findConvention: (timestamp, callback) ->
+  findConvention: (file, callback) ->
     conventions.find {
-      "timestamp": timestamp
+      "file": file
     }, callback
 
   insertScore: (data, callback) ->

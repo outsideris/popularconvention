@@ -213,7 +213,7 @@ schedule.scheduleJob progressRule , ->
 
 summarizeRule = new schedule.RecurrenceRule()
 summarizeRule.hour = [new schedule.Range(0, 23)]
-summarizeRule.minute = [0, 30]
+summarizeRule.minute = [0, 5, 30, 35]
 
 schedule.scheduleJob summarizeRule, ->
   service.summarizeScore ->
