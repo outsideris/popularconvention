@@ -15,6 +15,7 @@ timeline = require './timeline'
 parser = require './parser/parser'
 schedule = require 'node-schedule'
 _ = require 'underscore'
+hljs = require 'highlight.js'
 
 persistence.open ->
   logger.info 'mongodb is connected'
@@ -246,6 +247,15 @@ service = module.exports =
             sumData.commits += data.commits
             sumData.period.push data.file
 
+        # get total for percentage
+        (if key isnt 'lang'
+          total = 0
+          sumData.scores[key].column.forEach (elem) ->
+            total += sumData.scores[key][elem.key]
+            elem.code = hljs.highlight(getHighlightName(lang), elem.code).value
+          sumData.scores[key].total = total
+        ) for key of sumData.scores
+
         callback null, sumData
 
 # private
@@ -282,3 +292,9 @@ merge = (score, doc) ->
   ) for key, value of score.convention
 
   score.commits += doc.commits.length
+
+getHighlightName = (lang) ->
+  map =
+    js: 'javascript'
+  map[lang]
+

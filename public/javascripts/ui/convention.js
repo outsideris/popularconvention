@@ -13,14 +13,35 @@ define(
 
 
     function drawConvention() {
-      this.tmpl = Handlebars.compile($('#conventionSection').html());
+      this.convTmpl = Handlebars.compile($('#conventionSection').html());
+      this.spinerTmpl = Handlebars.compile($('#spiner').html());
 
-      this.draw = function(e, data) {
-        $(this.node).html(this.tmpl(data));
+      this.draw = function(e, lang) {
+        lang = lang.lang;
+
+        var self = this;
+
+        this.trigger('uiProgressing');
+        $.getJSON('/score/' + lang, function(data) {
+          data = data.results;
+          for (var conv in data.scores) {
+            if (data.scores[conv].column) {
+              data.scores[conv].column.sort(function(a, b) {
+                return data.scores[conv][b.key] - data.scores[conv][a.key]
+              });
+            }
+          }
+          $(self.node).html(self.convTmpl(data));
+        });
+      };
+
+      this.spinner = function(e) {
+        $(this.node).html(this.spinerTmpl());
       };
 
       this.after('initialize', function() {
         this.on(document, 'uiDrawConvention', this.draw);
+        this.on('uiProgressing', this.spinner);
       });
     }
   }

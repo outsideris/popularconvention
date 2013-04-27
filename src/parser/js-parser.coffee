@@ -41,7 +41,7 @@ jsParser = module.exports =
       title: "Space vs. Tab"
       column: [
         { key: "tab", display: "Tab", code: "  var a = 1;" }
-        { key: "space", display: "Space", code: "{tab}var a = 1;" }
+        { key: "space", display: "Space", code: "/*tab*/var a = 1;" }
       ]
       tab: 0
       space: 0

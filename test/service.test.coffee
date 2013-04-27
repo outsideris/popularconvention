@@ -31,5 +31,5 @@ describe 'service >', ->
 
   it 'find score', (done) ->
     service.findScore 'js', (err, scores) ->
-      console.log(require('util').inspect(scores, false, 5));
+      #console.log(require('util').inspect(scores, false, 5));
       done()

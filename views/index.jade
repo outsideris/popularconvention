@@ -52,13 +52,13 @@ block content
                 span.fui-bubble-16
                 | Last Comma
               pre
-               code !{highlight1}
+               code code here
             .example
               h4
                 span.fui-bubble-16
                 | First Comma
               pre
-               code !{highlight2}
+               code code here
     .desc
       span last update: 2013-04-15
       span Analyzed commit count: 3000 (2013-04-15 - 2013-04-20)
@@ -72,26 +72,24 @@ block content
 
 block template
   script#conventionSection(type='text/x-handlebars-template')
-    {{#each conventions}}
+    {{#each scores}}
+    {{#if title}}
     section
       h2
         span.fui-checkround-24
-        | Last Comma vs. First Comma
+        | {{title}}
       .graph
         .chart
         .sidebar
           ul
+            {{#each column}}
             li
               .icons.fui-menu-24
               .text
-                h3 300
-                | Last Comma
-            li
-              .icons.fui-menu-24
-              .text
-                h3 3,000
-                | First Comma
-            li.commits base on 2,403 commits
+                h3 {{getScore ../this}} %
+                | {{this.display}}
+            {{/each}}
+            li.commits base on {{getCommitCount ../../this}} commits
             li.navi
               ul.pager
                 li.previous
@@ -101,19 +99,25 @@ block template
                 li.next
                   a(href="#")
                     img(src="/components/flat-ui/images/pager/next.png")
-        .filter
       .examplebox
-          .example
-            h4
-              span.fui-bubble-16
-              | Last Comma
-            pre
-             code !{highlight1}
-          .example
-            h4
-              span.fui-bubble-16
-              | First Comma
-            pre
-             code !{highlight2}
+        {{#each column}}
+        .example
+          h4
+            span.fui-bubble-16
+            | {{display}}
+          pre
+           code {{{code}}}
+        {{/each}}
+    {{/if}}
     {{/each}}
+  script#spiner(type='text/x-handlebars-template')
+    #circularG
+      #circularG_1.circularG
+      #circularG_2.circularG
+      #circularG_3.circularG
+      #circularG_4.circularG
+      #circularG_5.circularG
+      #circularG_6.circularG
+      #circularG_7.circularG
+      #circularG_8.circularG
 

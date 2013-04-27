@@ -12,14 +12,13 @@ define(
     return defineComponent(language);
 
     function language() {
+
       this.selectLanguage = function(e) {
         var lang = $(e.currentTarget).attr('data-lang');
 
         if (lang) {
-          var mock = {conventions: [{}, {}]}
-          this.trigger('uiDrawConvention', mock)
+          this.trigger('uiDrawConvention', {lang: lang});
         }
-
       };
 
       this.after('initialize', function() {

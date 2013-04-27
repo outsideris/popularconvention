@@ -33,4 +33,12 @@ $(document).ready(function() {
                 .attr("d", arc);
   path.append("text")
 
+  Handlebars.registerHelper('getScore', function(context) {
+    var percentage = context[this.key] / context.total * 100;
+    return Math.round(percentage * 1000) / 1000
+  });
+
+  Handlebars.registerHelper('getCommitCount', function(context) {
+    return (context.commits + "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  });
 });
