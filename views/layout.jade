@@ -10,5 +10,10 @@ html
   body
     block content
     script(type='text/javascript', src='/components/jquery/jquery.min.js')
+    script(type='text/javascript', src='/components/es5-shim/es5-shim.js')
+    script(type='text/javascript', src='/components/es5-shim/es5-sham.js')
+    script(type='text/javascript', src='/components/requirejs/require.js', data-main='javascripts/main.js')
     script(type='text/javascript', src='/components/d3/d3.min.js')
+    script(type='text/javascript', src='/components/handlebars.js/dist/handlebars.js')
     script(type="text/javascript", src='/javascripts/script.js')
+    block template

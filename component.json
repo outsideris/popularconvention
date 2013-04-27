@@ -6,6 +6,8 @@
     "flight": "~1.0.7",
     "bootstrap": "~2.3.1",
     "flat-ui": "latest",
-    "d3": "~3.1.5"
+    "d3": "~3.1.5",
+    "requirejs": "~2.1.5",
+    "handlebars.js": "~1.0.10"
   }
 }

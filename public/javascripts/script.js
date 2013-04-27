@@ -34,4 +34,3 @@ $(document).ready(function() {
   path.append("text")
 
 });
-
