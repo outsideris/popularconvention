@@ -28,3 +28,8 @@ describe 'service >', ->
       setTimeout (->
         done()
       ), 10000
+
+  it 'find score', (done) ->
+    service.findScore 'js', (err, scores) ->
+      console.log(require('util').inspect(scores, false, 5));
+      done()

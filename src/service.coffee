@@ -202,6 +202,52 @@ service = module.exports =
             callback()
       else callback()
 
+  findScore: (lang, callback) ->
+    persistence.findScore lang, (err, cursor) ->
+      if err?
+        logger.error 'findScore', {err: err}
+        return callback(err);
+
+      dailyData = []
+      pastFile = ''
+      score = null
+
+      cursor.toArray (err, docs) ->
+        docs.forEach (doc) ->
+          if doc.shortfile isnt pastFile
+            dailyData.push score if score isnt null
+            score =
+              lang: doc.lang
+              file: doc.shortfile
+              convention: doc.convention
+              commits: doc.commits.length
+
+            pastFile = doc.shortfile
+          else
+            merge score, doc
+        dailyData.push score
+
+        sumData =
+          lang: lang
+          period: []
+          raw: dailyData
+
+        dailyData.forEach (data) ->
+          if not sumData.scores?
+            sumData.scores = data.convention
+            sumData.commits = data.commits
+            sumData.period.push data.file
+          else
+            (if key isnt 'lang'
+              sumData.scores[key].column.forEach (elem) ->
+                sumData.scores[key][elem.key] += data.convention[key][elem.key]
+            ) for key of sumData.scores
+
+            sumData.commits += data.commits
+            sumData.period.push data.file
+
+        callback null, sumData
+
 # private
 progressRule = new schedule.RecurrenceRule()
 progressRule .hour = [new schedule.Range(0, 23)]
@@ -228,3 +274,11 @@ getConventionByLang = (lang, sum) ->
   sum.forEach (elem) ->
     result = elem if elem.lang is lang
   result
+
+merge = (score, doc) ->
+  (if key isnt 'lang'
+    score.convention[key].column.forEach (elem) ->
+      score.convention[key][elem.key] += doc.convention[key][elem.key]
+  ) for key, value of score.convention
+
+  score.commits += doc.commits.length

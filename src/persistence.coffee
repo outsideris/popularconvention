@@ -69,5 +69,8 @@ module.exports =
   insertScore: (data, callback) ->
     score.insert data, callback
 
+  findScore: (lang, callback) ->
+    score.find({lang: lang}).sort {file:1}, callback
+
   getTimeline: (callback) ->
     conventions.find().limit 10, callback

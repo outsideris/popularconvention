@@ -25,3 +25,10 @@ exports.progressTimeline = (req, res) ->
 exports.summarizeScore = (req, res) ->
   service.summarizeScore ->
     res.render 'fetcharchive', { msg: 'summarized' }
+
+exports.findScore = (req, res) ->
+  service.findScore req.params.lang, (err, data) ->
+    if not err?
+      res.json 200, {results: data}
+    else
+      res.send 500
