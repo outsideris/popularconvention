@@ -31,8 +31,11 @@ define(
               });
             }
           }
+          data.raw.sort(function(a, b) {
+            return b.file - a.file;
+          });
           $(self.node).html(self.convTmpl(data));
-          self.trigger('uiDrawGraph');
+          self.trigger('uiDrawGraph', data);
         });
       };
 
