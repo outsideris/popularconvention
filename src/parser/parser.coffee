@@ -28,7 +28,7 @@ parser = module.exports =
         psr = getParser ext
         lines = parser.parseAdditionTokens file.patch
         lines.forEach (line) ->
-          convention = psr.parse line, convention
+          convention = psr.parse line, convention, commit.html_url
         conventions.push convention
     conventions
 

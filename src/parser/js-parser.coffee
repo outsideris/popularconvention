@@ -8,15 +8,15 @@ helpers = require '../helpers'
 
 jsParser = module.exports =
 
-  parse: (line, convention) ->
-    convention = jsParser.comma line, convention
-    convention = jsParser.indent line, convention
-    convention = jsParser.functiondef line, convention
-    convention = jsParser.argumentdef line, convention
-    convention = jsParser.literaldef line, convention
-    convention = jsParser.conditionstatement line, convention
+  parse: (line, convention, commitUrl) ->
+    convention = jsParser.comma line, convention, commitUrl
+    convention = jsParser.indent line, convention, commitUrl
+    convention = jsParser.functiondef line, convention, commitUrl
+    convention = jsParser.argumentdef line, convention, commitUrl
+    convention = jsParser.literaldef line, convention, commitUrl
+    convention = jsParser.conditionstatement line, convention, commitUrl
 
-  comma: (line, convention) ->
+  comma: (line, convention, commitUrl) ->
     convention = {lang: 'js'} unless convention
     (convention.comma =
       title: "Last Comma vs. First Comma"
@@ -26,16 +26,18 @@ jsParser = module.exports =
       ]
       first: 0
       last: 0
+      commits: []
     ) unless convention.comma
 
-    first = /^\s*,.*/g
-    last = /.*,\s*$/g
+    first = /^\s*,.*/
+    last = /.*,\s*$/
 
     convention.comma.first = convention.comma.first + 1 if first.test line
     convention.comma.last = convention.comma.last + 1 if last.test line
+    convention.comma.commits.push commitUrl if first.test(line) or last.test(line)
     convention
 
-  indent: (line, convention) ->
+  indent: (line, convention, commitUrl) ->
     convention = {lang: 'js'} unless convention
     (convention.indent =
       title: "Space vs. Tab"
@@ -45,16 +47,19 @@ jsParser = module.exports =
       ]
       tab: 0
       space: 0
+      commits: []
     ) unless convention.indent
 
-    tab = /^\t+.*/g
-    space = /^\s+.*/g
+    tab = /^\t+.*/
+    space = /^\s+.*/
 
     convention.indent.tab = convention.indent.tab + 1 if tab.test line
     convention.indent.space = convention.indent.space + 1 if space.test line
+
+    convention.indent.commits.push commitUrl if tab.test(line) or space.test(line)
     convention
 
-  functiondef: (line, convention) ->
+  functiondef: (line, convention, commitUrl) ->
     convention = {lang: 'js'} unless convention
     (convention.functiondef =
       title: "Function followed by one space vs. Function follwed by no space"
@@ -64,16 +69,18 @@ jsParser = module.exports =
       ]
       onespace: 0
       nospace: 0
+      commits: []
     ) unless convention.functiondef
 
-    onespace = /function(\s+.)*\s+\(/g
-    nospace = /function(\s+.)*\(/g
+    onespace = /function(\s+.)*\s+\(/
+    nospace = /function(\s+.)*\(/
 
     convention.functiondef.onespace = convention.functiondef.onespace + 1 if onespace.test line
     convention.functiondef.nospace = convention.functiondef.nospace + 1 if nospace.test line
+    convention.functiondef.commits.push commitUrl if onespace.test(line) or nospace.test(line)
     convention
 
-  argumentdef: (line, convention) ->
+  argumentdef: (line, convention, commitUrl) ->
     convention = {lang: 'js'} unless convention
     (convention.argumentdef =
       title: "Arguements definition with one space vs. no space"
@@ -83,16 +90,18 @@ jsParser = module.exports =
       ]
       onespace: 0
       nospace: 0
+      commits: []
     ) unless convention.argumentdef
 
-    onespace = /(function|if|while|switch)(\s+.)*\s*\(\s+/g
-    nospace = /(function|if|while|switch)(\s+.)*\s*\(\S+/g
+    onespace = /(function|if|while|switch)(\s+.)*\s*\(\s+/
+    nospace = /(function|if|while|switch)(\s+.)*\s*\(\S+/
 
     convention.argumentdef.onespace = convention.argumentdef.onespace + 1 if onespace.test line
     convention.argumentdef.nospace = convention.argumentdef.nospace + 1 if nospace.test line
+    convention.argumentdef.commits.push commitUrl if onespace.test(line) or nospace.test(line)
     convention
 
-  literaldef: (line, convention) ->
+  literaldef: (line, convention, commitUrl) ->
     convention = {lang: 'js'} unless convention
     (convention.literaldef =
       title: "Object Literal Definition types"
@@ -104,18 +113,20 @@ jsParser = module.exports =
       tracespace: 0
       bothspace: 0
       nospace: 0
+      commits: []
     ) unless convention.literaldef
 
-    tracespace = /\w:\s+[\w"'\/]/g
-    bothspace = /\w\s+:\s+[\w"'\/]/g
-    nospace = /\w:[\w"'\/]/g
+    tracespace = /\w:\s+[\w"'\/]/
+    bothspace = /\w\s+:\s+[\w"'\/]/
+    nospace = /\w:[\w"'\/]/
 
     convention.literaldef.tracespace = convention.literaldef.tracespace + 1 if tracespace.test line
     convention.literaldef.bothspace = convention.literaldef.bothspace + 1 if bothspace.test line
     convention.literaldef.nospace = convention.literaldef.nospace + 1 if nospace.test line
+    convention.literaldef.commits.push commitUrl if tracespace.test(line) or bothspace.test(line) or nospace.test(line)
     convention
 
-  conditionstatement: (line, convention) ->
+  conditionstatement: (line, convention, commitUrl) ->
     convention = {lang: 'js'} unless convention
     (convention.conditionstatement =
       title: "How to write if statement"
@@ -131,16 +142,18 @@ jsParser = module.exports =
       ]
       onespace: 0
       nospace: 0
+      commits: []
     ) unless convention.conditionstatement
 
-    onespace = /(if|while|switch)\s+\(/g
-    nospace = /(if|while|switch)\(/g
+    onespace = /(if|while|switch)\s+\(/
+    nospace = /(if|while|switch)\(/
 
     convention.conditionstatement.onespace = convention.conditionstatement.onespace + 1 if onespace.test line
     convention.conditionstatement.nospace = convention.conditionstatement.nospace + 1 if nospace.test line
+    convention.conditionstatement.commits.push commitUrl if onespace.test(line) or nospace.test(line)
     convention
 
-  blockstatement: (line, convention) ->
+  blockstatement: (line, convention, commitUrl) ->
     convention = {lang: 'js'} unless convention
     (convention.blockstatement =
       title: "How to write block statement"
@@ -161,14 +174,16 @@ jsParser = module.exports =
       onespace: 0
       nospace: 0
       newline: 0
+      commits: []
     ) unless convention.blockstatement
 
-    onespace = /((if|while|switch).*\)\s+{)|(}\s+else)/g
-    nospace = /((if|while|switch).*\){)|(}else)/g
-    newline = /((if|while|switch).*\)\s*$)|((if|while|switch).*\)\s*\/[\/\*])|(^\s*else)/g
+    onespace = /((if|while|switch).*\)\s+{)|(}\s+else)/
+    nospace = /((if|while|switch).*\){)|(}else)/
+    newline = /((if|while|switch).*\)\s*$)|((if|while|switch).*\)\s*\/[\/\*])|(^\s*else)/
 
     convention.blockstatement.onespace = convention.blockstatement.onespace + 1 if onespace.test line
     convention.blockstatement.nospace = convention.blockstatement.nospace + 1 if nospace.test line
     convention.blockstatement.newline = convention.blockstatement.newline + 1 if newline.test line
+    convention.blockstatement.commits.push commitUrl if onespace.test(line) or nospace.test(line) or newline.test(line)
     convention
 

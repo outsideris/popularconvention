@@ -125,14 +125,13 @@ service = module.exports =
                         else
                           logger.debug "parsing commit #{url} - #{item}"
                           conventions = parser.parse commit
-                          logger.debug "get conventions #{conventions}"
+                          logger.debug "get conventions ", {convention: conventions}
                           conventions.forEach (conv) ->
                             data =
                               file: worklog.file
                               lang: conv.lang
                               convention: conv
                               regdate: new Date()
-                              commiturl: commit.html_url
                             persistence.insertConvention data, (err) ->
                               logger.error 'insertConvention', {err: err} if err?
                               logger.info "insered convention - #{progressCount}"
@@ -178,13 +177,10 @@ service = module.exports =
                     baseConv.convention[key].column.forEach (elem) ->
                       if doc.convention[key]?
                         baseConv.convention[key][elem.key] += doc.convention[key][elem.key]
-                        baseConv.commits.push doc.commiturl
-                        baseConv.commits = _.uniq baseConv.commits
+                    baseConv.convention[key].commits.concat doc.convention[key].commits
+                    baseConv.convention[key].commits = _.uniq baseConv.convention[key].commits
                 )for key, value of baseConv.convention
               else
-                doc.commits = []
-                doc.commits.push doc.commiturl
-                delete doc.commiturl
                 delete doc._id
                 doc.regdate = new Date
                 doc.shortfile = doc.file.substr 0, doc.file.lastIndexOf '-'
