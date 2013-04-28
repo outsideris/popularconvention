@@ -36,6 +36,9 @@ define(
           });
           $(self.node).html(self.convTmpl(data));
           self.trigger('uiDrawGraph', data);
+        })
+        .fail(function(jqxhr, textStatus, error) {
+          $(self.node).html('');
         });
       };
 

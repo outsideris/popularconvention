@@ -210,49 +210,53 @@ service = module.exports =
       score = null
 
       cursor.toArray (err, docs) ->
-        docs.forEach (doc) ->
-          if doc.shortfile isnt pastFile
-            dailyData.push score if score isnt null
-            score =
-              lang: doc.lang
-              file: doc.shortfile
-              convention: doc.convention
-              commits: doc.commits.length
+        if docs.length
+          docs.forEach (doc) ->
+            logger.debug("each")
+            if doc.shortfile isnt pastFile
+              dailyData.push score if score isnt null
+              score =
+                lang: doc.lang
+                file: doc.shortfile
+                convention: doc.convention
+                commits: doc.commits.length
 
-            pastFile = doc.shortfile
-          else
-            merge score, doc
-        dailyData.push score
+              pastFile = doc.shortfile
+            else
+              merge score, doc
+          dailyData.push score
 
-        sumData =
-          lang: lang
-          period: []
-          raw: dailyData
+          sumData =
+            lang: lang
+            period: []
+            raw: dailyData
 
-        dailyData.forEach (data) ->
-          if not sumData.scores?
-            sumData.scores = data.convention
-            sumData.commits = data.commits
-            sumData.period.push data.file
-          else
-            (if key isnt 'lang'
-              sumData.scores[key].column.forEach (elem) ->
-                sumData.scores[key][elem.key] += data.convention[key][elem.key]
-            ) for key of sumData.scores
+          dailyData.forEach (data) ->
+            if not sumData.scores?
+              sumData.scores = data.convention
+              sumData.commits = data.commits
+              sumData.period.push data.file
+            else
+              (if key isnt 'lang'
+                sumData.scores[key].column.forEach (elem) ->
+                  sumData.scores[key][elem.key] += data.convention[key][elem.key]
+              ) for key of sumData.scores
 
-            sumData.commits += data.commits
-            sumData.period.push data.file
+              sumData.commits += data.commits
+              sumData.period.push data.file
 
-        # get total for percentage
-        (if key isnt 'lang'
-          total = 0
-          sumData.scores[key].column.forEach (elem) ->
-            total += sumData.scores[key][elem.key]
-            elem.code = hljs.highlight(getHighlightName(lang), elem.code).value
-          sumData.scores[key].total = total
-        ) for key of sumData.scores
+          # get total for percentage
+          (if key isnt 'lang'
+            total = 0
+            sumData.scores[key].column.forEach (elem) ->
+              total += sumData.scores[key][elem.key]
+              elem.code = hljs.highlight(getHighlightName(lang), elem.code).value
+            sumData.scores[key].total = total
+          ) for key of sumData.scores
 
-        callback null, sumData
+          callback null, sumData
+        else
+          callback new Error "#{lang} is not found"
 
 # private
 progressRule = new schedule.RecurrenceRule()

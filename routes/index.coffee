@@ -25,5 +25,8 @@ exports.findScore = (req, res) ->
   service.findScore req.params.lang, (err, data) ->
     if not err?
       res.json 200, {results: data}
+    else if err.message is "#{req.params.lang} is not found"
+      res.json 404, {results: err.message}
     else
+      console.log err
       res.send 500
