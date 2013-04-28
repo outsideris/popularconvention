@@ -32,6 +32,7 @@ define(
             }
           }
           $(self.node).html(self.convTmpl(data));
+          self.trigger('uiDrawGraph');
         });
       };
 

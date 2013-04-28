@@ -6,13 +6,15 @@
 define(
   [
     'javascripts/ui/language',
-    'javascripts/ui/convention'
+    'javascripts/ui/convention',
+    'javascripts/ui/graph'
   ],
 
-  function(Language, Convention) {
+  function(Language, Convention, Graph) {
     var initialize = function() {
       Language.attachTo('.languagebox .language');
       Convention.attachTo('#conventionWrap');
+      Graph.attachTo('#conventionWrap');
     };
 
     return {

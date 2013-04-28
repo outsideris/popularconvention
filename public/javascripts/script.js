@@ -31,7 +31,7 @@ $(document).ready(function() {
                 .enter().append("path")
                 .attr("fill", function(d, i) { return color(i); })
                 .attr("d", arc);
-  path.append("text")
+  path.append("text");
 
   Handlebars.registerHelper('getScore', function(context) {
     var percentage = context[this.key] / context.total * 100;
@@ -40,5 +40,13 @@ $(document).ready(function() {
 
   Handlebars.registerHelper('getCommitCount', function(context) {
     return (context.commits + "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  });
+
+  Handlebars.registerHelper('getDataSet', function() {
+    var list = [];
+    for (var conv in this.column) {
+      list.push(this[this.column[conv].key]);
+    }
+    return list.join(',')
   });
 });

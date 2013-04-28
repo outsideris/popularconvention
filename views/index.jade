@@ -80,6 +80,7 @@ block template
         | {{title}}
       .graph
         .chart
+          input(type='hidden', class='dataset', value='{{getDataSet}}')
         .sidebar
           ul
             {{#each column}}
