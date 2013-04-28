@@ -14,7 +14,8 @@ module.exports =
     transports: [
       new (winston.transports.Console)(
         colorize: true
-        timestamp: true
+        timestamp: ->
+          new Date().toLocaleString()
         prettyPrint: true
       )
     ]
