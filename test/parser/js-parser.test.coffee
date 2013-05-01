@@ -300,3 +300,33 @@ describe 'js-parser >', ->
     it 'check block statement at new line #6', ->
       convention = parser.blockstatement '}  else if ( true ) {', {}
       convention.blockstatement.newline.should.equal 0
+
+  describe 'linelength >', ->
+
+    it 'line length is 80 characters #1', ->
+      convention = parser.linelength '    public String findFirstName( String name, String age) { return \"a\"; }', {}
+      convention.linelength.char80.should.equal 1
+
+    it 'line length is 80 characters #2', ->
+      convention = parser.linelength '\t\tpublic String findFirstName( String name, String age) { return \"a\"; }', {}
+      convention.linelength.char80.should.equal 1
+
+    it 'line length is 80 characters #3', ->
+      convention = parser.linelength '\t\t\tpublic String findFirstName( String name, String age) { return \"a\"; }', {}
+      convention.linelength.char80.should.equal 0
+
+    it 'line length is 120 characters #1', ->
+      convention = parser.linelength '    public String findFirstName( String name, String age, String job) { return \"a\"; }', {}
+      convention.linelength.char120.should.equal 1
+
+    it 'line length is 120 characters #2', ->
+      convention = parser.linelength '\t\tpublic String findFirstName( String name, String age, String job) { return \"a\"; }', {}
+      convention.linelength.char120.should.equal 1
+
+    it 'line length is 120 characters #3', ->
+      convention = parser.linelength '\t\tpublic String findFirstName( String name, String age) { return \"a\"; }', {}
+      convention.linelength.char120.should.equal 0
+
+    it 'line length is 150 characters #1', ->
+      convention = parser.linelength '    public String findFirstName( String name, String age, String job) { return \"a\"; } //afijfjeovjfiejffjeifjidjvosjfiejfioejovfjeifjiejfosjfioejfoiejfoi', {}
+      convention.linelength.char150.should.equal 1

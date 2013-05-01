@@ -7,17 +7,18 @@
 helpers = require '../helpers'
 
 jsParser = module.exports =
+  lang: 'js'
 
   parse: (line, convention, commitUrl) ->
-    convention = jsParser.comma line, convention, commitUrl
-    convention = jsParser.indent line, convention, commitUrl
-    convention = jsParser.functiondef line, convention, commitUrl
-    convention = jsParser.argumentdef line, convention, commitUrl
-    convention = jsParser.literaldef line, convention, commitUrl
-    convention = jsParser.conditionstatement line, convention, commitUrl
+    convention = this.comma line, convention, commitUrl
+    convention = this.indent line, convention, commitUrl
+    convention = this.functiondef line, convention, commitUrl
+    convention = this.argumentdef line, convention, commitUrl
+    convention = this.literaldef line, convention, commitUrl
+    convention = this.conditionstatement line, convention, commitUrl
 
   comma: (line, convention, commitUrl) ->
-    convention = {lang: 'js'} unless convention
+    convention = {lang: this.lang} unless convention
     (convention.comma =
       title: "Last Comma vs. First Comma"
       column: [
@@ -38,7 +39,7 @@ jsParser = module.exports =
     convention
 
   indent: (line, convention, commitUrl) ->
-    convention = {lang: 'js'} unless convention
+    convention = {lang: this.lang} unless convention
     (convention.indent =
       title: "Space vs. Tab"
       column: [
@@ -60,7 +61,7 @@ jsParser = module.exports =
     convention
 
   functiondef: (line, convention, commitUrl) ->
-    convention = {lang: 'js'} unless convention
+    convention = {lang: this.lang} unless convention
     (convention.functiondef =
       title: "Function followed by one space vs. Function follwed by no space"
       column: [
@@ -81,7 +82,7 @@ jsParser = module.exports =
     convention
 
   argumentdef: (line, convention, commitUrl) ->
-    convention = {lang: 'js'} unless convention
+    convention = {lang: this.lang} unless convention
     (convention.argumentdef =
       title: "Arguements definition with one space vs. no space"
       column: [
@@ -102,7 +103,7 @@ jsParser = module.exports =
     convention
 
   literaldef: (line, convention, commitUrl) ->
-    convention = {lang: 'js'} unless convention
+    convention = {lang: this.lang} unless convention
     (convention.literaldef =
       title: "Object Literal Definition types"
       column: [
@@ -127,17 +128,17 @@ jsParser = module.exports =
     convention
 
   conditionstatement: (line, convention, commitUrl) ->
-    convention = {lang: 'js'} unless convention
+    convention = {lang: this.lang} unless convention
     (convention.conditionstatement =
-      title: "How to write if statement"
+      title: "How to write conditional statement"
       column: [
         {
           key: "onespace", display: "condition with one space",
-          code: "if (true) {\n//or\nwhile (true) {\n//or\nswitch (v) {"
+          code: "if (true) {\n    //...\n}\n//or\nwhile (true) {\n    //...\n}\n//or\nswitch (v) {    //...\n}"
         }
         {
           key: "nospace", display: "condition with no space",
-          code: "if(true) {\n//or\nwhile(true) {\n//or\nswitch (v) {"
+          code: "if(true) {\n    //...\n}\n//or\nwhile(true) {\n    //...\n}\n//or\nswitch (v) {    //...\n}"
         }
       ]
       onespace: 0
@@ -154,7 +155,7 @@ jsParser = module.exports =
     convention
 
   blockstatement: (line, convention, commitUrl) ->
-    convention = {lang: 'js'} unless convention
+    convention = {lang: this.lang} unless convention
     (convention.blockstatement =
       title: "How to write block statement"
       column: [
@@ -187,3 +188,40 @@ jsParser = module.exports =
     convention.blockstatement.commits.push commitUrl if onespace.test(line) or nospace.test(line) or newline.test(line)
     convention
 
+  linelength: (line, convention, commitUrl) ->
+    convention = {lang: this.lang} unless convention
+    (convention.linelength =
+      title: "Line length is over 80 characters?"
+      column: [
+        {
+          key: "char80", display: "Line length is within 80 characters.",
+          code: "/* width is within 80 characters */"
+        }
+        {
+          key: "char120", display: "Line length is within 120 characters",
+          code: "/* width is within 120 characters */"
+        }
+        {
+          key: "char150", display: "Line length is within 150 characters",
+          code: "/* width is within 150 characters */"
+        }
+      ]
+      char80: 0
+      char120: 0
+      char150: 0
+      commits: []
+    ) unless convention.linelength
+
+    width = line.length
+    tabcount = line.split('\t').length - 1
+    # assume tab size is 4 space
+    width += tabcount * 3
+
+    if width <= 80
+      convention.linelength.char80 = convention.linelength.char80 + 1
+    else if width <= 120
+      convention.linelength.char120 = convention.linelength.char120 + 1
+    else
+      convention.linelength.char150 = convention.linelength.char150 + 1
+    convention.linelength.commits.push commitUrl
+    convention
