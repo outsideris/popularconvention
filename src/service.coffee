@@ -174,11 +174,11 @@ service = module.exports =
                 baseConv = getConventionByLang doc.lang, sum
                 (
                   if key isnt 'lang'
-                    baseConv.convention[key].column.forEach (elem) ->
-                      if doc.convention[key]?
+                    if doc.convention[key]?
+                      baseConv.convention[key].column.forEach (elem) ->
                         baseConv.convention[key][elem.key] += doc.convention[key][elem.key]
-                    baseConv.convention[key].commits.concat doc.convention[key].commits
-                    baseConv.convention[key].commits = _.uniq baseConv.convention[key].commits
+                      baseConv.convention[key].commits.concat doc.convention[key].commits
+                      baseConv.convention[key].commits = _.uniq baseConv.convention[key].commits
                 )for key, value of baseConv.convention
               else
                 delete doc._id
