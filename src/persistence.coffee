@@ -58,6 +58,9 @@ module.exports =
     dbserver.collection(coll).find {type: 'PushEvent', repository: {$exists: true}},
       {sort: {repository: {watchers: 1, forks: 1}}}, callback
 
+  dropTimeline: (coll, callback) ->
+    dbserver.collection(coll).drop callback
+
   insertConvention: (conv, callback) ->
     conventions.insert conv, callback
 

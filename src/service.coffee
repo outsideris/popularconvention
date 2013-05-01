@@ -196,6 +196,12 @@ service = module.exports =
                   logger.error 'summarizeWorklog', {err: err}
                   return
                 logger.info 'summarized worklog', {file: worklog.file}
+
+                persistence.dropTimeline worklog.file, (err) ->
+                  if err?
+                    logger.error 'drop timeline collection', {err: err}
+                  logger.info 'dropped timeline collection', {collection: worklog.file}
+
             callback()
       else callback()
 
