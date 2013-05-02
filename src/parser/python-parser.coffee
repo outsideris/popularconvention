@@ -25,16 +25,15 @@ jsParser = module.exports =
           key: "tab", display: "Tab",
           code: """
                 def long_function_name(var_one):
+                    # use tab for indentation
                     print(var_one)
                 """
         }
-
         {
           key: "space", display: "Space",
           code: """
                 def long_function_name(var_one):
-                   # use tab for indentation
-                   print(var_one)
+                  print(var_one)
                 """
         }
       ]

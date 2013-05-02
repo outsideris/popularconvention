@@ -26,11 +26,20 @@ javaParser = module.exports =
       column: [
         {
           key: "tab", display: "Tab",
-          code: "/*tab*/public String getName() {\n/*tab*//*tab*/return this.name;\n/*tab*/}"
+          code: """
+                public String getName() {
+                    // use tab for indentation
+                    return this.name;
+                }
+                """
         }
         {
           key: "space", display: "Space",
-          code: "    public String getName() {\n        return this.name;\n    }"
+          code: """
+                public String getName() {
+                  return this.name;
+                }
+                """
         }
       ]
       tab: 0
@@ -55,12 +64,35 @@ javaParser = module.exports =
       column: [
         {
           key: "onespace", display: "curlybrace with one space",
-          code: "if (height < MIN_HEIGHT) {\n//..\n}\n//or\nwhile (isTrue) {\n//..\n}//or\nswitch (foo) {\n//..\n}"
+          code: """
+                if (height < MIN_HEIGHT) {
+                  //..
+                }
+
+                while (isTrue) {
+                  //..
+                }
+
+                switch (foo) {
+                  //..
+                }
+                """
         }
         {
           key: "nospace", display: "curlybrace with no space",
-          code: "if (height < MIN_HEIGHT){\n//..\n}\n//or\nwhile (isTrue){\n//..\n}//or\nswitch (foo){\n//..\n}"
+          code: """
+                if (height < MIN_HEIGHT){
+                  //..
+                }
 
+                while (isTrue){
+                  //..
+                }
+
+                switch (foo){
+                  //..
+                }
+                """
         }
         {
           key: "newline", display: "curlybrace at new line",
@@ -122,11 +154,35 @@ javaParser = module.exports =
       column: [
         {
           key: "onespace", display: "condition with one space",
-          code: "if (true) {\n    //...\n}\n//or\nwhile (true) {\n    //...\n}\n//or\nswitch (v) {    //...\n}"
+          code: """
+                if (true) {
+                  //...
+                }
+
+                while (true) {
+                  //...
+                }
+
+                switch (v) {
+                  //...
+                }
+                """
         }
         {
           key: "nospace", display: "condition with no space",
-          code: "if(true) {\n    //...\n}\n//or\nwhile(true) {\n    //...\n}\n//or\nswitch (v) {    //...\n}"
+          code: """
+                if(true) {
+                  //...
+                }
+
+                while(true) {
+                  //...
+                }
+
+                switch (v) {
+                  //...
+                }
+                """
         }
       ]
       onespace: 0
@@ -151,11 +207,27 @@ javaParser = module.exports =
       column: [
         {
           key: "onespace", display: "One space",
-          code: "public void setName( String name ) {\n    // ... \n}\n//or\nif( isTrue ) {}\n//or\nwhile( isTrue ) {}"
+          code: """
+                public void setName( String name ) {
+                  // ...
+                }
+
+                if( isTrue ) {}
+
+                while( isTrue ) {}
+                """
         }
         {
           key: "nospace", display: "No space",
-          code: "public void setName(String name) {\n    // ... \n}\n//or\nif(isTrue) {}\n//or\nwhile(isTrue) {}"
+          code: """
+                public void setName(String name) {
+                  // ...
+                }
+
+                if(isTrue) {}
+
+                while(isTrue) {}
+                """
         }
       ]
       onespace: 0
@@ -220,11 +292,11 @@ javaParser = module.exports =
       column: [
         {
           key: "prefix", display: "special prefix",
-          code: "staticvar String _name;"
+          code: "static String _name;"
         }
         {
           key: "noprefix", display: "no special prefix",
-          code: "staticvar String name"
+          code: "static String name"
         }
       ]
       prefix: 0

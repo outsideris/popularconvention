@@ -23,8 +23,34 @@ jsParser = module.exports =
     (convention.comma =
       title: "Last Comma vs. First Comma"
       column: [
-        { key: "first", display: "First comma", code: ", key: value" }
-        { key: "last", display: "Last comma", code: "key: value," }
+        {
+          key: "first", display: "First comma",
+          code: """
+                var foo = 1
+                  , bar = 2
+                  , baz = 3;
+
+                var obj = {
+                    foo: 1
+                  , bar: 2
+                  , baz: 3
+                };
+                """
+        }
+        {
+          key: "last", display: "Last comma",
+          code: """
+                var foo = 1,
+                    bar = 2,
+                    baz = 3;
+
+                var obj = {
+                    foo: 1,
+                    bar: 2,
+                    baz: 3
+                };
+                """
+        }
       ]
       first: 0
       last: 0
@@ -46,8 +72,23 @@ jsParser = module.exports =
     (convention.indent =
       title: "Space vs. Tab"
       column: [
-        { key: "tab", display: "Tab", code: "  var a = 1;" }
-        { key: "space", display: "Space", code: "/*tab*/var a = 1;" }
+        {
+          key: "tab", display: "Tab",
+          code: """
+                function foo() {
+                    // use tab for indentation
+                    return "bar";
+                }
+                """
+        }
+        {
+          key: "space", display: "Space",
+          code: """
+                function foo() {
+                  return "bar";
+                }
+                """
+        }
       ]
       tab: 0
       space: 0
@@ -69,8 +110,22 @@ jsParser = module.exports =
     (convention.functiondef =
       title: "Function followed by one space vs. Function follwed by no space"
       column: [
-        { key: "onespace", display: "One space", code: "function fn () {" }
-        { key: "nospace", display: "No space", code: "function fn() {" }
+        {
+          key: "onespace", display: "One space",
+          code: """
+                function foo () {
+                  return "bar";
+                }
+                """
+        }
+        {
+          key: "nospace", display: "No space",
+          code: """
+                function foo() {
+                  return "bar";
+                }
+                """
+        }
       ]
       onespace: 0
       nospace: 0
@@ -92,8 +147,22 @@ jsParser = module.exports =
     (convention.argumentdef =
       title: "Arguements definition with one space vs. no space"
       column: [
-        { key: "onespace", display: "One space", code: "function fn( arg1, arg2 ) {\n//or\nif ( true ) {" }
-        { key: "nospace", display: "No space", code: "function fn(arg1, arg2) {\n//or\nif (true) {" }
+        {
+          key: "onespace", display: "One space",
+          code: """
+                function fn( arg1, arg2 ) {
+                  // ...
+                }
+
+                if ( true ) {
+                  // ...
+                }
+                """
+        }
+        {
+          key: "nospace", display: "No space",
+          code: "function fn(arg1, arg2) {\n//or\nif (true) {"
+        }
       ]
       onespace: 0
       nospace: 0
@@ -115,9 +184,36 @@ jsParser = module.exports =
     (convention.literaldef =
       title: "Object Literal Definition types"
       column: [
-        { key: "tracespace", display: "Followed by space", code: "key: value"}
-        { key: "bothspace", display: "Using space in before/after", code: "key : value"}
-        { key: "nospace", display: "No space", code: "key:value"}
+        {
+          key: "tracespace", display: "Followed by space",
+          code: """
+                {
+                  foo: 1,
+                  bar: 2,
+                  baz: 3
+                }
+                """
+        }
+        {
+          key: "bothspace", display: "Using space in before/after",
+          code: """
+                {
+                  foo : 1,
+                  bar : 2,
+                  baz : 3
+                }
+                """
+        }
+        {
+          key: "nospace", display: "No space",
+          code: """
+                {
+                  foo:1,
+                  bar:2,
+                  baz:3
+                }
+                """
+        }
       ]
       tracespace: 0
       bothspace: 0
@@ -144,11 +240,35 @@ jsParser = module.exports =
       column: [
         {
           key: "onespace", display: "condition with one space",
-          code: "if (true) {\n    //...\n}\n//or\nwhile (true) {\n    //...\n}\n//or\nswitch (v) {    //...\n}"
+          code: """
+                if (true) {
+                  //...
+                }
+
+                while (true) {
+                  //...
+                }
+
+                switch (v) {
+                  //...
+                }
+                """
         }
         {
           key: "nospace", display: "condition with no space",
-          code: "if(true) {\n    //...\n}\n//or\nwhile(true) {\n    //...\n}\n//or\nswitch (v) {    //...\n}"
+          code: """
+                if(true) {
+                  //...
+                }
+
+                while(true) {
+                  //...
+                }
+
+                switch(v) {
+                  //...
+                }
+                """
         }
       ]
       onespace: 0
@@ -173,15 +293,54 @@ jsParser = module.exports =
       column: [
         {
           key: "onespace", display: "curlybrace with one space",
-          code: "if (true) {\n//or\nwhile (true) {\n//or\nswitch (v) {"
+          code: """
+                if (true) {
+                  // ...
+                }
+
+                while (true) {
+                  // ...
+                }
+
+                switch (v) {
+                  // ...
+                }
+                """
         }
         {
           key: "nospace", display: "curlybrace with no space",
-          code: "if (true){\n//or\nwhile (true){\n//or\nswitch (v){"
+          code: """
+                if (true){
+                  // ...
+                }
+
+                while (true){
+                  // ...
+                }
+
+                switch (v){
+                  // ...
+                }
+                """
         }
         {
           key: "newline", display: "curlybrace at new line",
-          code: "if (true)\n{\n//or\nwhile (true)\n{\n//or\nswitch (v)\n{"
+          code: """
+                if (true)
+                {
+                  // ...
+                }
+
+                while (true)
+                {
+                  // ...
+                }
+
+                switch (v)
+                {
+                  // ...
+                }
+                """
         }
       ]
       onespace: 0
