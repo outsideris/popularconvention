@@ -36,6 +36,8 @@ tl = module.exports =
              callback null, data, res
            .on 'fail', (data, res) ->
              callback data
+           .on 'complete', (err) ->
+             callback err if err instanceof Error
 
   checkApiLimit: (callback) ->
     restler.get(generateApiUrl "/users/whatever")
