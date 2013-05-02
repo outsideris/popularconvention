@@ -5,6 +5,7 @@
 # <http://outsider.mit-license.org/>
 
 helpers = require '../helpers'
+_ = require 'underscore'
 
 jsParser = module.exports =
   lang: 'js'
@@ -35,7 +36,9 @@ jsParser = module.exports =
 
     convention.comma.first = convention.comma.first + 1 if first.test line
     convention.comma.last = convention.comma.last + 1 if last.test line
+
     convention.comma.commits.push commitUrl if first.test(line) or last.test(line)
+    convention.comma.commits = _.uniq convention.comma.commits
     convention
 
   indent: (line, convention, commitUrl) ->
@@ -58,6 +61,7 @@ jsParser = module.exports =
     convention.indent.space = convention.indent.space + 1 if space.test line
 
     convention.indent.commits.push commitUrl if tab.test(line) or space.test(line)
+    convention.indent.commits = _.uniq convention.indent.commits
     convention
 
   functiondef: (line, convention, commitUrl) ->
@@ -78,7 +82,9 @@ jsParser = module.exports =
 
     convention.functiondef.onespace = convention.functiondef.onespace + 1 if onespace.test line
     convention.functiondef.nospace = convention.functiondef.nospace + 1 if nospace.test line
+
     convention.functiondef.commits.push commitUrl if onespace.test(line) or nospace.test(line)
+    convention.functiondef.commits = _.uniq convention.functiondef.commits
     convention
 
   argumentdef: (line, convention, commitUrl) ->
@@ -99,7 +105,9 @@ jsParser = module.exports =
 
     convention.argumentdef.onespace = convention.argumentdef.onespace + 1 if onespace.test line
     convention.argumentdef.nospace = convention.argumentdef.nospace + 1 if nospace.test line
+
     convention.argumentdef.commits.push commitUrl if onespace.test(line) or nospace.test(line)
+    convention.argumentdef.commits = _.uniq convention.argumentdef.commits
     convention
 
   literaldef: (line, convention, commitUrl) ->
@@ -124,7 +132,9 @@ jsParser = module.exports =
     convention.literaldef.tracespace = convention.literaldef.tracespace + 1 if tracespace.test line
     convention.literaldef.bothspace = convention.literaldef.bothspace + 1 if bothspace.test line
     convention.literaldef.nospace = convention.literaldef.nospace + 1 if nospace.test line
+
     convention.literaldef.commits.push commitUrl if tracespace.test(line) or bothspace.test(line) or nospace.test(line)
+    convention.literaldef.commits = _.uniq convention.literaldef.commits
     convention
 
   conditionstatement: (line, convention, commitUrl) ->
@@ -151,7 +161,9 @@ jsParser = module.exports =
 
     convention.conditionstatement.onespace = convention.conditionstatement.onespace + 1 if onespace.test line
     convention.conditionstatement.nospace = convention.conditionstatement.nospace + 1 if nospace.test line
+
     convention.conditionstatement.commits.push commitUrl if onespace.test(line) or nospace.test(line)
+    convention.conditionstatement.commits = _.uniq convention.conditionstatement.commits
     convention
 
   blockstatement: (line, convention, commitUrl) ->
@@ -185,7 +197,9 @@ jsParser = module.exports =
     convention.blockstatement.onespace = convention.blockstatement.onespace + 1 if onespace.test line
     convention.blockstatement.nospace = convention.blockstatement.nospace + 1 if nospace.test line
     convention.blockstatement.newline = convention.blockstatement.newline + 1 if newline.test line
+
     convention.blockstatement.commits.push commitUrl if onespace.test(line) or nospace.test(line) or newline.test(line)
+    convention.blockstatement.commits = _.uniq convention.blockstatement.commits
     convention
 
   linelength: (line, convention, commitUrl) ->
@@ -217,11 +231,13 @@ jsParser = module.exports =
     # assume tab size is 4 space
     width += tabcount * 3
 
-    if width <= 80
+    if width < 80
       convention.linelength.char80 = convention.linelength.char80 + 1
-    else if width <= 120
+    else if width < 120
       convention.linelength.char120 = convention.linelength.char120 + 1
     else
       convention.linelength.char150 = convention.linelength.char150 + 1
+
     convention.linelength.commits.push commitUrl
+    convention.linelength.commits = _.uniq convention.linelength.commits
     convention
