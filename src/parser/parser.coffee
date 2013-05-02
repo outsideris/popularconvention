@@ -10,6 +10,7 @@ logger = (require '../helpers').logger
 jsParser = require './js-parser'
 javaParser = require './java-parser'
 pythonParser = require './python-parser'
+scalaParser = require './scala-parser'
 
 parser = module.exports =
   parsePatch: (commit) ->
@@ -39,6 +40,7 @@ supportExts = [
   '.js'
   '.java'
   '.py'
+  '.scala'
 ]
 
 isSupportExt = (ext) ->
@@ -50,3 +52,4 @@ getParser = (ext) ->
     when '.js' then jsParser
     when '.java' then javaParser
     when '.py' then pythonParser
+    when '.scala' then scalaParser

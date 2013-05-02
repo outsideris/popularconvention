@@ -63,7 +63,7 @@ javaParser = module.exports =
       title: "How to write block statement"
       column: [
         {
-          key: "onespace", display: "curlybrace with one space",
+          key: "onespace", display: "Curlybrace with one space",
           code: """
                 if (height < MIN_HEIGHT) {
                   //..
@@ -79,7 +79,7 @@ javaParser = module.exports =
                 """
         }
         {
-          key: "nospace", display: "curlybrace with no space",
+          key: "nospace", display: "Curlybrace with no space",
           code: """
                 if (height < MIN_HEIGHT){
                   //..
@@ -123,11 +123,11 @@ javaParser = module.exports =
       title: "Constant name is all caps?"
       column: [
         {
-          key: "allcaps", display: "constant name is all caps with underscore(_)",
+          key: "allcaps", display: "Constant name is all caps with underscore(_)",
           code: "final String FOO_BAR = \"\";"
         }
         {
-          key: "notallcaps", display: "constant name is not all caps",
+          key: "notallcaps", display: "Constant name is not all caps",
           code: "final String foobar = \"\";"
 
         }
@@ -153,7 +153,7 @@ javaParser = module.exports =
       title: "How to write conditional statement"
       column: [
         {
-          key: "onespace", display: "condition with one space",
+          key: "onespace", display: "Condition with one space",
           code: """
                 if (true) {
                   //...
@@ -169,7 +169,7 @@ javaParser = module.exports =
                 """
         }
         {
-          key: "nospace", display: "condition with no space",
+          key: "nospace", display: "Condition with no space",
           code: """
                 if(true) {
                   //...
@@ -291,11 +291,11 @@ javaParser = module.exports =
       title: "Use special prefix fot staticvar"
       column: [
         {
-          key: "prefix", display: "special prefix",
+          key: "prefix", display: "Special prefix",
           code: "static String _name;"
         }
         {
-          key: "noprefix", display: "no special prefix",
+          key: "noprefix", display: "No special prefix",
           code: "static String name"
         }
       ]

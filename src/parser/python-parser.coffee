@@ -98,7 +98,7 @@ jsParser = module.exports =
       title: "imports on separate lines"
       column: [
         {
-          key: "separated", display: "imports on separate lines",
+          key: "separated", display: "Imports on separate lines",
           code: """
                 imports os
                 imports sys
@@ -106,7 +106,7 @@ jsParser = module.exports =
         }
 
         {
-          key: "noseparated", display: "impont on non-sepratate lines",
+          key: "noseparated", display: "Impont on non-sepratate lines",
           code: """
                 imports sys, os
                 """
@@ -133,7 +133,7 @@ jsParser = module.exports =
       title: "Whitespace in Expressions and Statements"
       column: [
         {
-          key: "noextra", display: "avoid extraneous whitespace",
+          key: "noextra", display: "Avoiding extraneous whitespace",
           code: """
                 spam(ham[1], {eggs: 2})
                 if x == 4: print x, y; x, y = y, x
@@ -146,7 +146,7 @@ jsParser = module.exports =
         }
 
         {
-          key: "extra", display: "using extraneous whitespace",
+          key: "extra", display: "Using extraneous whitespace",
           code: """
                 spam( ham[ 1 ], { eggs: 2 } )
                 if x == 4 : print x , y ; x , y = y , x

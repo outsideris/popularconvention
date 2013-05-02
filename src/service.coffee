@@ -302,5 +302,8 @@ merge = (score, doc) ->
 getHighlightName = (lang) ->
   map =
     js: 'javascript'
+    java: 'java'
+    py: 'python'
+    scala: 'scala'
   map[lang]
 

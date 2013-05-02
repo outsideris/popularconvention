@@ -239,7 +239,7 @@ jsParser = module.exports =
       title: "How to write conditional statement"
       column: [
         {
-          key: "onespace", display: "condition with one space",
+          key: "onespace", display: "Condition with one space",
           code: """
                 if (true) {
                   //...
@@ -255,7 +255,7 @@ jsParser = module.exports =
                 """
         }
         {
-          key: "nospace", display: "condition with no space",
+          key: "nospace", display: "Condition with no space",
           code: """
                 if(true) {
                   //...
@@ -292,7 +292,7 @@ jsParser = module.exports =
       title: "How to write block statement"
       column: [
         {
-          key: "onespace", display: "curlybrace with one space",
+          key: "onespace", display: "Curlybrace with one space",
           code: """
                 if (true) {
                   // ...
@@ -308,7 +308,7 @@ jsParser = module.exports =
                 """
         }
         {
-          key: "nospace", display: "curlybrace with no space",
+          key: "nospace", display: "Curlybrace with no space",
           code: """
                 if (true){
                   // ...
@@ -324,7 +324,7 @@ jsParser = module.exports =
                 """
         }
         {
-          key: "newline", display: "curlybrace at new line",
+          key: "newline", display: "Curlybrace at new line",
           code: """
                 if (true)
                 {
