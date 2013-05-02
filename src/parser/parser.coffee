@@ -9,6 +9,7 @@ path = require 'path'
 logger = (require '../helpers').logger
 jsParser = require './js-parser'
 javaParser = require './java-parser'
+pythonParser = require './python-parser'
 
 parser = module.exports =
   parsePatch: (commit) ->
@@ -37,6 +38,7 @@ parser = module.exports =
 supportExts = [
   '.js'
   '.java'
+  '.py'
 ]
 
 isSupportExt = (ext) ->
@@ -47,3 +49,4 @@ getParser = (ext) ->
   switch ext
     when '.js' then jsParser
     when '.java' then javaParser
+    when '.py' then pythonParser
