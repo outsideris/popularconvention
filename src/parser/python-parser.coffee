@@ -59,15 +59,15 @@ jsParser = module.exports =
       column: [
         {
           key: "char80", display: "Line length is within 80 characters.",
-          code: "/* width is within 80 characters */"
+          code: "# width is within 80 characters"
         }
         {
           key: "char120", display: "Line length is within 120 characters",
-          code: "/* width is within 120 characters */"
+          code: "# width is within 120 characters"
         }
         {
           key: "char150", display: "Line length is within 150 characters",
-          code: "/* width is within 150 characters */"
+          code: "# width is within 150 characters"
         }
       ]
       char80: 0
@@ -136,9 +136,13 @@ jsParser = module.exports =
           key: "noextra", display: "Avoiding extraneous whitespace",
           code: """
                 spam(ham[1], {eggs: 2})
+
                 if x == 4: print x, y; x, y = y, x
+
                 spam(1)
+
                 dict['key'] = list[index]
+
                 x = 1
                 y = 2
                 long_variable = 3
@@ -149,9 +153,13 @@ jsParser = module.exports =
           key: "extra", display: "Using extraneous whitespace",
           code: """
                 spam( ham[ 1 ], { eggs: 2 } )
+
                 if x == 4 : print x , y ; x , y = y , x
+
                 spam (1)
+
                 dict ['key'] = list [index]
+
                 x             = 1
                 y             = 2
                 """

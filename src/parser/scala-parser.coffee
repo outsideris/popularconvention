@@ -143,7 +143,9 @@ jsParser = module.exports =
           key: "camelcase", display: "CamelCase with the first letter lower-case",
           code: """
                 val myValue = ...
+
                 def myMethod = ...
+
                 var myVariable
                 """
         }
@@ -152,7 +154,9 @@ jsParser = module.exports =
           key: "noncamelcase", display: "CamelCase without the first letter lower-case",
           code: """
                 val MyValue = ...
+
                 def MyMethod = ...
+
                 var MyVariable
                 """
         }
