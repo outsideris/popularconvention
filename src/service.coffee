@@ -33,17 +33,22 @@ service = module.exports =
       gzip = zlib.createGunzip()
       fstream = fs.createWriteStream "#{archiveDir}/#{datetime}.json"
       unzip = res.pipe gzip
-      unzip.pipe  fstream
+      unzip.pipe fstream
       unzip.on 'end', ->
         logger.info "downloaded #{datetime}.json"
         args = [
-          '--host', '127.0.0.1'
-          '--port', '27017'
+          '--host', process.env['MONGODB_HOST']
+          '--port', process.env['MONGODB_PORT']
           '--db', 'popular_convention'
           '--collection', datetime
           '--file', "#{archiveDir}/#{datetime}.json"
           '--type', 'json'
         ]
+        if process.env['NODE_ENV'] is 'production'
+          args.concat [
+            '--username', process.env["MONGODB_USER"]
+            '--password', process.env["MONGODB_PASS"]
+          ]
         mongoimport = spawn '/Users/outsider/bin/mongoimport', args
         mongoimport.stderr.on 'data', (data) ->
           logger.error "mongoimport error occured"
