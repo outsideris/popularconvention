@@ -13,8 +13,9 @@ jsParser = module.exports =
   parse: (line, convention, commitUrl) ->
     convention = this.indent line, convention, commitUrl
     convention = this.linelength line, convention, commitUrl
-    convention = this.imports line, convention, commitUrl
-    convention = this.whitespace line, convention, commitUrl
+    convention = this.classname line, convention, commitUrl
+    convention = this.variablename line, convention, commitUrl
+    convention = this.parametertype line, convention, commitUrl
 
   indent: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
