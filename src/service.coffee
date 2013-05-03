@@ -221,14 +221,16 @@ service = module.exports =
           docs.forEach (doc) ->
             if doc.shortfile isnt pastFile
               dailyData.push score if score isnt null
-              score =
-                lang: doc.lang
-                file: doc.shortfile
-                convention: doc.convention
+              if Object.keys(doc.convention).length > 1
+                score =
+                  lang: doc.lang
+                  file: doc.shortfile
+                  convention: doc.convention
 
-              pastFile = doc.shortfile
+                pastFile = doc.shortfile
             else
-              merge score, doc
+              if Object.keys(doc.convention).length > 1
+                merge score, doc
           dailyData.push score
 
           sumData =
