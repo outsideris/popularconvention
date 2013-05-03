@@ -45,7 +45,7 @@ service = module.exports =
           '--type', 'json'
         ]
         if process.env['NODE_ENV'] is 'production'
-          args.concat [
+          args = args.concat [
             '--username', process.env["MONGODB_USER"]
             '--password', process.env["MONGODB_PASS"]
           ]
