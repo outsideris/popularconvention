@@ -15,20 +15,32 @@ dbserver = null
 
 module.exports =
   open: (callback) ->
-    MongoClient.connect 'mongodb://localhost:27017/popular_convention', (err, db) ->
+    MongoClient.connect "mongodb://#{process.env['MONGODB_HOST']}:#{process.env['MONGODB_PORT']}/popular_convention", (err, db) ->
       return callback(err) if err?
       dbserver = db
       worklogs = dbserver.collection 'worklogs'
       conventions = dbserver.collection 'conventions'
       score = dbserver.collection 'score'
 
-      # ensure index
-      dbserver.ensureIndex 'conventions', {timestamp: 1}, (err) ->
-        return callback(err) if err?
-        dbserver.ensureIndex 'score', {shortfile: 1, lang: 1}, (err) ->
-          return callback(err) if err?
+      if process.env['NODE_ENV'] is 'production'
+        db.authenticate process.env["MONGODB_USER"], process.env["MONGODB_PASS"], (err, result) ->
+          return callback(err) if err? or result isnt true
 
-          callback()
+          # ensure index
+          dbserver.ensureIndex 'conventions', {timestamp: 1}, (err) ->
+            return callback(err) if err?
+            dbserver.ensureIndex 'score', {shortfile: 1, lang: 1}, (err) ->
+              return callback(err) if err?
+
+              callback()
+      else
+        # ensure index
+        dbserver.ensureIndex 'conventions', {timestamp: 1}, (err) ->
+          return callback(err) if err?
+          dbserver.ensureIndex 'score', {shortfile: 1, lang: 1}, (err) ->
+            return callback(err) if err?
+
+            callback()
 
   insertWorklogs: (doc, callback) ->
     worklogs.insert doc, callback

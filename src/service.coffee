@@ -18,7 +18,8 @@ schedule = require 'node-schedule'
 _ = require 'underscore'
 hljs = require 'highlight.js'
 
-persistence.open ->
+persistence.open (err) ->
+  return logger.error 'mongodb is not connected', {err: err} if err?
   logger.info 'mongodb is connected'
 
 archiveDir = "#{__dirname}/archive"
