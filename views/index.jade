@@ -14,7 +14,7 @@ block content
         .icon-prog-js01
       .language(data-lang='java')
         .icon-prog-java
-      .language(data-lang='python')
+      .language(data-lang='py')
         .icon-prog-python
       .language(data-lang='scala')
         .icon-prog-scala
@@ -92,7 +92,7 @@ block template
                 h3 {{getScore ../this}} %
                 | {{this.display}}
             {{/each}}
-            li.commits base on {{getCommitCount ../../this}} commits
+            li.commits base on {{getCommitCount commits}} commits
             li.navi
               ul.pager
                 li.previous

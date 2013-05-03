@@ -5,6 +5,7 @@
 # <http://outsider.mit-license.org/>
 
 logger = (require './helpers').logger
+helpers = (require './helpers')
 http = require 'http'
 fs = require 'fs'
 zlib = require 'zlib'
@@ -177,8 +178,7 @@ service = module.exports =
                     if doc.convention[key]?
                       baseConv.convention[key].column.forEach (elem) ->
                         baseConv.convention[key][elem.key] += doc.convention[key][elem.key]
-                      baseConv.convention[key].commits.concat doc.convention[key].commits
-                      baseConv.convention[key].commits = _.uniq baseConv.convention[key].commits
+                      baseConv.convention[key].commits = _.uniq(baseConv.convention[key].commits.concat doc.convention[key].commits)
                 )for key, value of baseConv.convention
               else
                 delete doc._id
@@ -200,6 +200,7 @@ service = module.exports =
                 persistence.dropTimeline worklog.file, (err) ->
                   if err?
                     logger.error 'drop timeline collection', {err: err}
+                    return
                   logger.info 'dropped timeline collection', {collection: worklog.file}
 
             callback()
@@ -218,14 +219,12 @@ service = module.exports =
       cursor.toArray (err, docs) ->
         if docs.length
           docs.forEach (doc) ->
-            logger.debug("each")
             if doc.shortfile isnt pastFile
               dailyData.push score if score isnt null
               score =
                 lang: doc.lang
                 file: doc.shortfile
                 convention: doc.convention
-                commits: doc.commits.length
 
               pastFile = doc.shortfile
             else
@@ -266,10 +265,10 @@ service = module.exports =
 
 # private
 progressRule = new schedule.RecurrenceRule()
-progressRule .hour = [new schedule.Range(0, 23)]
-progressRule .minute = [10, 40]
+progressRule.hour = [new schedule.Range(0, 23)]
+progressRule.minute = [10, 40]
 
-schedule.scheduleJob progressRule , ->
+schedule.scheduleJob progressRule, ->
   service.progressTimeline ->
     logger.info "progressTimeline is DONE!!!"
 
@@ -293,11 +292,13 @@ getConventionByLang = (lang, sum) ->
 
 merge = (score, doc) ->
   (if key isnt 'lang'
+    if helpers.extractType(score.convention[key].commits) is 'array'
+      score.convention[key].commits = score.convention[key].commits.length
+    score.convention[key].commits += doc.convention[key].commits.length
     score.convention[key].column.forEach (elem) ->
       score.convention[key][elem.key] += doc.convention[key][elem.key]
   ) for key, value of score.convention
-
-  score.commits += doc.commits.length
+  score
 
 getHighlightName = (lang) ->
   map =

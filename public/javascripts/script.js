@@ -38,7 +38,7 @@ $(document).ready(function() {
     return Math.round(percentage * 1000) / 1000
   });
 
-  Handlebars.registerHelper('getCommitCount', function(context) {
-    return (context.commits + "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  Handlebars.registerHelper('getCommitCount', function(commits) {
+    return (commits + "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   });
 });
