@@ -8,6 +8,10 @@ block content
 
     .contents.container
       .head
+        .socialbox
+          a.twitter-share-button(href='https://twitter.com/share', data-url='http://sideeffect.kr/popluarconvention/', data-via='outsideris', data-lang='en') Tweet
+          .fb-like(data-href='http://sideeffect.kr/popluarconvention/', data-send='false', data-width='150', data-show-faces='false', data-layout='button_count')
+          .g-plusone(data-size='medium', data-href='http://sideeffect.kr/popluarconvention/')
         h2 Analyze Github commit to know which convention is popular.
         h1 Choose language.
       .languagebox
@@ -35,6 +39,7 @@ block content
         <br>
         Code licenced under <a href="http://opensource.org/licenses/MIT">MIT license</a>,
         Managed in <a href="https://github.com/outsideris/popularconvention">Github</a>
+  #fb-root
 
 block template
   script#conventionSection(type='text/x-handlebars-template')
