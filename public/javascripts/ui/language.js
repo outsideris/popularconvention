@@ -16,6 +16,9 @@ define(
       this.selectLanguage = function(e) {
         var lang = $(e.currentTarget).attr('data-lang');
 
+        this.$node.addClass('active');
+        this.$node.siblings().removeClass('active');
+
         if (lang) {
           this.trigger('uiDrawConvention', {lang: lang});
         }

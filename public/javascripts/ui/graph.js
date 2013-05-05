@@ -47,7 +47,6 @@ define(
               }
             }
             if (dataName === 'comma') {
-              console.log(finalData);
               window.temp = finalData;
             }
             var nest = d3.nest().key(function(d) {return d.name;}).entries(finalData);
