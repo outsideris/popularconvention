@@ -42,16 +42,17 @@ describe 'service >', ->
 
     item =
       repository:
-        owner: 'kivy'
-        name: 'kivy'
+        owner: 'infinispan'
+        name: 'infinispan'
       payload:
         shas: [[
-          "b37fac0ab1b8ec3f6891116b31ce0d019b29ed36"
+          "c1f3fcbf538ee809396b968fe1965573fa5e3bd8"
         ]]
 
     urls = timeline.getCommitUrls item
     timeline.getCommitInfo urls[0], (err, commit) ->
       conventions = parser.parse commit
+      console.log conventions
       done()
 
   it 'find desc', (done) ->

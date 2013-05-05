@@ -22,18 +22,22 @@ parser = module.exports =
     line.substr(1) for line in patch when line.charAt(0) is '+'
 
   parse: (commit) ->
-    commit = JSON.parse commit if 'string' is helpers.extractType commit
     conventions = []
-    commit.files.forEach (file) ->
-      ext = path.extname file.filename
-      if isSupportExt(ext) and file.patch?
-        convention = {lang: ext.substr(1)}
-        psr = getParser ext
-        lines = parser.parseAdditionTokens file.patch
-        lines.forEach (line) ->
-          convention = psr.parse line, convention, commit.html_url
-        conventions.push convention
-    conventions
+    try
+      commit = JSON.parse commit if 'string' is helpers.extractType commit
+      commit.files.forEach (file) ->
+        ext = path.extname file.filename
+        if isSupportExt(ext) and file.patch?
+          convention = {lang: ext.substr(1)}
+          psr = getParser ext
+          lines = parser.parseAdditionTokens file.patch
+          lines.forEach (line) ->
+            convention = psr.parse line, convention, commit.html_url
+          conventions.push convention
+      conventions
+    catch err
+      logger.error 'parsing', {err: err}
+      []
 
 # private
 supportExts = [

@@ -133,7 +133,7 @@ service = module.exports =
                           else if not /^API Rate Limit Exceeded/.test(err.message)
                             innerLoop cur
                         else
-                          logger.debug "parsing commit #{url} - #{item}"
+                          logger.debug "parsing commit #{url} : ", {commit: commit}
                           conventions = parser.parse commit
                           logger.debug "get conventions ", {convention: conventions}
                           conventions.forEach (conv) ->
