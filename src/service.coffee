@@ -27,8 +27,11 @@ fs.exists archiveDir, (exist) ->
   if not exist then fs.mkdirSync archiveDir
 
 service = module.exports =
-  totalCommits:
-    count: 0
+  totalDesc:
+    lastUpdate: null
+    startDate: null
+    endDate: null
+    commitCount: 0
     regdate: null
 
   fetchGithubArchive: (datetime, callback) ->
@@ -275,29 +278,34 @@ service = module.exports =
           callback new Error "#{lang} is not found"
 
   findDescription: (callback) ->
-    desc = {}
-    persistence.findLastestScore (err, item) ->
-      if err?
-        logger.error 'findLastestScore', {err: err}
-        return callback err
-
-      desc.lastUpdate = item.file
-      persistence.findPeriodOfScore (err, docs) ->
+    # get commit count from cacahing when cache value is exist and in 10min
+    if service.totalDesc.regdate? and (new Date - service.totalDesc.regdate) < 3600000
+      callback null, service.totalDesc
+    else
+      desc = {}
+      persistence.findLastestScore (err, item) ->
         if err?
-          logger.error 'findPeriodOfScore', {err: err}
+          logger.error 'findLastestScore', {err: err}
           return callback err
 
-        if docs.length > 0
-          docs.sort (a, b) ->
-            if a.shortfile > b.shortfile then 1 else -1
-          desc.startDate = docs[0].shortfile
-          desc.endDate = docs[docs.length - 1].shortfile
+        desc.lastUpdate = item.file
+        # caching
+        service.totalDesc.lastUpdate = item.file
 
-        # get commit count from cacahing when cache value is exist and in 10min
-        if service.totalCommits.regdate? and (new Date - service.totalCommits.regdate) < 600000
-          desc.commitCount = service.totalCommits.count
-          callback null, desc
-        else
+        persistence.findPeriodOfScore (err, docs) ->
+          if err?
+            logger.error 'findPeriodOfScore', {err: err}
+            return callback err
+
+          if docs.length > 0
+            docs.sort (a, b) ->
+              if a.shortfile > b.shortfile then 1 else -1
+            desc.startDate = docs[0].shortfile
+            desc.endDate = docs[docs.length - 1].shortfile
+            # caching
+            service.totalDesc.startDate = docs[0].shortfile
+            service.totalDesc.endDate = docs[docs.length - 1].shortfile
+
           persistence.findTotalCommits (err, cursor) ->
             if err?
               logger.error "findTotlaCommists", {err: err}
@@ -313,11 +321,11 @@ service = module.exports =
 
               commits = _.uniq commits
 
-              # caching because it's expensive
-              service.totalCommits.count = commits.length
-              service.totalCommits.regdate = new Date
-
               desc.commitCount = commits.length
+              # caching
+              service.totalDesc.commitCount = commits.length
+              service.totalDesc.regdate = new Date
+
               callback null, desc
 
 # private
