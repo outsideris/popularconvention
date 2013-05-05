@@ -1,37 +1,40 @@
 extends layout
 
 block content
-  .jumbotron
-    .container
-      h1 Popular Convention
+  #mainwrap
+    .jumbotron
+      .container
+        h1 Popular Convention
 
-  .contents.container
-    .head
-      h2 Analyze Github commit to know which convention is popular.
-      h2 Choose language.
-    .languagebox
-      .language(data-lang='js')
-        .icon-prog-js01
-      .language(data-lang='java')
-        .icon-prog-java
-      .language(data-lang='py')
-        .icon-prog-python
-      .language(data-lang='scala')
-        .icon-prog-scala
-    #conventionWrap
+    .contents.container
+      .head
+        h2 Analyze Github commit to know which convention is popular.
+        h1 Choose language.
+      .languagebox
+        .language(data-lang='js')
+          .icon-prog-js01
+        .language(data-lang='java')
+          .icon-prog-java
+        .language(data-lang='py')
+          .icon-prog-python
+        .language(data-lang='scala')
+          .icon-prog-scala
+      #conventionWrap
+      .footer-push
+  footer
     .desc
       - var formatWithComma = function(num) {
       -   return (num + "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       - }
       span last update: #{desc.lastUpdate}
       span Analyzed commit count: #{formatWithComma(desc.commitCount)} (#{desc.startDate} - #{desc.endDate})
-  footer
-    .container.
-      Made by Outsider (<a href="http://blog.outsider.ne.kr">Blog</a>,
-      <a href="https://twitter.com/outsideris">Twitter</a>)
-      <br>
-      Code licenced under <a href="http://opensource.org/licenses/MIT">MIT license</a>,
-      Managed in <a href="https://github.com/outsideris/popularconvention">Github</a>
+    .footerbar
+      .container.
+        Made by Outsider (<a href="http://blog.outsider.ne.kr">Blog</a>,
+        <a href="https://twitter.com/outsideris">Twitter</a>)
+        <br>
+        Code licenced under <a href="http://opensource.org/licenses/MIT">MIT license</a>,
+        Managed in <a href="https://github.com/outsideris/popularconvention">Github</a>
 
 block template
   script#conventionSection(type='text/x-handlebars-template')
