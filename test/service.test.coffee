@@ -42,11 +42,11 @@ describe 'service >', ->
 
     item =
       repository:
-        owner: 'infinispan'
-        name: 'infinispan'
+        owner: 'realodix'
+        name: 'WBPL-MusicLight'
       payload:
         shas: [[
-          "c1f3fcbf538ee809396b968fe1965573fa5e3bd8"
+          "36833e34d63b4b93ac512e041b201bdf4c126f08"
         ]]
 
     urls = timeline.getCommitUrls item

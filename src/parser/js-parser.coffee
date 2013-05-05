@@ -169,8 +169,8 @@ jsParser = module.exports =
       commits: []
     ) unless convention.argumentdef
 
-    onespace = /(function|if|while|switch)(\s+.)*\s*\(\s+/
-    nospace = /(function|if|while|switch)(\s+.)*\s*\(\S+/
+    onespace = /(function|if|while|switch)(\s+\w*)?\s*\(\s+/
+    nospace = /(function|if|while|switch)(\s+\w*)?\s*\(\S+/
 
     convention.argumentdef.onespace = convention.argumentdef.onespace + 1 if onespace.test line
     convention.argumentdef.nospace = convention.argumentdef.nospace + 1 if nospace.test line

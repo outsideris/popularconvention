@@ -155,6 +155,11 @@ describe 'js-parser >', ->
       convention = parser.argumentdef 'function a ( arg1, arg2 ) {}', {}
       convention.argumentdef.nospace.should.equal 0
 
+    it 'check argument definition with no space #6', ->
+      convention = parser.argumentdef '       }//if                                               -', {}
+      convention.argumentdef.nospace.should.equal 0
+      convention.argumentdef.onespace.should.equal 0
+
   describe 'literaldef >', ->
 
     it 'check object literal definition with trace space #1', ->
