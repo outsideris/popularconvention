@@ -334,16 +334,16 @@ progressRule.hour = [new schedule.Range(0, 23)]
 progressRule.minute = [10, 40]
 
 schedule.scheduleJob progressRule, ->
-  #service.progressTimeline ->
-    #logger.info "progressTimeline is DONE!!!"
+  service.progressTimeline ->
+    logger.info "progressTimeline is DONE!!!"
 
 summarizeRule = new schedule.RecurrenceRule()
 summarizeRule.hour = [new schedule.Range(0, 23)]
 summarizeRule.minute = [0, 5, 30, 35]
 
 schedule.scheduleJob summarizeRule, ->
-  #service.summarizeScore ->
-    #logger.info "summarizeScore is DONE!!!"
+  service.summarizeScore ->
+    logger.info "summarizeScore is DONE!!!"
 
 hasLang = (sum, elem) ->
   sum.some (el) ->
