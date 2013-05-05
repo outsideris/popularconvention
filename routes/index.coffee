@@ -1,9 +1,13 @@
 service = require '../src/service'
 
 exports.index = (req, res) ->
-  res.render 'index', {
-    title: 'Express'
-  }
+  service.findDescription (err, desc) ->
+    if err?
+      res.send 500
+    else
+      res.render 'index', {
+        desc: desc
+      }
 
 exports.fetcharchive = (req, res) ->
   datetime = req.query.file
@@ -28,5 +32,5 @@ exports.findScore = (req, res) ->
     else if err.message is "#{req.params.lang} is not found"
       res.json 404, {results: err.message}
     else
-      console.log err
+      logger.error "findScore", {err: err}
       res.send 500

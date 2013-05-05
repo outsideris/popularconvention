@@ -53,3 +53,9 @@ describe 'service >', ->
     timeline.getCommitInfo urls[0], (err, commit) ->
       conventions = parser.parse commit
       done()
+
+  it 'find desc', (done) ->
+    service.findDescription (err, desc) ->
+      console.log desc
+      done()
+

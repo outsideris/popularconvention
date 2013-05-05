@@ -87,5 +87,14 @@ module.exports =
   findScore: (lang, callback) ->
     score.find({lang: lang}).sort {file:1}, callback
 
+  findLastestScore: (callback) ->
+    score.findOne({}, {sort: [['file', -1]]}, callback)
+
+  findPeriodOfScore: (callback) ->
+    score.group(['shortfile'], {}, {}, "function() {}", callback)
+
+  findTotalCommits: (callback) ->
+    score.find {}, callback
+
   getTimeline: (callback) ->
     conventions.find().limit 10, callback

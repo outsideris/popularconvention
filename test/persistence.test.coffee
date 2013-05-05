@@ -15,3 +15,17 @@ describe 'persistence >', ->
     persistence.getTimeline (err, docs) ->
       should.exist docs
       done()
+
+  it 'find lastest score', (done) ->
+    persistence.findLastestScore (err, item) ->
+      console.log(item);
+      done()
+
+  it 'find period', (done) ->
+    persistence.findPeriodOfScore (err, item) ->
+      item.sort (a, b) ->
+        if a.shortfile > b.shortfile then 1 else -1
+
+      console.log item[0]
+      console.log item[item.length - 1]
+      done()

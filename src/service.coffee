@@ -27,6 +27,9 @@ fs.exists archiveDir, (exist) ->
   if not exist then fs.mkdirSync archiveDir
 
 service = module.exports =
+  totalCommits:
+    count: 0
+    regdate: null
 
   fetchGithubArchive: (datetime, callback) ->
     (http.get "http://data.githubarchive.org/#{datetime}.json.gz", (res) ->
@@ -271,22 +274,68 @@ service = module.exports =
         else
           callback new Error "#{lang} is not found"
 
+  findDescription: (callback) ->
+    desc = {}
+    persistence.findLastestScore (err, item) ->
+      if err?
+        logger.error 'findLastestScore', {err: err}
+        return callback err
+
+      desc.lastUpdate = item.file
+      persistence.findPeriodOfScore (err, docs) ->
+        if err?
+          logger.error 'findPeriodOfScore', {err: err}
+          return callback err
+
+        if docs.length > 0
+          docs.sort (a, b) ->
+            if a.shortfile > b.shortfile then 1 else -1
+          desc.startDate = docs[0].shortfile
+          desc.endDate = docs[docs.length - 1].shortfile
+
+        # get commit count from cacahing when cache value is exist and in 10min
+        if service.totalCommits.regdate? and (new Date - service.totalCommits.regdate) < 600000
+          desc.commitCount = service.totalCommits.count
+          callback null, desc
+        else
+          persistence.findTotalCommits (err, cursor) ->
+            if err?
+              logger.error "findTotlaCommists", {err: err}
+              return callback err
+
+            cursor.toArray (err, docs) ->
+              commits = []
+              docs.forEach (doc, index) ->
+                if doc.convention? and Object.keys(doc.convention).length > 1
+                  (if key isnt 'lang'
+                      commits = commits.concat doc.convention[key].commits
+                  ) for key of doc.convention
+
+              commits = _.uniq commits
+
+              # caching because it's expensive
+              service.totalCommits.count = commits.length
+              service.totalCommits.regdate = new Date
+
+              desc.commitCount = commits.length
+              callback null, desc
+
 # private
 progressRule = new schedule.RecurrenceRule()
 progressRule.hour = [new schedule.Range(0, 23)]
 progressRule.minute = [10, 40]
 
 schedule.scheduleJob progressRule, ->
-  service.progressTimeline ->
-    logger.info "progressTimeline is DONE!!!"
+  #service.progressTimeline ->
+    #logger.info "progressTimeline is DONE!!!"
 
 summarizeRule = new schedule.RecurrenceRule()
 summarizeRule.hour = [new schedule.Range(0, 23)]
 summarizeRule.minute = [0, 5, 30, 35]
 
 schedule.scheduleJob summarizeRule, ->
-  service.summarizeScore ->
-    logger.info "summarizeScore is DONE!!!"
+  #service.summarizeScore ->
+    #logger.info "summarizeScore is DONE!!!"
 
 hasLang = (sum, elem) ->
   sum.some (el) ->

@@ -19,51 +19,12 @@ block content
       .language(data-lang='scala')
         .icon-prog-scala
     #conventionWrap
-      section
-        h2
-          span.fui-checkround-24
-          | Last Comma vs. First Comma
-        .graph
-          .chart
-          .sidebar
-            ul
-              li
-                .icons.fui-menu-24
-                .text
-                  h3 300
-                  | Last Comma
-              li
-                .icons.fui-menu-24
-                .text
-                  h3 3,000
-                  | First Comma
-              li.commits base on 2,403 commits
-              li.navi
-                ul.pager
-                  li.previous
-                    a(href="#")
-                      img(src="/components/flat-ui/images/pager/previous.png")
-                      | Pie Chart
-                  li.next
-                    a(href="#")
-                      img(src="/components/flat-ui/images/pager/next.png")
-          .filter
-        .examplebox
-            .example
-              h4
-                span.fui-bubble-16
-                | Last Comma
-              pre
-               code code here
-            .example
-              h4
-                span.fui-bubble-16
-                | First Comma
-              pre
-               code code here
     .desc
-      span last update: 2013-04-15
-      span Analyzed commit count: 3000 (2013-04-15 - 2013-04-20)
+      - var formatWithComma = function(num) {
+      -   return (num + "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      - }
+      span last update: #{desc.lastUpdate}
+      span Analyzed commit count: #{formatWithComma(desc.commitCount)} (#{desc.startDate} - #{desc.endDate})
   footer
     .container.
       Made by Outsider (<a href="http://blog.outsider.ne.kr">Blog</a>,
