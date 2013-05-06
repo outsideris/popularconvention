@@ -35,6 +35,14 @@ define(
             return b.file - a.file;
           });
           $(self.node).html(self.convTmpl(data));
+          var colors = d3.scale.ordinal().range(['#F1C40F', '#E74C3C', '#E67E22', '#2ECC71', '#9B59B6']);
+          self.$node.find('section').find('.graph .sidebar').each(function() {
+            $(this).find('li').each(function(index) {
+              if (!$(this).hasClass('commits')) {
+                $(this).find('div.icons').css('color', colors(index));
+              }
+            });
+          });
           self.trigger('uiDrawGraph', data);
         })
         .fail(function(jqxhr, textStatus, error) {

@@ -16,7 +16,7 @@ define(
       this.width = 600,
       this.height = 400,
       this.radius = Math.min(this.width, this.height) / 2,
-      this.color = d3.scale.ordinal().range(['#E74C3C', '#F1C40F', '#E67E22', '#2ECC71', '#9B59B6']),
+      this.color = d3.scale.ordinal().range(['#F1C40F', '#E74C3C', '#E67E22', '#2ECC71', '#9B59B6']),
       // pie chart
       this.pie = d3.layout.pie().value(function(d) {return d.sum})
                                 .sort(function(a, b) {return b.sum - a.sum}),
@@ -46,15 +46,14 @@ define(
                 finalData.push(obj);
               }
             }
-            if (dataName === 'comma') {
-              window.temp = finalData;
-            }
             var nest = d3.nest().key(function(d) {return d.name;}).entries(finalData);
             nest.forEach(function(s) {
               s.display = s.values[0].display;
               s.sum = d3.sum(s.values, function(d) {return d.score})
             });
-
+            nest.sort(function(a, b) {
+              return b.sum - a.sum;
+            });
 
             var drawPie = function(context) {
               d3.select(context).selectAll("path")
