@@ -22,7 +22,7 @@ define(
         var self = this;
 
         this.trigger('uiProgressing');
-        $.getJSON('/score/' + lang, function(data) {
+        $.getJSON('/popluarconvention/score/' + lang, function(data) {
           data = data.results;
           for (var conv in data.scores) {
             if (data.scores[conv].column) {
