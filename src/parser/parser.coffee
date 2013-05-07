@@ -32,7 +32,7 @@ parser = module.exports =
         lines = parser.parseAdditionTokens file.patch
         lines.forEach (line) ->
           convention = psr.parse line, convention, commit.html_url
-        conventions.push convention
+        conventions.push convention if Object.keys(convention).length > 1
     conventions
 
 # private
