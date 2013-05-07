@@ -277,9 +277,9 @@ service = module.exports =
         else
           callback new Error "#{lang} is not found"
 
-  findDescription: (callback) ->
+  findDescription: (force, callback) ->
     # get commit count from cacahing when cache value is exist and in 10min
-    if service.totalDesc.regdate? and (new Date - service.totalDesc.regdate) < 3600000
+    if not force and service.totalDesc.regdate? and (new Date - service.totalDesc.regdate) < 7200000
       callback null, service.totalDesc
     else
       desc = {}
@@ -331,7 +331,7 @@ service = module.exports =
 # private
 progressRule = new schedule.RecurrenceRule()
 progressRule.hour = [new schedule.Range(0, 23)]
-progressRule.minute = [10, 40]
+progressRule.minute = [10, 30, 50]
 
 schedule.scheduleJob progressRule, ->
   service.progressTimeline ->
@@ -339,11 +339,18 @@ schedule.scheduleJob progressRule, ->
 
 summarizeRule = new schedule.RecurrenceRule()
 summarizeRule.hour = [new schedule.Range(0, 23)]
-summarizeRule.minute = [0, 5, 30, 35]
+summarizeRule.minute = [5, 25, 45]
 
 schedule.scheduleJob summarizeRule, ->
   service.summarizeScore ->
     logger.info "summarizeScore is DONE!!!"
+
+descriptionRule = new schedule.RecurrenceRule()
+descriptionRule.hour = [new schedule.Range(0, 23)]
+descriptionRule.minute = [0]
+
+schedule.scheduleJob descriptionRule, ->
+  service.findDescription true, ->
 
 hasLang = (sum, elem) ->
   sum.some (el) ->

@@ -1,7 +1,7 @@
 service = require '../src/service'
 
 exports.index = (req, res) ->
-  service.findDescription (err, desc) ->
+  service.findDescription false, (err, desc) ->
     if err?
       res.send 500
     else
