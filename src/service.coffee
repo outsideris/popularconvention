@@ -222,7 +222,7 @@ service = module.exports =
     persistence.findScore lang, (err, cursor) ->
       if err?
         logger.error 'findScore', {err: err}
-        return callback(err);
+        return callback(err)
 
       dailyData = []
       pastFile = ''
@@ -232,7 +232,9 @@ service = module.exports =
         if docs.length
           docs.forEach (doc) ->
             if doc.shortfile isnt pastFile
-              dailyData.push score if score isnt null
+              if score isnt null
+                dailyData.push score
+                score = null
               if Object.keys(doc.convention).length > 1
                 score =
                   lang: doc.lang
@@ -243,7 +245,7 @@ service = module.exports =
             else
               if Object.keys(doc.convention).length > 1
                 merge score, doc
-          dailyData.push score
+          dailyData.push score if score isnt null
 
           sumData =
             lang: lang
@@ -253,15 +255,14 @@ service = module.exports =
           dailyData.forEach (data) ->
             if not sumData.scores?
               sumData.scores = data.convention
-              sumData.commits = data.commits
               sumData.period.push data.file
             else
               (if key isnt 'lang'
                 sumData.scores[key].column.forEach (elem) ->
                   sumData.scores[key][elem.key] += data.convention[key][elem.key]
+                sumData.scores[key].commits += data.convention[key].commits
               ) for key of sumData.scores
 
-              sumData.commits += data.commits
               sumData.period.push data.file
 
           # get total for percentage
