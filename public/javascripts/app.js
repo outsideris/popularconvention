@@ -5,9 +5,9 @@
 
 define(
   [
-    'javascripts/ui/language',
-    'javascripts/ui/convention',
-    'javascripts/ui/graph'
+    'popluarconvention/javascripts/ui/language',
+    'popluarconvention/javascripts/ui/convention',
+    'popluarconvention/javascripts/ui/graph'
   ],
 
   function(Language, Convention, Graph) {
