@@ -23,17 +23,21 @@ parser = module.exports =
 
   parse: (commit) ->
     conventions = []
-    commit = JSON.parse commit if 'string' is helpers.extractType commit
-    commit.files.forEach (file) ->
-      ext = path.extname file.filename
-      if isSupportExt(ext) and file.patch?
-        convention = {lang: ext.substr(1)}
-        psr = getParser ext
-        lines = parser.parseAdditionTokens file.patch
-        lines.forEach (line) ->
-          convention = psr.parse line, convention, commit.html_url
-        conventions.push convention if Object.keys(convention).length > 1
-    conventions
+    try
+      commit = JSON.parse commit if 'string' is helpers.extractType commit
+      commit.files.forEach (file) ->
+        ext = path.extname file.filename
+        if isSupportExt(ext) and file.patch?
+          convention = {lang: ext.substr(1)}
+          psr = getParser ext
+          lines = parser.parseAdditionTokens file.patch
+          lines.forEach (line) ->
+            convention = psr.parse line, convention, commit.html_url
+          conventions.push convention if Object.keys(convention).length > 1
+      conventions
+    catch err
+      logger.error 'parsing', {err: err}
+      []
 
 # private
 supportExts = [
