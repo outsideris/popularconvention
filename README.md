@@ -1,20 +1,19 @@
-# Popular Convention [![Build Status](https://secure.travis-ci.org/outsider/popularconvention.png?branch=master)](http://travis-ci.org/outsider/popularconvention)
+# Popular Convention on Github
 
-analyzing code convention from github commit for Github data challenge II
+analyzing code convention from github commits for [Github data challenge II](https://github.com/blog/1450-the-github-data-challenge-ii)
+
+You can see [Here](http://sideeffect.kr/popluarconvention/).
 
 ## Getting Started
-_(Coming soon)_
 
-## Documentation
-_(Coming soon)_
+    npm install
+    bower install
 
-## Examples
-_(Coming soon)_
-
-## Contributing
-
-## Release History
-_(Nothing yet)_
+## Requirement
+* Node.js
+* CoffeeScript
+* MongoDB
+* github tokens - save to `github.json` in `.tokens` directory
 
 ## License
 Copyright (c) 2013 "Outsider" Jeonghoon Byun  
