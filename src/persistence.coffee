@@ -94,7 +94,7 @@ module.exports =
     score.group(['shortfile'], {}, {}, "function() {}", callback)
 
   findTotalCommits: (callback) ->
-    score.find {}, callback
+    score.find {}, {sort: [['file', 1]]}, callback
 
   getTimeline: (callback) ->
     conventions.find().limit 10, callback

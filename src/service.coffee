@@ -314,17 +314,21 @@ service = module.exports =
 
             cursor.toArray (err, docs) ->
               commits = []
+              commitCount = 0
+              pastFile = null
               docs.forEach (doc, index) ->
+                if doc.file isnt pastFile
+                  pastFile = doc.file
+                  commitCount += (_.uniq commits).length
+                  commits = []
                 if doc.convention? and Object.keys(doc.convention).length > 1
                   (if key isnt 'lang'
                       commits = commits.concat doc.convention[key].commits
                   ) for key of doc.convention
 
-              commits = _.uniq commits
-
-              desc.commitCount = commits.length
+              desc.commitCount = commitCount
               # caching
-              service.totalDesc.commitCount = commits.length
+              service.totalDesc.commitCount = commitCount
               service.totalDesc.regdate = new Date
 
               callback null, desc
