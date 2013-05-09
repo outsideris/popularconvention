@@ -309,22 +309,17 @@ service = module.exports =
 
           persistence.findTotalCommits (err, cursor) ->
             if err?
-              logger.error "findTotlaCommists", {err: err}
+              logger.error "findTotlaCommits", {err: err}
               return callback err
 
             cursor.toArray (err, docs) ->
-              commits = []
+              if err?
+                logger.error "findTotlaCommits:toArray", {err: err}
+                return callback err
+
               commitCount = 0
-              pastFile = null
-              docs.forEach (doc, index) ->
-                if doc.file isnt pastFile
-                  pastFile = doc.file
-                  commitCount += (_.uniq commits).length
-                  commits = []
-                if doc.convention? and Object.keys(doc.convention).length > 1
-                  (if key isnt 'lang'
-                      commits = commits.concat doc.convention[key].commits
-                  ) for key of doc.convention
+              docs.forEach (doc) ->
+                commitCount += doc.value
 
               desc.commitCount = commitCount
               # caching
