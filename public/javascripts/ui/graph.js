@@ -5,7 +5,7 @@
 
 define(
   [
-    'popluarconvention/components/flight/lib/component'
+    'popularconvention/components/flight/lib/component'
   ],
 
   function(defineComponent) {

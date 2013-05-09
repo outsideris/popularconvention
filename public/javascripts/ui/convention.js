@@ -5,7 +5,7 @@
 
 define(
   [
-    'popluarconvention/components/flight/lib/component'
+    'popularconvention/components/flight/lib/component'
   ],
 
   function(defineComponent) {
@@ -22,7 +22,7 @@ define(
         var self = this;
 
         this.trigger('uiProgressing');
-        $.getJSON('/popluarconvention/score/' + lang, function(data) {
+        $.getJSON('/popularconvention/score/' + lang, function(data) {
           data = data.results;
           for (var conv in data.scores) {
             if (data.scores[conv].column) {

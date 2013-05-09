@@ -7,7 +7,7 @@ requirejs.config({
   baseUrl: '/'
 });
 
-require(['popluarconvention/javascripts/app', 'popluarconvention/components/flight/tools/debug/debug'], function(App, debug) {
+require(['popularconvention/javascripts/app', 'popularconvention/components/flight/tools/debug/debug'], function(App, debug) {
   debug.enable(true);
   App.initialize();
 });

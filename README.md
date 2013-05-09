@@ -2,7 +2,7 @@
 
 analyzing code convention from github commits for [Github data challenge II](https://github.com/blog/1450-the-github-data-challenge-ii)
 
-You can see [Here](http://sideeffect.kr/popluarconvention/).
+You can see [Here](http://sideeffect.kr/popularconvention/).
 
 ## Getting Started
 
