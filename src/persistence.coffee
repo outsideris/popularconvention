@@ -94,7 +94,38 @@ module.exports =
     score.group(['shortfile'], {}, {}, "function() {}", callback)
 
   findTotalCommits: (callback) ->
-    score.find {}, {sort: [['file', 1]]}, callback
+    map = () ->
+      unique = (arr) ->
+        u = {}
+        a = []
+
+        (a.push(el); u[el] = 1) for el in arr when not u.hasOwnProperty(el)
+        a
+
+      result = []
+      (
+        if key isnt 'lang'
+          result = result.concat @convention[key].commits
+          result = unique result
+      ) for key of @convention
+      emit @file, result
+
+    reduce = (file, commits) ->
+      unique = (arr) ->
+        u = {}
+        a = []
+
+        (a.push(el); u[el] = 1) for el in arr when not u.hasOwnProperty(el)
+        a
+
+      totalCommits = []
+      (
+        totalCommits = totalCommits.concat commit
+      ) for commit in commits
+      (unique totalCommits).length
+
+    score.mapReduce map, reduce, {out: 'tempmr'}, (err, coll) ->
+      coll.find callback
 
   getTimeline: (callback) ->
     conventions.find().limit 10, callback

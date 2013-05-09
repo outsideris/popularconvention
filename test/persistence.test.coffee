@@ -29,3 +29,15 @@ describe 'persistence >', ->
       console.log item[0]
       console.log item[item.length - 1]
       done()
+
+  it 'find total commits count', (done) ->
+    persistence.findTotalCommits (err, docs) ->
+      docs.toArray (err, doc) ->
+        console.log err
+        console.log doc
+        total = 0
+        doc.forEach (item) ->
+          console.log item._id + ":" + total + '+' + item.value
+          total += item.value
+        console.log total
+        done()
