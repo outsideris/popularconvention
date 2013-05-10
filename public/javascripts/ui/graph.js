@@ -13,7 +13,7 @@ define(
 
 
     function drawGraph() {
-      this.width = 600,
+      this.width = 550,
       this.height = 400,
       this.radius = Math.min(this.width, this.height) / 2,
       this.color = d3.scale.ordinal().range(['#F1C40F', '#E74C3C', '#E67E22', '#2ECC71', '#9B59B6']),
