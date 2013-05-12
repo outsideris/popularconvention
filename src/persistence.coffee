@@ -31,7 +31,7 @@ module.exports =
           # ensure index
           dbserver.ensureIndex 'conventions', {timestamp: 1}, (err) ->
             return callback(err) if err?
-            dbserver.ensureIndex 'score', {shortfile: 1, lang: 1}, (err) ->
+            dbserver.ensureIndex 'score', {shortfile: 1, lang: 1, file: 1}, (err) ->
               return callback(err) if err?
 
               callback()
@@ -39,7 +39,7 @@ module.exports =
         # ensure index
         dbserver.ensureIndex 'conventions', {timestamp: 1}, (err) ->
           return callback(err) if err?
-          dbserver.ensureIndex 'score', {shortfile: 1, lang: 1}, (err) ->
+          dbserver.ensureIndex 'score', {shortfile: 1, lang: 1, file: 1}, (err) ->
             return callback(err) if err?
 
             callback()
@@ -126,7 +126,26 @@ module.exports =
       coll.find callback
 
   findLastestScore: (callback) ->
-    score.findOne({}, {sort: [['file', -1]]}, callback)
+    lastest = null
+    score.findOne {}, {sort: [['file', -1]]}, (err, item) ->
+      if err?
+        callback err
+      else
+        lastest = item
+        score.findOne {file: new RegExp(lastest.shortfile + '-2[0-3]')}, {sort: [['file', -1]]}, (err, item) ->
+          if err?
+            callback err
+          else if item?
+            callback null, item
+          else
+            score.findOne {file: new RegExp(lastest.shortfile + '-1[0-9]')}, {sort: [['file', -1]]}, (err, item) ->
+              if err?
+                callback err
+              else if item?
+                callback null, item
+              else
+                callback null, lastest
+
 
   findPeriodOfScore: (callback) ->
     score.group(['shortfile'], {}, {}, "function() {}", callback)

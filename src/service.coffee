@@ -224,7 +224,7 @@ service = module.exports =
       if cache?.data?
         isCallCallback = true
         makeResult lang, cache.data, callback
-      if not cache? or (new Date) - cache?.ts > 1800000
+      if not cache? or (new Date) - cache?.ts > 1800000 # 30min
         persistence.findScore lang, (err, cursor) ->
           if err?
             logger.error 'findScore', {err: err}
