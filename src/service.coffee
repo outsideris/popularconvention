@@ -224,7 +224,7 @@ service = module.exports =
       if cache?.data?
         isCallCallback = true
         makeResult lang, cache.data, callback
-      if cache? and (new Date) - cache.ts > 1800000
+      if not cache? or (new Date) - cache?.ts > 1800000
         persistence.findScore lang, (err, cursor) ->
           if err?
             logger.error 'findScore', {err: err}
@@ -242,7 +242,7 @@ service = module.exports =
                 dailyData.push score
 
               # caching
-              persistence.upsertScoreCache dailyData, lang, ->
+              persistence.upsertScoreCache dailyData, lang, (err) ->
 
               makeResult(lang, dailyData, callback) if not isCallCallback
             else
