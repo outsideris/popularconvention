@@ -10,6 +10,7 @@ logger = (require './helpers').logger
 worklogs = null
 conventions = null
 score = null
+scoreCache  = null
 
 dbserver = null
 
@@ -21,6 +22,7 @@ module.exports =
       worklogs = dbserver.collection 'worklogs'
       conventions = dbserver.collection 'conventions'
       score = dbserver.collection 'score'
+      scoreCache = dbserver.collection 'scorecache'
 
       if process.env['NODE_ENV'] is 'production'
         db.authenticate process.env["MONGODB_USER"], process.env["MONGODB_PASS"], (err, result) ->
@@ -165,3 +167,13 @@ module.exports =
 
   getTimeline: (callback) ->
     conventions.find().limit 10, callback
+
+  upsertScoreCache: (data, lang, callback) ->
+    d =
+      _id: lang
+      ts: new Date
+      data: data
+    scoreCache.update {_id: lang}, d, {upsert: true}, callback
+
+  findScoreCache: (lang, callback) ->
+    scoreCache.findOne {_id: lang}, callback

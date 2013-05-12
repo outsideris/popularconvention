@@ -219,56 +219,69 @@ service = module.exports =
       else callback()
 
   findScore: (lang, callback) ->
-    persistence.findScore lang, (err, cursor) ->
-      if err?
-        logger.error 'findScore', {err: err}
-        return callback(err)
+    isCallCallback = false
+    persistence.findScoreCache lang, (err, cache) ->
+      if cache?.data?
+        isCallCallback = true
+        makeResult lang, cache.data, callback
+      if cache? and (new Date) - cache.ts > 1800000
+        persistence.findScore lang, (err, cursor) ->
+          if err?
+            logger.error 'findScore', {err: err}
+            return callback(err)
 
-      dailyData = []
-      cursor.toArray (err, docs) ->
-        logger.error "findScore toArray", {err: err} if err?
-        if docs?.length
-          docs.forEach (doc) ->
-            score =
-              lang: lang
-              file: doc._id
-              convention: doc.value
-            dailyData.push score
+          dailyData = []
+          cursor.toArray (err, docs) ->
+            logger.error "findScore toArray", {err: err} if err?
+            if docs?.length
+              docs.forEach (doc) ->
+                score =
+                  lang: lang
+                  file: doc._id
+                  convention: doc.value
+                dailyData.push score
 
-          sumData =
-            lang: lang
-            period: []
-            raw: dailyData
+              # caching
+              persistence.upsertScoreCache dailyData, lang, ->
 
-          dailyData.forEach (data) ->
-            if not sumData.scores?
-              sumData.scores = data.convention
-              sumData.period.push data.file
+              makeResult(lang, dailyData, callback) if not isCallCallback
             else
-              (if key isnt 'lang'
-                sumData.scores[key].column.forEach (elem) ->
-                  sumData.scores[key][elem.key] += data.convention[key][elem.key]
-                sumData.scores[key].commits += data.convention[key].commits
-              ) for key of sumData.scores
+              callback new Error "#{lang} is not found" if not isCallCallback
 
-              sumData.period.push data.file
+    makeResult = (lang, dailyData, callback) ->
+      sumData =
+        lang: lang
+        period: []
+        raw: dailyData
 
-          # get total for percentage
+      dailyData.forEach (data) ->
+        if not sumData.scores?
+          sumData.scores = data.convention
+          sumData.period.push data.file
+        else
           (if key isnt 'lang'
-            total = 0
             sumData.scores[key].column.forEach (elem) ->
-              total += sumData.scores[key][elem.key]
-              elem.code = hljs.highlight(getHighlightName(lang), elem.code).value
-            sumData.scores[key].total = total
+              sumData.scores[key][elem.key] += data.convention[key][elem.key]
+            sumData.scores[key].commits += data.convention[key].commits
           ) for key of sumData.scores
 
-          callback null, sumData
-        else
-          callback new Error "#{lang} is not found"
+          sumData.period.push data.file
+
+      # get total for percentage
+      (if key isnt 'lang'
+        total = 0
+        sumData.scores[key].column.forEach (elem) ->
+          total += sumData.scores[key][elem.key]
+          elem.code = hljs.highlight(getHighlightName(lang), elem.code).value
+        sumData.scores[key].total = total
+      ) for key of sumData.scores
+
+      callback null, sumData
+
 
   findDescription: (force, callback) ->
-    # get commit count from cacahing when cache value is exist and in 10min
-    if not force and service.totalDesc.regdate? and (new Date - service.totalDesc.regdate) < 7200000
+    # get commit count from cacahing when cache value is exist and in 1 hour
+    if not force and service.totalDesc.regdate? and (new Date - service.totalDesc.regdate) < 3600000
       callback null, service.totalDesc
     else
       desc = {}
