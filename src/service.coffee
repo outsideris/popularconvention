@@ -225,27 +225,15 @@ service = module.exports =
         return callback(err)
 
       dailyData = []
-      pastFile = ''
-      score = null
-
       cursor.toArray (err, docs) ->
-        if docs.length
+        logger.error "findScore toArray", {err: err} if err?
+        if docs?.length
           docs.forEach (doc) ->
-            if doc.shortfile isnt pastFile
-              if score isnt null
-                dailyData.push score
-                score = null
-              if Object.keys(doc.convention).length > 1
-                score =
-                  lang: doc.lang
-                  file: doc.shortfile
-                  convention: doc.convention
-
-                pastFile = doc.shortfile
-            else
-              if Object.keys(doc.convention).length > 1
-                merge score, doc
-          dailyData.push score if score isnt null
+            score =
+              lang: lang
+              file: doc._id
+              convention: doc.value
+            dailyData.push score
 
           sumData =
             lang: lang
@@ -298,7 +286,7 @@ service = module.exports =
             logger.error 'findPeriodOfScore', {err: err}
             return callback err
 
-          if docs.length > 0
+          if docs?.length > 0
             docs.sort (a, b) ->
               if a.shortfile > b.shortfile then 1 else -1
             desc.startDate = docs[0].shortfile
@@ -361,16 +349,6 @@ getConventionByLang = (lang, sum) ->
   sum.forEach (elem) ->
     result = elem if elem.lang is lang
   result
-
-merge = (score, doc) ->
-  (if key isnt 'lang'
-    if helpers.extractType(score.convention[key].commits) is 'array'
-      score.convention[key].commits = score.convention[key].commits.length
-    score.convention[key].commits += doc.convention[key].commits.length
-    score.convention[key].column.forEach (elem) ->
-      score.convention[key][elem.key] += doc.convention[key][elem.key]
-  ) for key, value of score.convention
-  score
 
 getHighlightName = (lang) ->
   map =
