@@ -184,13 +184,13 @@ jsParser = module.exports =
         {
           key: "tracespace", display: "Followed by space",
           code: """
-                def add(a:Int, b:Int) = a + b
+                def add(a: Int, b: Int) = a + b
                 """
         }
         {
           key: "bothspace", display: "Using space in before/after",
           code: """
-                def add(a:Int, b:Int) = a + b
+                def add(a : Int, b : Int) = a + b
                 """
         }
         {
