@@ -203,7 +203,7 @@ javaParser = module.exports =
   argumentdef: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
     (convention.argumentdef =
-      title: "Arguements definition with one space vs. no space"
+      title: "Arguments definition with one space vs. no space"
       column: [
         {
           key: "onespace", display: "One space",
