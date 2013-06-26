@@ -179,7 +179,7 @@ javaParser = module.exports =
                   //...
                 }
 
-                switch (v) {
+                switch(v) {
                   //...
                 }
                 """
