@@ -95,7 +95,7 @@ javaParser = module.exports =
                 """
         }
         {
-          key: "newline", display: "curlybrace at new line",
+          key: "newline", display: "Curlybrace at new line",
           code: "if (height < MIN_HEIGHT)\n{\n//..\n}\n//or\nwhile (isTrue)\n{\n//..\n}//or\nswitch (foo)\n{\n//..\n}"
         }
       ]
