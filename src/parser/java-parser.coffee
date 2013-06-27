@@ -179,7 +179,7 @@ javaParser = module.exports =
                   //...
                 }
 
-                switch (v) {
+                switch(v) {
                   //...
                 }
                 """
@@ -288,7 +288,7 @@ javaParser = module.exports =
   staticvar: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
     (convention.staticvar =
-      title: "Use special prefix fot staticvar"
+      title: "Use special prefix for staticvar"
       column: [
         {
           key: "prefix", display: "Special prefix",
