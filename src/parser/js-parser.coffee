@@ -108,7 +108,7 @@ jsParser = module.exports =
   functiondef: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
     (convention.functiondef =
-      title: "Function followed by one space vs. Function follwed by no space"
+      title: "Function followed by one space vs. Function followed by no space"
       column: [
         {
           key: "onespace", display: "One space",
