@@ -95,7 +95,7 @@ jsParser = module.exports =
   imports: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
     (convention.imports =
-      title: "imports on separate lines"
+      title: "Imports on separate lines"
       column: [
         {
           key: "separated", display: "Imports on separate lines",
@@ -106,7 +106,7 @@ jsParser = module.exports =
         }
 
         {
-          key: "noseparated", display: "Impont on non-sepratate lines",
+          key: "noseparated", display: "Import on non-separate lines",
           code: """
                 imports sys, os
                 """

@@ -21,7 +21,7 @@ jsParser = module.exports =
   comma: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
     (convention.comma =
-      title: "Last Comma vs. First Comma"
+      title: "Last comma vs. First comma"
       column: [
         {
           key: "first", display: "First comma",
