@@ -100,15 +100,15 @@ jsParser = module.exports =
         {
           key: "separated", display: "Imports on separate lines",
           code: """
-                imports os
-                imports sys
+                import os
+                import sys
                 """
         }
 
         {
           key: "noseparated", display: "Import on non-separate lines",
           code: """
-                imports sys, os
+                import sys, os
                 """
         }
       ]
