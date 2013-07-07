@@ -33,6 +33,11 @@ parser = module.exports =
           lines = parser.parseAdditionTokens file.patch
           lines.forEach (line) ->
             convention = psr.parse line, convention, commit.html_url
+          # delete convention description
+          (
+            delete convention[key].title
+            delete convention[key].column
+          ) for key of convention
           conventions.push convention if Object.keys(convention).length > 1
       conventions
     catch err
