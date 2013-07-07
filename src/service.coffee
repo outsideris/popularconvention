@@ -219,10 +219,10 @@ service = module.exports =
       else callback()
 
   findScore: (lang, callback) ->
-    isCallCallback = false
+    isCalledCallback = false
     persistence.findScoreCache lang, (err, cache) ->
       if cache?.data?
-        isCallCallback = true
+        isCalledCallback = true
         makeResult lang, cache.data, callback
       if not cache? or (new Date) - cache?.ts > 1800000 # 30min
         persistence.findScore lang, (err, cursor) ->
@@ -230,11 +230,18 @@ service = module.exports =
             logger.error 'findScore', {err: err}
             return callback(err)
 
+          languageDescription = parser.getParser(".#{lang}").parse("", {}, "")
+
           dailyData = []
           cursor.toArray (err, docs) ->
             logger.error "findScore toArray", {err: err} if err?
             if docs?.length
               docs.forEach (doc) ->
+                # set convention description from parser
+                (if key isnt 'lang'
+                  doc.value[key].title = languageDescription[key].title
+                  doc.value[key].column = languageDescription[key].column
+                ) for key of doc.value
                 score =
                   lang: lang
                   file: doc._id
@@ -244,9 +251,9 @@ service = module.exports =
               # caching
               persistence.upsertScoreCache dailyData, lang, (err) ->
 
-              makeResult(lang, dailyData, callback) if not isCallCallback
+              makeResult(lang, dailyData, callback) if not isCalledCallback
             else
-              callback new Error "#{lang} is not found" if not isCallCallback
+              callback new Error "#{lang} is not found" if not isCalledCallback
 
     makeResult = (lang, dailyData, callback) ->
       sumData =

@@ -29,7 +29,7 @@ parser = module.exports =
         ext = path.extname file.filename
         if isSupportExt(ext) and file.patch?
           convention = {lang: ext.substr(1)}
-          psr = getParser ext
+          psr = parser.getParser ext
           lines = parser.parseAdditionTokens file.patch
           lines.forEach (line) ->
             convention = psr.parse line, convention, commit.html_url
@@ -38,6 +38,13 @@ parser = module.exports =
     catch err
       logger.error 'parsing', {err: err}
       []
+
+  getParser: (ext) ->
+    switch ext
+      when '.js' then jsParser
+      when '.java' then javaParser
+      when '.py' then pythonParser
+      when '.scala' then scalaParser
 
 # private
 supportExts = [
@@ -50,10 +57,3 @@ supportExts = [
 isSupportExt = (ext) ->
   supportExts.some (elem) ->
     elem is ext
-
-getParser = (ext) ->
-  switch ext
-    when '.js' then jsParser
-    when '.java' then javaParser
-    when '.py' then pythonParser
-    when '.scala' then scalaParser
