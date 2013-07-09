@@ -42,34 +42,7 @@ service = module.exports =
       unzip.pipe fstream
       unzip.on 'end', ->
         logger.info "downloaded #{datetime}.json"
-        args = [
-          '--host', process.env['MONGODB_HOST']
-          '--port', process.env['MONGODB_PORT']
-          '--db', 'popular_convention'
-          '--collection', datetime
-          '--file', "#{archiveDir}/#{datetime}.json"
-          '--type', 'json'
-        ]
-        if process.env['NODE_ENV'] is 'production'
-          args = args.concat [
-            '--username', process.env["MONGODB_USER"]
-            '--password', process.env["MONGODB_PASS"]
-          ]
-        mongoimport = spawn '/Users/outsider/bin/mongoimport', args
-        mongoimport.stderr.on 'data', (data) ->
-          logger.error "mongoimport error occured"
-        mongoimport.on 'exit', (code) ->
-          logger.info "mongoimport exited with code #{code}"
-          doc =
-            file: datetime
-            inProgress: false
-            completed: false
-            summarize: false
-          persistence.insertWorklogs doc, (->
-            callback()) if code is 0
-          callback(code) if code isnt 0
-          fs.unlink "#{archiveDir}/#{datetime}.json", (err) ->
-            logger.error "delete #{archiveDir}/#{datetime}.json" if err
+        importIntoMongodb(datetime, callback)
     ).on 'error', (e) ->
       logger.error 'fetch githubarchive: ', {err: e}
 
@@ -377,6 +350,56 @@ getHighlightName = (lang) ->
     py: 'python'
     scala: 'scala'
   map[lang]
+
+importIntoMongodb = (datetime, callback) ->
+  console.log "datetime #{datetime}"
+
+  mongoImportCmd = ""
+
+  which = spawn 'which', ["mongoimport"]
+  which.stdout.on 'data', (data) ->
+    mongoImportCmd = data.toString()
+  which.on 'exit', (code) ->
+    if (code is 0)
+      args = [
+        '--host', process.env['MONGODB_HOST']
+        '--port', process.env['MONGODB_PORT']
+        '--db', 'popular_convention'
+        '--collection', datetime
+        '--file', "#{archiveDir}/#{datetime}.json"
+        '--type', 'json'
+      ]
+      if process.env['NODE_ENV'] is 'production'
+        args = args.concat [
+          '--username', process.env["MONGODB_USER"]
+          '--password', process.env["MONGODB_PASS"]
+        ]
+
+      # remove trailing new line
+      mongoImportCmd = mongoImportCmd.match(/([\w\/]+)/)[0]
+
+      mongoimport = spawn mongoImportCmd, args
+      mongoimport.stderr.on 'data', (data) ->
+        logger.error "mongoimport error occured"
+      mongoimport.on 'exit', (code) ->
+        logger.info "mongoimport exited with code #{code}"
+        doc =
+          file: datetime
+          inProgress: false
+          completed: false
+          summarize: false
+        persistence.insertWorklogs doc, (->
+          callback()) if code is 0
+        callback(code) if code isnt 0
+
+        deleteArchiveFile(datetime)
+    else
+      logger.error "mongoimport doesn't exist."
+      callback(code)
+
+deleteArchiveFile = (datetime) ->
+  fs.unlink "#{archiveDir}/#{datetime}.json", (err) ->
+    logger.error "delete #{archiveDir}/#{datetime}.json" if err
 
 getYesterday = ->
   now = new Date
