@@ -97,13 +97,6 @@ module.exports =
         arr.push i for i of obj when has.call(obj, i)
         arr
 
-      unique = (arr) ->
-        u = {}
-        a = []
-
-        (a.push(el); u[el] = 1) for el in arr when not u.hasOwnProperty(el)
-        a
-
       result = null
       (
         if keys(score).length > 1
@@ -111,14 +104,12 @@ module.exports =
             (if key isnt 'lang'
               result[key].column.forEach (elem) ->
                 result[key][elem.key] += score[key][elem.key]
-              result[key].commits = result[key].commits.concat score[key].commits
-              result[key].commits = unique result[key].commits
+              result[key].commits += score[key].commits
             ) for key of score
           else
             result = score
       ) for score in scores
 
-      result[key].commits = result[key].commits.length for key of result when result[key]?.commits?
       result
 
     score.mapReduce map, reduce, {out: 'tempmr2', query: {lang: lang}}, (err, coll) ->

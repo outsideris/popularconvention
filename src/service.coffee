@@ -18,15 +18,18 @@ schedule = require 'node-schedule'
 _ = require 'underscore'
 hljs = require 'highlight.js'
 
+# connect MongoDB
 persistence.open (err) ->
   return logger.error 'mongodb is not connected', {err: err} if err?
   logger.info 'mongodb is connected'
 
+# directory for temporary download json files from github archive
 archiveDir = "#{__dirname}/archive"
 fs.exists archiveDir, (exist) ->
   if not exist then fs.mkdirSync archiveDir
 
 service = module.exports =
+  # description object to display infomation footer in site
   totalDesc:
     lastUpdate: null
     startDate: null
@@ -34,6 +37,7 @@ service = module.exports =
     commitCount: 0
     regdate: null
 
+  # download timeline json file from github archive
   fetchGithubArchive: (datetime, callback) ->
     (http.get "http://data.githubarchive.org/#{datetime}.json.gz", (res) ->
       gzip = zlib.createGunzip()
@@ -155,22 +159,30 @@ service = module.exports =
 
           cursor.toArray (err, docs) ->
             sum = []
-            docs.forEach (doc, index) ->
+            docs.forEach (doc) ->
               if hasLang(sum, doc)
                 baseConv = getConventionByLang doc.lang, sum
                 (
                   if key isnt 'lang'
                     if doc.convention[key]?
-                      baseConv.convention[key].column.forEach (elem) ->
-                        baseConv.convention[key][elem.key] += doc.convention[key][elem.key]
-                      baseConv.convention[key].commits = _.uniq(baseConv.convention[key].commits.concat doc.convention[key].commits)
-                )for key, value of baseConv.convention
+                      conv.column.forEach (elem) ->
+                        conf[elem.key] += doc.convention[key][elem.key]
+                      conv.commits = _.uniq(conv.commits.concat doc.convention[key].commits)
+                )for key, conv of baseConv.convention
               else
                 delete doc._id
                 doc.regdate = new Date
                 doc.shortfile = doc.file.substr 0, doc.file.lastIndexOf '-'
 
                 sum.push doc
+
+            # convert commits to commit count
+            (
+              (
+                value.commits = value.commits.length if value.commits?
+              ) for key, value of item.convention
+            ) for item in sum
+
             persistence.insertScore sum, (err) ->
               if err?
                 logger.error 'insertScore', {err: err}
