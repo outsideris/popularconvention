@@ -1,4 +1,5 @@
 service = require '../src/service'
+require '../src/batch'
 
 exports.index = (req, res) ->
   service.findDescription false, (err, desc) ->

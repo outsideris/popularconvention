@@ -47,8 +47,8 @@ module.exports =
   insertWorklogs: (doc, callback) ->
     worklogs.insert doc, callback
 
-  progressWorklog: (id, callback) ->
-    worklogs.update {_id: id}, {$set: {inProgress: true}}, callback
+  processWorklog: (id, callback) ->
+    worklogs.update {_id: id}, {$set: {inProcess: true}}, callback
 
   completeWorklog: (id, callback) ->
     worklogs.update {_id: id}, {$set: {completed: true, completeDate: new Date}}, callback
@@ -56,9 +56,9 @@ module.exports =
   summarizeWorklog: (id, callback) ->
     worklogs.update {_id: id}, {$set: {summarize: true}}, callback
 
-  findOneWorklogToProgress: (callback) ->
+  findOneWorklogToProcess: (callback) ->
     worklogs.findOne({
-      "inProgress": false
+      "inProcess": false
       "completed": false
     }, callback)
 

@@ -50,21 +50,21 @@ service = module.exports =
     ).on 'error', (e) ->
       logger.error 'fetch githubarchive: ', {err: e}
 
-  progressTimeline: (callback) ->
-    persistence.findOneWorklogToProgress (err, worklog) ->
-      logger.error 'findOneWorklogToProgress: ', {err: err} if err?
+  processTimeline: (callback) ->
+    persistence.findOneWorklogToProcess (err, worklog) ->
+      logger.error 'findOneWorklogToProcess: ', {err: err} if err?
       return callback() if err? or not worklog?
 
-      logger.debug "found worklog to progress : #{worklog.file}"
+      logger.debug "found worklog to process : #{worklog.file}"
 
       timeline.checkApiLimit (remainingCount) ->
         if remainingCount > 2500
-          persistence.progressWorklog worklog._id, (err) ->
+          persistence.processWorklog worklog._id, (err) ->
             if err?
               logger.error 'findOneWorklogs: ', {err: err}
               return callback err
 
-            logger.debug "start progressing : #{worklog.file}"
+            logger.debug "start processing : #{worklog.file}"
             persistence.findTimeline worklog.file, (err, cursor) ->
               if err?
                 logger.error 'findOneWorklogs: ', {err: err}
@@ -76,12 +76,12 @@ service = module.exports =
                 logger.debug "timer #{worklog.file} has #{count}"
 
               isCompleted = false
-              progressCount = 0
+              processCount = 0
 
               innerLoop = (cur, concurrency) ->
                 innerLoop(cur, concurrency - 1) if concurrency? and concurrency > 1
                 logger.debug "start batch ##{concurrency}" if concurrency? and concurrency > 1
-                progressCount += 1
+                processCount += 1
 
                 cur.nextObject (err, item) ->
                   if err?
@@ -102,8 +102,8 @@ service = module.exports =
                     urls.forEach (url) ->
                       timeline.getCommitInfo url, (err, commit) ->
                         if err?
-                          logger.error 'getCommitInfo: ', {err: err, limit: /^API Rate Limit Exceeded/.test(err.message), isCompleted: isCompleted, progressCount: progressCount}
-                          if /^API Rate Limit Exceeded/.test(err.message) and not isCompleted and progressCount > 2000
+                          logger.error 'getCommitInfo: ', {err: err, limit: /^API Rate Limit Exceeded/.test(err.message), isCompleted: isCompleted, processCount: processCount}
+                          if /^API Rate Limit Exceeded/.test(err.message) and not isCompleted and processCount > 2000
                             isCompleted = true
                             persistence.completeWorklog worklog._id, (err) ->
                               if err?
@@ -124,7 +124,7 @@ service = module.exports =
                               regdate: new Date()
                             persistence.insertConvention data, (err) ->
                               logger.error 'insertConvention', {err: err} if err?
-                              logger.info "insered convention - #{progressCount}"
+                              logger.info "insered convention - #{processCount}"
 
                           logger.debug "before callback #{invokedInnerLoop} - #{item._id}"
                           if not invokedInnerLoop
@@ -132,8 +132,8 @@ service = module.exports =
                             innerLoop cur
                             invokedInnerLoop = true
                   else
-                    logger.debug "no item - #{progressCount}"
-                    if not isCompleted and progressCount > 2000
+                    logger.debug "no item - #{processCount}"
+                    if not isCompleted and processCount > 2000
                       isCompleted = true
                       persistence.completeWorklog worklog._id, (err) ->
                         if err?
@@ -322,29 +322,6 @@ service = module.exports =
               callback null, desc
 
 # private
-progressRule = new schedule.RecurrenceRule()
-progressRule.hour = [new schedule.Range(0, 23)]
-progressRule.minute = [10, 30, 50]
-
-schedule.scheduleJob progressRule, ->
-  service.progressTimeline ->
-    logger.info "progressTimeline is DONE!!!"
-
-summarizeRule = new schedule.RecurrenceRule()
-summarizeRule.hour = [new schedule.Range(0, 23)]
-summarizeRule.minute = [5, 25, 45]
-
-schedule.scheduleJob summarizeRule, ->
-  service.summarizeScore ->
-    logger.info "summarizeScore is DONE!!!"
-
-descriptionRule = new schedule.RecurrenceRule()
-descriptionRule.hour = [new schedule.Range(0, 23)]
-descriptionRule.minute = [0]
-
-schedule.scheduleJob descriptionRule, ->
-  service.findDescription true, ->
-
 hasLang = (sum, elem) ->
   sum.some (el) ->
     el.lang is elem.lang
@@ -397,7 +374,7 @@ importIntoMongodb = (datetime, callback) ->
         logger.info "mongoimport exited with code #{code}"
         doc =
           file: datetime
-          inProgress: false
+          inProcess: false
           completed: false
           summarize: false
         persistence.insertWorklogs doc, (->
@@ -412,23 +389,3 @@ importIntoMongodb = (datetime, callback) ->
 deleteArchiveFile = (datetime) ->
   fs.unlink "#{archiveDir}/#{datetime}.json", (err) ->
     logger.error "delete #{archiveDir}/#{datetime}.json" if err
-
-getYesterday = ->
-  now = new Date
-  year = now.getFullYear()
-  month = "0#{now.getMonth() + 1}".slice(-2)
-  date = "0#{now.getDate() - 1}".slice(-2)
-  time = now.toLocaleTimeString().substr(0, 2) * 1
-  "#{year}-#{month}-#{date}-#{time}"
-
-archiveRule = new schedule.RecurrenceRule()
-archiveRule.hour = [new schedule.Range(0, 23)]
-archiveRule.minute = [10]
-
-schedule.scheduleJob archiveRule, ->
-  datetime = getYesterday()
-  service.fetchGithubArchive datetime, (err) ->
-    if err?
-      logger.error "fetcharchive", {err: err}
-    else
-      logger.info 'fetched githubarchive', {datetime: datetime}
