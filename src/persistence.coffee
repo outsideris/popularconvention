@@ -121,7 +121,7 @@ module.exports =
     score.findOne {}, {sort: [['file', -1]]}, (err, item) ->
       if err?
         callback err
-      else
+      else if item?
         lastest = item
         score.findOne {file: new RegExp(lastest.shortfile + '-2[0-3]')}, {sort: [['file', -1]]}, (err, item) ->
           if err?
@@ -136,6 +136,8 @@ module.exports =
                 callback null, item
               else
                 callback null, lastest
+      else
+        callback null, null
 
 
   findPeriodOfScore: (callback) ->
