@@ -19,6 +19,7 @@ timeline = require './timeline'
 parser = require './parser/parser'
 _ = require 'underscore'
 hljs = require 'highlight.js'
+moment = require 'moment'
 
 # directory for temporary download json files from github archive
 archiveDir = "#{__dirname}/archive"
@@ -57,17 +58,12 @@ archiveRule.hour = [new schedule.Range(0, 23)]
 archiveRule.minute = [10]
 
 schedule.scheduleJob archiveRule, ->
-  datetime = getYesterday()
+  datetime = getOneDayAgo()
   service.fetchGithubArchive datetime, (err) ->
     if err?
       logger.error "fetcharchive", {err: err}
     else
       logger.info 'fetched githubarchive', {datetime: datetime}
 
-getYesterday = ->
-  now = new Date
-  year = now.getFullYear()
-  month = "0#{now.getMonth() + 1}".slice(-2)
-  date = "0#{now.getDate() - 1}".slice(-2)
-  time = now.toLocaleTimeString().substr(0, 2) * 1
-  "#{year}-#{month}-#{date}-#{time}"
+getOneDayAgo = ->
+  moment().add('d', -1).format("YYYY-MM-DD-H")
