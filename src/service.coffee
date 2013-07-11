@@ -34,7 +34,6 @@ service = module.exports =
     lastUpdate: null
     startDate: null
     endDate: null
-    commitCount: 0
     regdate: null
 
   # download timeline json file from github archive
@@ -282,7 +281,6 @@ service = module.exports =
           return callback err
 
         if item?
-          desc.lastUpdate = item.file
           # caching
           service.totalDesc.lastUpdate = item.file
 
@@ -294,32 +292,12 @@ service = module.exports =
             if docs?.length > 0
               docs.sort (a, b) ->
                 if a.shortfile > b.shortfile then 1 else -1
-              desc.startDate = docs[0].shortfile
-              desc.endDate = docs[docs.length - 1].shortfile
               # caching
               service.totalDesc.startDate = docs[0].shortfile
               service.totalDesc.endDate = docs[docs.length - 1].shortfile
+              service.totalDesc.regdate = new Date
 
-            persistence.findTotalCommits (err, cursor) ->
-              if err?
-                logger.error "findTotlaCommits", {err: err}
-                return callback err
-
-              cursor.toArray (err, docs) ->
-                if err?
-                  logger.error "findTotlaCommits:toArray", {err: err}
-                  return callback err
-
-                commitCount = 0
-                docs.forEach (doc) ->
-                  commitCount += doc.value
-
-                desc.commitCount = commitCount
-                # caching
-                service.totalDesc.commitCount = commitCount
-                service.totalDesc.regdate = new Date
-
-                callback null, desc
+              callback null, service.totalDesc
 
 # private
 hasLang = (sum, elem) ->
