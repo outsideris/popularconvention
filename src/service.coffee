@@ -165,8 +165,7 @@ service = module.exports =
                 (
                   if key isnt 'lang'
                     if doc.convention[key]?
-                      conv.column.forEach (elem) ->
-                        conf[elem.key] += doc.convention[key][elem.key]
+                      conv[k] += doc.convention[key][k] for k of conv when k isnt 'commits'
                       conv.commits = _.uniq(conv.commits.concat doc.convention[key].commits)
                 )for key, conv of baseConv.convention
               else
