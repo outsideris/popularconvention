@@ -215,41 +215,33 @@ service = module.exports =
       else callback()
 
   findScore: (lang, callback) ->
-    isCalledCallback = false
-    persistence.findScoreCache lang, (err, cache) ->
-      if cache?.data?
-        isCalledCallback = true
-        makeResult lang, cache.data, callback
-      if not cache? or (new Date) - cache?.ts > 1800000 # 30min
-        persistence.findScoreByLang lang, (err, cursor) ->
-          if err?
-            logger.error 'findScoreByLang', {err: err}
-            return callback(err)
+    persistence.findScoreByLang lang, (err, cursor) ->
+      if err?
+        logger.error 'findScoreByLang', {err: err}
+        return callback(err)
 
-          languageDescription = parser.getParser(".#{lang}").parse("", {}, "")
+      languageDescription = parser.getParser(".#{lang}").parse("", {}, "")
 
-          dailyData = []
-          cursor.toArray (err, docs) ->
-            logger.error "findScoreByLang toArray", {err: err} if err?
-            if docs?.length
-              docs.forEach (doc) ->
-                # set convention description from parser
-                (if key isnt 'lang'
-                  doc.value[key].title = languageDescription[key].title
-                  doc.value[key].column = languageDescription[key].column
-                ) for key of doc.value
-                score =
-                  lang: lang
-                  file: doc._id
-                  convention: doc.value
-                dailyData.push score
+      dailyData = []
+      cursor.toArray (err, docs) ->
+        logger.error "findScoreByLang toArray", {err: err} if err?
+        logger.debug "findByLang", {docs: docs}
+        if docs?.length
+          docs.forEach (doc) ->
+            # set convention description from parser
+            (if key isnt 'lang'
+              doc.convention[key].title = languageDescription[key].title
+              doc.convention[key].column = languageDescription[key].column
+            ) for key of doc.convention
+            score =
+              lang: lang
+              file: doc.shortfile
+              convention: doc.convention
+            dailyData.push score
 
-              # caching
-              persistence.upsertScoreCache dailyData, lang, (err) ->
-
-              makeResult(lang, dailyData, callback) if not isCalledCallback
-            else
-              callback new Error "#{lang} is not found" if not isCalledCallback
+          makeResult(lang, dailyData, callback)
+        else
+          callback new Error "#{lang} is not found"
 
     makeResult = (lang, dailyData, callback) ->
       sumData =

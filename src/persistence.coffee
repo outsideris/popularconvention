@@ -10,7 +10,6 @@ logger = (require './helpers').logger
 worklogs = null
 conventions = null
 score = null
-scoreCache  = null
 
 dbserver = null
 
@@ -22,7 +21,6 @@ module.exports =
       worklogs = dbserver.collection 'worklogs'
       conventions = dbserver.collection 'conventions'
       score = dbserver.collection 'score'
-      scoreCache = dbserver.collection 'scorecache'
 
       if process.env['NODE_ENV'] is 'production'
         db.authenticate process.env["MONGODB_USER"], process.env["MONGODB_PASS"], (err, result) ->
@@ -87,34 +85,7 @@ module.exports =
     score.update {_id: data._id}, data, {upsert: true}, callback
 
   findScoreByLang: (lang, callback) ->
-    map = ->
-      emit @shortfile, @convention
-
-    reduce = (shortfile, scores) ->
-      keys = (obj) ->
-        arr = []
-        has = Object.prototype.hasOwnProperty
-        arr.push i for i of obj when has.call(obj, i)
-        arr
-
-      result = null
-      (
-        if keys(score).length > 1
-          if result?
-            (if key isnt 'lang'
-              result[key].column.forEach (elem) ->
-                result[key][elem.key] += score[key][elem.key]
-              result[key].commits += score[key].commits
-            ) for key of score
-          else
-            result = score
-      ) for score in scores
-
-      result
-
-    score.mapReduce map, reduce, {out: 'tempmr2', query: {lang: lang}}, (err, coll) ->
-      logger.error "findScore MR: ", {err: err} if err?
-      coll.find callback
+    score.find {lang: lang}, {sort: [['shortfile', -1]]}, callback
 
   findLastestScore: (callback) ->
     lastest = null
@@ -147,13 +118,3 @@ module.exports =
 
   getTimeline: (callback) ->
     conventions.find().limit 10, callback
-
-  upsertScoreCache: (data, lang, callback) ->
-    d =
-      _id: lang
-      ts: new Date
-      data: data
-    scoreCache.update {_id: lang}, d, {upsert: true}, callback
-
-  findScoreCache: (lang, callback) ->
-    scoreCache.findOne {_id: lang}, callback
