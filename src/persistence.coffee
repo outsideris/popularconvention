@@ -15,7 +15,7 @@ dbserver = null
 
 module.exports =
   open: (callback) ->
-    MongoClient.connect "mongodb://#{process.env['MONGODB_HOST']}:#{process.env['MONGODB_PORT']}/popular_convention", (err, db) ->
+    MongoClient.connect "mongodb://#{process.env['MONGODB_HOST']}:#{process.env['MONGODB_PORT']}/popular_convention2", (err, db) ->
       return callback(err) if err?
       dbserver = db
       worklogs = dbserver.collection 'worklogs'
