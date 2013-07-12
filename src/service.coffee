@@ -157,46 +157,59 @@ service = module.exports =
             return
 
           cursor.toArray (err, docs) ->
-            sum = []
+            conventionList = []
             docs.forEach (doc) ->
-              if hasLang(sum, doc)
-                baseConv = getConventionByLang doc.lang, sum
-                (
-                  if key isnt 'lang'
-                    if doc.convention[key]?
-                      conv[k] += doc.convention[key][k] for k of conv when k isnt 'commits'
-                      conv.commits = _.uniq(conv.commits.concat doc.convention[key].commits)
-                )for key, conv of baseConv.convention
+              if hasLang(conventionList , doc)
+                baseConv = getConventionByLang doc.lang, conventionList
+
+                mergeConvention baseConv.convention, doc.convention
               else
                 delete doc._id
                 doc.regdate = new Date
                 doc.shortfile = doc.file.substr 0, doc.file.lastIndexOf '-'
 
-                sum.push doc
+                conventionList.push doc
 
             # convert commits to commit count
             (
               (
                 value.commits = value.commits.length if value.commits?
               ) for key, value of item.convention
-            ) for item in sum
+            ) for item in conventionList
 
-            persistence.insertScore sum, (err) ->
-              if err?
-                logger.error 'insertScore', {err: err}
-                return
-              logger.info 'inserted score'
-              persistence.summarizeWorklog worklog._id, (err) ->
-                if err?
-                  logger.error 'summarizeWorklog', {err: err}
-                  return
-                logger.info 'summarized worklog', {file: worklog.file}
-
-                persistence.dropTimeline worklog.file, (err) ->
+            fileOfDay = worklog.file.substr 0, worklog.file.lastIndexOf '-'
+            # merge convention if convention of same is exist
+            mergeInExistConvention = (convList) ->
+              if convList.length
+                conv = convList.pop()
+                persistence.findScoreByFileAndLang fileOfDay, conv.lang, (err, item) ->
                   if err?
-                    logger.error 'drop timeline collection', {err: err}
+                    logger.error 'findScoreByFile', {err: err}
                     return
-                  logger.info 'dropped timeline collection', {collection: worklog.file}
+                  logger.debug 'findScoreByFileAndLang', {item: item}
+                  if item?
+                    mergeConvention conv.convention, item.convention,
+                    conv._id = item._id
+
+                  persistence.upsertScore conv, (err) ->
+                    if err?
+                      logger.error 'upsertScore', {err: err}
+                    logger.info 'upserted score', {conv: conv}
+                    mergeInExistConvention convList
+              else
+                persistence.summarizeWorklog worklog._id, (err) ->
+                  if err?
+                    logger.error 'summarizeWorklog', {err: err}
+                    return
+                  logger.info 'summarized worklog', {file: worklog.file}
+
+                  persistence.dropTimeline worklog.file, (err) ->
+                    if err?
+                      logger.error 'drop timeline collection', {err: err}
+                      return
+                    logger.info 'dropped timeline collection', {collection: worklog.file}
+
+            mergeInExistConvention conventionList
 
             callback()
       else callback()
@@ -208,16 +221,16 @@ service = module.exports =
         isCalledCallback = true
         makeResult lang, cache.data, callback
       if not cache? or (new Date) - cache?.ts > 1800000 # 30min
-        persistence.findScore lang, (err, cursor) ->
+        persistence.findScoreByLang lang, (err, cursor) ->
           if err?
-            logger.error 'findScore', {err: err}
+            logger.error 'findScoreByLang', {err: err}
             return callback(err)
 
           languageDescription = parser.getParser(".#{lang}").parse("", {}, "")
 
           dailyData = []
           cursor.toArray (err, docs) ->
-            logger.error "findScore toArray", {err: err} if err?
+            logger.error "findScoreByLang toArray", {err: err} if err?
             if docs?.length
               docs.forEach (doc) ->
                 # set convention description from parser
@@ -304,9 +317,9 @@ hasLang = (sum, elem) ->
   sum.some (el) ->
     el.lang is elem.lang
 
-getConventionByLang = (lang, sum) ->
+getConventionByLang = (lang, convList) ->
   result = null
-  sum.forEach (elem) ->
+  convList.forEach (elem) ->
     result = elem if elem.lang is lang
   result
 
@@ -367,3 +380,14 @@ importIntoMongodb = (datetime, callback) ->
 deleteArchiveFile = (datetime) ->
   fs.unlink "#{archiveDir}/#{datetime}.json", (err) ->
     logger.error "delete #{archiveDir}/#{datetime}.json" if err
+
+mergeConvention = (baseConvention, newConvention) ->
+  (
+    if key isnt 'lang'
+      if newConvention[key]?
+        conv[k] += newConvention[key][k] for k of conv when k isnt 'commits'
+        if conv.commits.concat?
+          conv.commits = _.uniq(conv.commits.concat newConvention[key].commits)
+        else
+          conv.commits = conv.commits + newConvention[key].commits
+  )for key, conv of baseConvention

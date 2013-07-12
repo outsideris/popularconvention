@@ -83,10 +83,10 @@ module.exports =
       "file": file
     }, callback
 
-  insertScore: (data, callback) ->
-    score.insert data, callback
+  upsertScore: (data, callback) ->
+    score.update {_id: data._id}, data, {upsert: true}, callback
 
-  findScore: (lang, callback) ->
+  findScoreByLang: (lang, callback) ->
     map = ->
       emit @shortfile, @convention
 
@@ -139,6 +139,8 @@ module.exports =
       else
         callback null, null
 
+  findScoreByFileAndLang: (file, lang, callback) ->
+    score.findOne {shortfile: file, lang: lang}, callback
 
   findPeriodOfScore: (callback) ->
     score.group(['shortfile'], {}, {}, "function() {}", callback)

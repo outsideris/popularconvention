@@ -44,7 +44,7 @@ schedule.scheduleJob summarizeRule, ->
   service.summarizeScore ->
     logger.info "summarizeScore is DONE!!!"
 
-# batch to get total description for footer
+# batch to cache total description for footer
 descriptionRule = new schedule.RecurrenceRule()
 descriptionRule.hour = [new schedule.Range(0, 23)]
 descriptionRule.minute = [0]
