@@ -303,6 +303,8 @@ service = module.exports =
               service.totalDesc.regdate = new Date
 
               callback null, service.totalDesc
+        else
+          callback null, service.totalDesc
 
 # private
 hasLang = (sum, elem) ->
