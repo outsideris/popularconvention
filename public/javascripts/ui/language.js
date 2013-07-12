@@ -20,6 +20,7 @@ define(
         this.$node.siblings().removeClass('active');
 
         if (lang) {
+          location.href = "#" + $(e.currentTarget).attr('title').toLowerCase();
           this.trigger('uiDrawConvention', {lang: lang});
         }
       };
