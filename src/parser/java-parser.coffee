@@ -124,12 +124,19 @@ javaParser = module.exports =
       column: [
         {
           key: "allcaps", display: "Constant name is all caps with underscore(_)",
-          code: "final String FOO_BAR = \"\";"
+          code: """
+                final String FOO_BAR = \"baz\";
+
+                static final String FOO_BAR = \"baz\";
+                """
         }
         {
           key: "notallcaps", display: "Constant name is not all caps",
-          code: "final String foobar = \"\";"
+          code: """
+                final String foobar = \"baz\";
 
+                static final String foobar = \"baz\";
+                """
         }
       ]
       allcaps: 0
