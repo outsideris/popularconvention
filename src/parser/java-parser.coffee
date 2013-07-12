@@ -144,8 +144,8 @@ javaParser = module.exports =
       commits: []
     ) unless convention.constant
 
-    allcaps = /^\s*\w*\s*final\s\w+\s[A-Z0-9_]+(\s|=|;)/
-    notallcaps = /^\s*\w*\s*final\s\w+\s[a-zA-Z0-9_]+(\s|=|;)/
+    allcaps = /^\s*\w*\s*(static\s+\w*\s*final\s|final\s+\w*\s*static\s)\w+\s[A-Z0-9_]+(\s|=|;)/
+    notallcaps = /^\s*\w*\s*(static\s+\w*\s*final\s|final\s+\w*\s*static\s)\w+\s[a-zA-Z0-9_]+(\s|=|;)/
 
     convention.constant.allcaps = convention.constant.allcaps + 1 if allcaps.test line
     convention.constant.notallcaps = convention.constant.notallcaps + 1 if not allcaps.test(line) and notallcaps.test line

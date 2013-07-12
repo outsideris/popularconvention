@@ -338,7 +338,7 @@ importIntoMongodb = (datetime, callback) ->
       args = [
         '--host', process.env['MONGODB_HOST']
         '--port', process.env['MONGODB_PORT']
-        '--db', 'popular_convention'
+        '--db', 'popular_convention2'
         '--collection', datetime
         '--file', "#{archiveDir}/#{datetime}.json"
         '--type', 'json'

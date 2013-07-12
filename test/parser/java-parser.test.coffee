@@ -118,43 +118,55 @@ describe 'java-parser >', ->
   describe 'constant >', ->
 
     it 'check constant with all caps #1', ->
-      convention = parser.constant '	public final String FOOBAR= "";', {}
+      convention = parser.constant '	static public final String FOOBAR= "";', {}
       convention.constant.allcaps.should.equal 1
 
     it 'check constant with all caps #2', ->
-      convention = parser.constant '	public final String FOOBAR2= "";', {}
+      convention = parser.constant '	public static final String FOOBAR2= "";', {}
       convention.constant.allcaps.should.equal 1
 
     it 'check constant with all caps #3', ->
-      convention = parser.constant 'public final String FOOBARa = "";', {}
-      convention.constant.allcaps.should.equal 0
+      convention = parser.constant 'private final static String FOO_BAR = "";', {}
+      convention.constant.allcaps.should.equal 1
 
     it 'check constant with all caps #4', ->
-      convention = parser.constant 'public final String FOO_BAR = "";', {}
+      convention = parser.constant 'final public static String FOO_BAR = "";', {}
       convention.constant.allcaps.should.equal 1
 
     it 'check constant with all caps #5', ->
       convention = parser.constant '	public final String foobar = "";', {}
       convention.constant.allcaps.should.equal 0
 
+    it 'check constant with all caps #6', ->
+      convention = parser.constant 'public final String FOOBAR = "";', {}
+      convention.constant.allcaps.should.equal 0
+
+    it 'check constant with all caps #7', ->
+      convention = parser.constant 'private final static String FOOBARa = "";', {}
+      convention.constant.allcaps.should.equal 0
+
     it 'check constant with not all caps #1', ->
-      convention = parser.constant '	public final String foobar= "";', {}
+      convention = parser.constant '	static public final String foobar= "";', {}
       convention.constant.notallcaps.should.equal 1
 
     it 'check constant with not all caps #2', ->
-      convention = parser.constant '	public final String foobar2= "";', {}
+      convention = parser.constant '	public static final String foobar2= "";', {}
       convention.constant.notallcaps.should.equal 1
 
     it 'check constant with not all caps #3', ->
-      convention = parser.constant 'public final String FOOBARa = "";', {}
+      convention = parser.constant 'public final static String FOOBARa = "";', {}
       convention.constant.notallcaps.should.equal 1
 
     it 'check constant with not all caps #4', ->
-      convention = parser.constant 'public final String FOO_BAR = "";', {}
-      convention.constant.notallcaps.should.equal 0
+      convention = parser.constant 'final public static String FOo_BAR = "";', {}
+      convention.constant.notallcaps.should.equal 1
 
     it 'check constant with not all caps #5', ->
-      convention = parser.constant '	public final String FOO= "";', {}
+      convention = parser.constant '	public static final String FOO_BAR= "";', {}
+      convention.constant.notallcaps.should.equal 0
+
+    it 'check constant with not all caps #6', ->
+      convention = parser.constant '	public final String Foo= "";', {}
       convention.constant.notallcaps.should.equal 0
 
   describe 'conditionstatement >', ->

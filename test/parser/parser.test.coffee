@@ -45,4 +45,3 @@ describe 'parser >', ->
       ]
 
     result = parser.parse fixture
-    console.log require('util').inspect(result, false, 5)
