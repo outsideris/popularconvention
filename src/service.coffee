@@ -325,16 +325,28 @@ getHighlightName = (lang) ->
     scala: 'scala'
   map[lang]
 
+mongoImportCmd = ""
+findMongoImportCmd = (datetime, callback) ->
+  if (mongoImportCmd)
+    callback null, mongoImportCmd
+  else
+    which = spawn 'which', ["mongoimport"]
+    which.stdout.on 'data', (data) ->
+      mongoImportCmd = data.toString()
+    which.on 'exit', (code) ->
+      if (code is 0)
+        # remove trailing new line
+        mongoImportCmd = mongoImportCmd.match(/([\w\/]+)/)[0]
+        callback null, mongoImportCmd
+      else
+        logger.error "mongoimport doesn't exist."
+        callback(code)
+
 importIntoMongodb = (datetime, callback) ->
-  console.log "datetime #{datetime}"
-
-  mongoImportCmd = ""
-
-  which = spawn 'which', ["mongoimport"]
-  which.stdout.on 'data', (data) ->
-    mongoImportCmd = data.toString()
-  which.on 'exit', (code) ->
-    if (code is 0)
+  findMongoImportCmd datetime, (err, mongoCmd) ->
+    if err?
+      logger.error "error occured during mongoimport"
+    else
       args = [
         '--host', process.env['MONGODB_HOST']
         '--port', process.env['MONGODB_PORT']
@@ -349,13 +361,10 @@ importIntoMongodb = (datetime, callback) ->
           '--password', process.env["MONGODB_PASS"]
         ]
 
-      # remove trailing new line
-      mongoImportCmd = mongoImportCmd.match(/([\w\/]+)/)[0]
-
-      mongoimport = spawn mongoImportCmd, args
+      mongoimport = spawn mongoCmd, args
       mongoimport.stderr.on 'data', (data) ->
         logger.error "mongoimport error occured"
-      mongoimport.on 'exit', (code) ->
+      mongoimport.on 'close', (code) ->
         logger.info "mongoimport exited with code #{code}"
         doc =
           file: datetime
@@ -367,9 +376,6 @@ importIntoMongodb = (datetime, callback) ->
         callback(code) if code isnt 0
 
         deleteArchiveFile(datetime)
-    else
-      logger.error "mongoimport doesn't exist."
-      callback(code)
 
 deleteArchiveFile = (datetime) ->
   fs.unlink "#{archiveDir}/#{datetime}.json", (err) ->
