@@ -87,16 +87,19 @@ $(document).ready(function() {
       if (d3.select(this).length > 0) {
         var dataName = $(d3.select(this)[0]).parent().prev().val();
         var finalData = [];
+
         for (var index in dataset.raw) {
           var cur = dataset.raw[index];
-          for (var j in cur.convention[dataName].column) {
-            var obj = {
-              date: cur.file,
-              name: cur.convention[dataName].column[j].key,
-              score: cur.convention[dataName][cur.convention[dataName].column[j].key],
-              display: cur.convention[dataName].column[j].display
-            };
-            finalData.push(obj);
+          if (cur.convention[dataName]) {
+            for (var j in cur.convention[dataName].column) {
+              var obj = {
+                date: cur.file,
+                name: cur.convention[dataName].column[j].key,
+                score: cur.convention[dataName][cur.convention[dataName].column[j].key],
+                display: cur.convention[dataName].column[j].display
+              };
+              finalData.push(obj);
+            }
           }
         }
         var nest = d3.nest().key(function(d) {return d.name;}).entries(finalData);

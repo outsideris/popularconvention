@@ -255,10 +255,16 @@ service = module.exports =
           sumData.period.push data.file
         else
           (if key isnt 'lang'
-            sumData.scores[key].column.forEach (elem) ->
-              sumData.scores[key][elem.key] += data.convention[key][elem.key]
-            sumData.scores[key].commits += data.convention[key].commits
+            if (data.convention[key]?)
+              sumData.scores[key].column.forEach (elem) ->
+                sumData.scores[key][elem.key] += data.convention[key][elem.key]
+              sumData.scores[key].commits += data.convention[key].commits
           ) for key of sumData.scores
+          # add new field not exist
+          (
+            sumData.scores[key] = data.convention[key]
+          ) for key in Object.keys(data.convention).filter (x) ->
+            !~Object.keys(sumData.scores).indexOf x
 
           sumData.period.push data.file
 

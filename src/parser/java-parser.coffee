@@ -360,11 +360,11 @@ javaParser = module.exports =
         {
           key: "staccfin", display: "static - access modifier - final|volatile",
           code: """
-                final public static String t1 = "";
+                static public final String t1 = "";
 
-                final public static transient String t2 = "";
+                static public transient final String t2 = "";
 
-                final transient public static String t3 = "";
+                static transient public final String t3 = "";
                 """
         }
       ]
