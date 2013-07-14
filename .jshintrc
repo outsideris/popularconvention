@@ -10,6 +10,14 @@
   "unused": true,
   "boss": true,
   "eqnull": true,
-  "node": true,
-  "es5": true
+  "expr": true,
+  "browser": true,
+  "jquery": true,
+  "predef": [
+    "define",
+    "Handlebars",
+    "requirejs",
+    "require",
+    "d3"
+  ]
 }

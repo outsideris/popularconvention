@@ -1,37 +1,17 @@
-'use strict';
-
+/*jshint node:true */
 module.exports = function(grunt) {
+  'use strict';
 
   // Project configuration.
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
     jshint: {
-      pkg: grunt.file.readJSON('package.json'),
       options: {
         jshintrc: '.jshintrc'
       },
-      gruntfile: {
-        src: 'Gruntfile.js'
-      },
-      src: {
-        src: ['server.coffee', 'src/**/*.coffee']
-      },
-      test: {
-        src: ['test/**/*.coffee']
-      },
-    },
-    watch: {
-      gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
-      },
-      src: {
-        files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:src', 'jshint']
-      },
-      test: {
-        files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test', 'test']
-      },
+      front: {
+        src: ['Gruntfile.js', 'public/javascripts/**/*.js']
+      }
     },
     simplemocha: {
       all: {
@@ -54,6 +34,5 @@ module.exports = function(grunt) {
   // Default task.
   grunt.registerTask('default', ['simplemocha']);
   grunt.registerTask('test', ['simplemocha']);
-
-
+  grunt.registerTask('lint', ['jshint']);
 };
