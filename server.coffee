@@ -23,9 +23,9 @@ if 'development' is app.get 'env'
 
 # routing
 app.get '/popularconvention', routes.index
-app.get '/popularconvention/fetcharchive', routes.fetcharchive
-app.get '/popularconvention/progress', routes.progressTimeline
-app.get '/popularconvention/summarize', routes.summarizeScore
+#app.get '/popularconvention/fetcharchive', routes.fetcharchive
+#app.get '/popularconvention/progress', routes.progressTimeline
+#app.get '/popularconvention/summarize', routes.summarizeScore
 app.get '/popularconvention/score/:lang', routes.findScore
 
 http.createServer(app).listen app.get('port'), ->
