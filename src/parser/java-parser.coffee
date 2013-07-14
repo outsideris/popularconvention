@@ -18,6 +18,7 @@ javaParser = module.exports =
     convention = this.argumentdef line, convention, commitUrl
     convention = this.linelength line, convention, commitUrl
     convention = this.staticvar line, convention, commitUrl
+    convention = this.finalstaticorder line, convention, commitUrl
 
   indent: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
@@ -319,4 +320,71 @@ javaParser = module.exports =
 
     convention.staticvar.commits.push commitUrl if prefix.test(line) or noprefix.test(line)
     convention.staticvar.commits = _.uniq convention.staticvar.commits
+    convention
+
+  finalstaticorder: (line, convention, commitUrl) ->
+    convention = {lang: this.lang} unless convention
+    (convention.finalstaticorder =
+      title: "order for final and static"
+      column: [
+        {
+          key: "accstfin", display: "access modifier - static - final|volatile",
+          code: """
+                public static final String t1 = "";
+
+                public static transient final String t2 = "";
+
+                transient public static final String t3 = "";
+                """
+        }
+        {
+          key: "accfinst", display: "access modifier - final|volatile - static",
+          code: """
+                public final static String t1 = "";
+
+                public final static transient String t2 = "";
+
+                transient public final static String t3 = "";
+                """
+        }
+        {
+          key: "finaccst", display: "final|volatile - access modifier - static",
+          code: """
+                final public static String t1 = "";
+
+                final public static transient String t2 = "";
+
+                final transient public static String t3 = "";
+                """
+        }
+        {
+          key: "staccfin", display: "static - access modifier - final|volatile",
+          code: """
+                final public static String t1 = "";
+
+                final public static transient String t2 = "";
+
+                final transient public static String t3 = "";
+                """
+        }
+      ]
+      accstfin: 0
+      accfinst: 0
+      finaccst: 0
+      staccfin: 0
+      commits: []
+    ) unless convention.finalstaticorder
+
+    accstfin = /^\w*\s*(public|private|protected){1}\s+\w*\s*(static){1}\s+\w*\s*(final|volatile){1}\s+\w+\s+[a-zA-Z0-9_]+(\s|=|;)/
+    accfinst = /^\w*\s*(public|private|protected){1}\s+\w*\s*(final|volatile){1}\s+\w*\s*(static){1}\s+\w+\s+[a-zA-Z0-9_]+(\s|=|;)/
+    finaccst = /^\w*\s*(final|volatile){1}\s+\w*\s*(public|private|protected){1}\s+\w*\s*(static){1}\s+\w+\s+[a-zA-Z0-9_]+(\s|=|;)/
+    staccfin = /^\w*\s*(static){1}\s+\w*\s*(public|private|protected){1}\s+\w*\s*(final|volatile){1}\s+\w+\s+[a-zA-Z0-9_]+(\s|=|;)/
+
+    convention.finalstaticorder.accstfin = convention.finalstaticorder.accstfin + 1 if accstfin.test line
+    convention.finalstaticorder.accfinst = convention.finalstaticorder.accfinst + 1 if accfinst.test line
+    convention.finalstaticorder.finaccst = convention.finalstaticorder.finaccst + 1 if finaccst.test line
+    convention.finalstaticorder.staccfin = convention.finalstaticorder.staccfin + 1 if staccfin.test line
+
+    convention.finalstaticorder.commits.push commitUrl if accstfin.test line or accfinst.test line or finaccst.test line or staccfin.test line
+    convention.finalstaticorder.commits = _.uniq convention.finalstaticorder.commits
     convention

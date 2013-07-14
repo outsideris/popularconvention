@@ -308,3 +308,69 @@ describe 'java-parser >', ->
     it 'static variable with no special prefix #3', ->
       convention = parser.staticvar  '	static String name;', {}
       convention.staticvar.noprefix.should.equal 1
+
+  describe 'finalstaticorder >', ->
+
+    it 'public - static - final #1', ->
+      convention = parser.finalstaticorder 'public static final String t1 = "";', {}
+      convention.finalstaticorder.accstfin.should.equal 1
+
+    it 'public - static - final #2', ->
+      convention = parser.finalstaticorder 'public static transient final String t2 = "";', {}
+      convention.finalstaticorder.accstfin.should.equal 1
+
+    it 'public - static - final #3', ->
+      convention = parser.finalstaticorder 'transient public static final String t3 = "";', {}
+      convention.finalstaticorder.accstfin.should.equal 1
+
+    it 'public - static - final #4', ->
+      convention = parser.finalstaticorder 'public final static String t4 = "";', {}
+      convention.finalstaticorder.accstfin.should.equal 0
+
+    it 'public - final - static #1', ->
+      convention = parser.finalstaticorder 'public final static String t1 = "";', {}
+      convention.finalstaticorder.accfinst.should.equal 1
+
+    it 'public - final - static #2', ->
+      convention = parser.finalstaticorder 'public final static transient String t2 = "";', {}
+      convention.finalstaticorder.accfinst.should.equal 1
+
+    it 'public - final - static #3', ->
+      convention = parser.finalstaticorder 'transient public final static String t3 = "";', {}
+      convention.finalstaticorder.accfinst.should.equal 1
+
+    it 'public - final - static #4', ->
+      convention = parser.finalstaticorder 'final public static String t4 = "";', {}
+      convention.finalstaticorder.accfinst.should.equal 0
+
+    it 'final - public - static #1', ->
+      convention = parser.finalstaticorder 'final public static String t1 = "";', {}
+      convention.finalstaticorder.finaccst.should.equal 1
+
+    it 'final - public - static #2', ->
+      convention = parser.finalstaticorder 'final public static transient String t2 = "";', {}
+      convention.finalstaticorder.finaccst.should.equal 1
+
+    it 'final - public - static #3', ->
+      convention = parser.finalstaticorder 'final transient public static String t3 = "";', {}
+      convention.finalstaticorder.finaccst.should.equal 1
+
+    it 'final - public - static #4', ->
+      convention = parser.finalstaticorder 'static public final String t4 = "";', {}
+      convention.finalstaticorder.finaccst.should.equal 0
+
+    it 'final - public - static #1', ->
+      convention = parser.finalstaticorder 'static public final String t1 = "";', {}
+      convention.finalstaticorder.staccfin.should.equal 1
+
+    it 'final - public - static #2', ->
+      convention = parser.finalstaticorder 'static public transient final String t2 = "";', {}
+      convention.finalstaticorder.staccfin.should.equal 1
+
+    it 'final - public - static #3', ->
+      convention = parser.finalstaticorder 'static transient public final String t3 = "";', {}
+      convention.finalstaticorder.staccfin.should.equal 1
+
+    it 'final - public - static #4', ->
+      convention = parser.finalstaticorder 'public static final String t4 = "";', {}
+      convention.finalstaticorder.staccfin.should.equal 0
