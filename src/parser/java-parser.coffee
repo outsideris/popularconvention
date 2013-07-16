@@ -126,7 +126,7 @@ javaParser = module.exports =
         {
           key: "allcaps", display: "Constant name is all caps with underscore(_)",
           code: """
-                final String FOO_BAR = \"baz\";
+                final static String FOO_BAR = \"baz\";
 
                 static final String FOO_BAR = \"baz\";
                 """
@@ -134,7 +134,7 @@ javaParser = module.exports =
         {
           key: "notallcaps", display: "Constant name is not all caps",
           code: """
-                final String foobar = \"baz\";
+                final static String foobar = \"baz\";
 
                 static final String foobar = \"baz\";
                 """
