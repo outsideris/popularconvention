@@ -13,6 +13,7 @@ module.exports =
   logger: new (winston.Logger) (
     transports: [
       new (winston.transports.Console)(
+        level: 'error'
         colorize: true
         timestamp: ->
           new Date().toLocaleString()
