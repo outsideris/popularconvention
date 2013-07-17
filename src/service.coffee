@@ -220,7 +220,11 @@ service = module.exports =
         logger.error 'findScoreByLang', {err: err}
         return callback(err)
 
-      languageDescription = parser.getParser(".#{lang}").parse("", {}, "")
+      langParser = parser.getParser(".#{lang}")
+      if (langParser)
+        languageDescription = parser.getParser(".#{lang}").parse("", {}, "")
+      else
+        callback new Error "#{lang} is not found"
 
       dailyData = []
       cursor.toArray (err, docs) ->
@@ -242,43 +246,6 @@ service = module.exports =
           makeResult(lang, dailyData, callback)
         else
           callback new Error "#{lang} is not found"
-
-    makeResult = (lang, dailyData, callback) ->
-      sumData =
-        lang: lang
-        period: []
-        raw: dailyData
-
-      dailyData.forEach (data) ->
-        if not sumData.scores?
-          sumData.scores = data.convention
-          sumData.period.push data.file
-        else
-          (if key isnt 'lang'
-            if (data.convention[key]?)
-              sumData.scores[key].column.forEach (elem) ->
-                sumData.scores[key][elem.key] += data.convention[key][elem.key]
-              sumData.scores[key].commits += data.convention[key].commits
-          ) for key of sumData.scores
-          # add new field not exist
-          (
-            sumData.scores[key] = data.convention[key]
-          ) for key in Object.keys(data.convention).filter (x) ->
-            !~Object.keys(sumData.scores).indexOf x
-
-          sumData.period.push data.file
-
-      # get total for percentage
-      (if key isnt 'lang'
-        total = 0
-        sumData.scores[key].column.forEach (elem) ->
-          total += sumData.scores[key][elem.key]
-          elem.code = hljs.highlight(getHighlightName(lang), elem.code).value
-        sumData.scores[key].total = total
-      ) for key of sumData.scores
-
-      callback null, sumData
-
 
   findDescription: (force, callback) ->
     # get commit count from cacahing when cache value is exist and in 1 hour
@@ -397,3 +364,39 @@ mergeConvention = (baseConvention, newConvention) ->
         else
           conv.commits = conv.commits + newConvention[key].commits
   )for key, conv of baseConvention
+
+makeResult = (lang, dailyData, callback) ->
+  sumData =
+    lang: lang
+    period: []
+    raw: dailyData
+
+  dailyData.forEach (data) ->
+    if not sumData.scores?
+      sumData.scores = data.convention
+      sumData.period.push data.file
+    else
+      (if key isnt 'lang'
+        if (data.convention[key]?)
+          sumData.scores[key].column.forEach (elem) ->
+            sumData.scores[key][elem.key] += data.convention[key][elem.key]
+          sumData.scores[key].commits += data.convention[key].commits
+      ) for key of sumData.scores
+      # add new field not exist
+      (
+        sumData.scores[key] = data.convention[key]
+      ) for key in Object.keys(data.convention).filter (x) ->
+        !~Object.keys(sumData.scores).indexOf x
+
+      sumData.period.push data.file
+
+  # get total for percentage
+  (if key isnt 'lang'
+    total = 0
+    sumData.scores[key].column.forEach (elem) ->
+      total += sumData.scores[key][elem.key]
+      elem.code = hljs.highlight(getHighlightName(lang), elem.code).value
+    sumData.scores[key].total = total
+  ) for key of sumData.scores
+
+  callback null, sumData
