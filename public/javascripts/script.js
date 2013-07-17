@@ -27,33 +27,38 @@ $(document).ready(function() {
   var convTmpl = Handlebars.compile($('#conventionSection').html());
   var spinerTmpl = Handlebars.compile($('#spiner').html());
   var convDiv$ = $('#conventionWrap');
+  var currentLanguage = '';
 
   // methods
   var drawConvention = function(lang) {
+    currentLanguage = lang;
     runSpinner();
 
     $.getJSON('/popularconvention/score/' + lang, function(data) {
       data = data.results;
-      $.each(data.scores, function(conv) {
-        if (data.scores[conv].column) {
-          data.scores[conv].column.sort(function(a, b) {
-            return data.scores[conv][b.key] - data.scores[conv][a.key];
-          });
-        }
-      });
-      data.raw.sort(function(a, b) {
-        return b.file - a.file;
-      });
-      convDiv$.html(convTmpl(data));
-      var colors = d3.scale.ordinal().range(['#F1C40F', '#E74C3C', '#E67E22', '#2ECC71', '#9B59B6']);
-      convDiv$.find('section').find('.graph .sidebar').each(function() {
-        $(this).find('li').each(function(index) {
-          if (!$(this).hasClass('commits')) {
-            $(this).find('div.icons').css('color', colors(index));
+
+      if (currentLanguage === data.lang) {
+        $.each(data.scores, function(conv) {
+          if (data.scores[conv].column) {
+            data.scores[conv].column.sort(function(a, b) {
+              return data.scores[conv][b.key] - data.scores[conv][a.key];
+            });
           }
         });
-      });
-      drawGraph(data);
+        data.raw.sort(function(a, b) {
+          return b.file - a.file;
+        });
+        convDiv$.html(convTmpl(data));
+        var colors = d3.scale.ordinal().range(['#F1C40F', '#E74C3C', '#E67E22', '#2ECC71', '#9B59B6']);
+        convDiv$.find('section').find('.graph .sidebar').each(function() {
+          $(this).find('li').each(function(index) {
+            if (!$(this).hasClass('commits')) {
+              $(this).find('div.icons').css('color', colors(index));
+            }
+          });
+        });
+        drawGraph(data);
+      }
     })
     .fail(function() {
       convDiv$.html('');
@@ -61,7 +66,7 @@ $(document).ready(function() {
   };
 
   var runSpinner = function() {
-    $(this.node).html(spinerTmpl());
+    convDiv$.html(spinerTmpl());
   };
 
   var graphConfig = {
