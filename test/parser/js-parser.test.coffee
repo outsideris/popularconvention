@@ -335,3 +335,69 @@ describe 'js-parser >', ->
     it 'line length is 150 characters #1', ->
       convention = parser.linelength '    public String findFirstName( String name, String age, String job) { return \"a\"; } //afijfjeovjfiejffjeifjidjvosjfiejfioejovfjeifjiejfosjfioejfoiejfoi', {}
       convention.linelength.char150.should.equal 1
+
+  describe 'quotes >', ->
+
+    it 'single quote #1', ->
+      convention = parser.quotes """  var foo = 'bar';"""
+      convention.quotes.single.should.equal 1
+
+    it 'single quote #2', ->
+      convention = parser.quotes """  var foo = '<div id="bar">baz</div>';"""
+      convention.quotes.single.should.equal 1
+
+    it 'single quote #3', ->
+      convention = parser.quotes """  var foo = '<div id=\'bar\'>baz</div>';"""
+      convention.quotes.single.should.equal 1
+
+    it 'single quote #4', ->
+      convention = parser.quotes """ 'key': 'value' """
+      convention.quotes.single.should.equal 1
+
+    it 'single quote #5', ->
+      convention = parser.quotes """ 'key': true """
+      convention.quotes.single.should.equal 1
+
+    it 'single quote #6', ->
+      convention = parser.quotes """  var foo = "bar";"""
+      convention.quotes.single.should.equal 0
+
+    it 'single quote #7', ->
+      convention = parser.quotes """  var foo = "<div id='bar'>baz</div>";"""
+      convention.quotes.single.should.equal 0
+
+    it 'single quote #8', ->
+      convention = parser.quotes """ 'key': "value" """
+      convention.quotes.single.should.equal 0
+
+    it 'double quotes #1', ->
+      convention = parser.quotes """  var foo = "bar";"""
+      convention.quotes.double.should.equal 1
+
+    it 'double quotes #2', ->
+      convention = parser.quotes """  var foo = "<div id='bar'>baz</div>";"""
+      convention.quotes.double.should.equal 1
+
+    it 'double quotes #3', ->
+      convention = parser.quotes """  var foo = "<div id=\"bar\">baz</div>";"""
+      convention.quotes.double.should.equal 1
+
+    it 'double quotes #4', ->
+      convention = parser.quotes """ "key": "value" """
+      convention.quotes.double.should.equal 1
+
+    it 'double quotes #5', ->
+      convention = parser.quotes """ "key": true """
+      convention.quotes.double.should.equal 1
+
+    it 'double quotes #6', ->
+      convention = parser.quotes """  var foo = 'bar';"""
+      convention.quotes.double.should.equal 0
+
+    it 'double quotes #7', ->
+      convention = parser.quotes """  var foo = '<div id="bar">baz</div>';"""
+      convention.quotes.double.should.equal 0
+
+    it 'double quotes #8', ->
+      convention = parser.quotes """ 'key': "value" """
+      convention.quotes.double.should.equal 0

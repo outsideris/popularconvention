@@ -17,6 +17,7 @@ jsParser = module.exports =
     convention = this.argumentdef line, convention, commitUrl
     convention = this.literaldef line, convention, commitUrl
     convention = this.conditionstatement line, convention, commitUrl
+    convention = this.quotes line, convention, commitUrl
 
   comma: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
@@ -399,4 +400,46 @@ jsParser = module.exports =
 
     convention.linelength.commits.push commitUrl
     convention.linelength.commits = _.uniq convention.linelength.commits
+    convention
+
+  quotes: (line, convention, commitUrl) ->
+    convention = {lang: this.lang} unless convention
+    (convention.quotes =
+      title: "Single quote vs double quotes"
+      column: [
+        {
+          key: "single", display: "Single quote",
+          code: """
+                var foo = 'bar';
+
+                var obj = { 'foo': 'bar'};
+                """
+        }
+        {
+          key: "double", display: "Double quotes",
+          code: """
+                var foo = "bar";
+
+                var obj = { "foo": "bar"};
+                """
+        }
+      ]
+      single: 0
+      double: 0
+      commits: []
+    ) unless convention.quotes
+
+    placeholder = "CONVENTION-PLACEHOLDER"
+    single = (line) ->
+      temp = line.replace /'.*?'/g, placeholder
+      (///#{placeholder}///.test temp) and (!///"[\w\s<>/=]*#{placeholder}[\w\s<>/=]*"///.test temp) and (!///"///.test temp)
+    double = (line) ->
+      temp = line.replace /".*?"/g, placeholder
+      (///#{placeholder}///.test temp) and (!///'[\w\s<>/=]*#{placeholder}[\w\s<>/=]*'///.test temp) and (!///'///.test temp)
+
+    convention.quotes.single = convention.quotes.single + 1 if single line
+    convention.quotes.double = convention.quotes.double + 1 if double line
+
+    convention.quotes.commits.push commitUrl if single(line) or double(line)
+    convention.quotes.commits = _.uniq convention.quotes.commits
     convention
