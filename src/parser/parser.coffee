@@ -11,6 +11,7 @@ jsParser = require './js-parser'
 javaParser = require './java-parser'
 pythonParser = require './python-parser'
 scalaParser = require './scala-parser'
+rubyParser = require './ruby-parser'
 
 parser = module.exports =
   parsePatch: (commit) ->
@@ -50,6 +51,7 @@ parser = module.exports =
       when '.java' then javaParser
       when '.py' then pythonParser
       when '.scala' then scalaParser
+      when '.rb' then rubyParser
 
 # private
 supportExts = [
@@ -57,6 +59,7 @@ supportExts = [
   '.java'
   '.py'
   '.scala'
+  '.rb'
 ]
 
 isSupportExt = (ext) ->
