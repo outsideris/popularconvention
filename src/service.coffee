@@ -101,15 +101,15 @@ service = module.exports =
                     urls.forEach (url) ->
                       timeline.getCommitInfo url, (err, commit) ->
                         if err?
-                          logger.error 'getCommitInfo: ', {err: err, limit: /^API Rate Limit Exceeded/.test(err.message), isCompleted: isCompleted, processCount: processCount}
-                          if /^API Rate Limit Exceeded/.test(err.message) and not isCompleted and processCount > 2000
+                          logger.error 'getCommitInfo: ', {err: err, limit: /^API Rate Limit Exceeded/i.test(err.message), isCompleted: isCompleted, processCount: processCount}
+                          if /^API Rate Limit Exceeded/i.test(err.message) and not isCompleted and processCount > 2000
                             isCompleted = true
                             persistence.completeWorklog worklog._id, (err) ->
                               if err?
                                 isCompleted = false
                                 logger.error 'completeWorklog: ', {err: err}
                               logger.debug 'completed worklog', {file: worklog.file}
-                          else if not /^API Rate Limit Exceeded/.test(err.message)
+                          else if not /^API Rate Limit Exceeded/i.test(err.message)
                             innerLoop cur
                         else
                           logger.debug "parsing commit #{url} : ", {commit: commit}
