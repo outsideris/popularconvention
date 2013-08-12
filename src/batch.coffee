@@ -55,7 +55,7 @@ schedule.scheduleJob descriptionRule, ->
 # batch to fetch json file from githubarchive and import to mongoDB
 archiveRule = new schedule.RecurrenceRule()
 archiveRule.hour = [new schedule.Range(0, 23)]
-archiveRule.minute = [10]
+archiveRule.minute = [5]
 
 schedule.scheduleJob archiveRule, ->
   datetime = getOneDayAgo()
