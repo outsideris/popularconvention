@@ -10,7 +10,6 @@ app.set 'port', 8020
 app.set 'views', "#{__dirname}/views"
 app.set 'view engine', 'jade'
 app.use express.favicon()
-app.use express.logger('dev')
 app.use express.bodyParser()
 app.use express.methodOverride()
 app.use app.router
@@ -19,6 +18,7 @@ app.use '/popularconvention', express.static(path.join __dirname, 'public')
 
 # development only
 if 'development' is app.get 'env'
+  app.use express.logger('dev')
   app.use express.errorHandler()
 
 # routing
