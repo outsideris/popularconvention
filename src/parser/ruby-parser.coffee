@@ -247,7 +247,7 @@ rubyParser = module.exports =
   defNoArgs: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
     (convention.defNoArgs =
-      title: "Omit parentheses when there aren't any arguemnts"
+      title: "Omit parentheses when there aren't any arguments"
       column: [
         {
           key: "omit", display: "Omit",
@@ -284,7 +284,7 @@ rubyParser = module.exports =
   defArgs: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
     (convention.defArgs =
-      title: "Parentheses around arguemnts in def"
+      title: "Parentheses around arguments in def"
       column: [
         {
           key: "omit", display: "Omit",
