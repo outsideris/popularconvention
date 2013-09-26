@@ -169,7 +169,7 @@ rubyParser = module.exports =
   asignDefaultValue: (line, convention, commitUrl) ->
     convention = {lang: this.lang} unless convention
     (convention.asignDefaultValue =
-      title: "How to write assinging default values to method parameters"
+      title: "How to write assigning default values to method parameters"
       column: [
         {
           key: "space", display: "Use spaces",
