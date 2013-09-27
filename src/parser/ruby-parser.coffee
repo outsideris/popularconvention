@@ -34,8 +34,6 @@ rubyParser = module.exports =
                     ABC::DEF.reverse(:a_symbol, :'a symbol', :<=>, 'test' + test)
                   end.join
                 end
-                def long_function_name(var_one):
-                    print(var_one)
                 """
         }
         {
