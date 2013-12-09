@@ -13,6 +13,7 @@ pythonParser = require './python-parser'
 scalaParser = require './scala-parser'
 rubyParser = require './ruby-parser'
 csharpParser = require './csharp-parser'
+phpParser = require './php-parser'
 
 parser = module.exports =
   parsePatch: (commit) ->
@@ -54,6 +55,7 @@ parser = module.exports =
       when '.scala' then scalaParser
       when '.rb' then rubyParser
       when '.cs' then csharpParser
+      when '.php' then phpParser
 
 # private
 supportExts = [
@@ -63,6 +65,7 @@ supportExts = [
   '.scala'
   '.rb'
   '.cs'
+  '.php'
 ]
 
 isSupportExt = (ext) ->

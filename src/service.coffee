@@ -298,6 +298,7 @@ getHighlightName = (lang) ->
     scala: 'scala'
     rb: 'ruby'
     cs: 'cs'
+    php: 'php'
   map[lang]
 
 mongoImportCmd = ""
