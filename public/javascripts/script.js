@@ -82,7 +82,7 @@ $(document).ready(function() {
                                 .outerRadius(graphConfig.radius - 20);
 
   var drawGraph = function(dataset) {
-    var svg = d3.selectAll(".graph .chart").append("svg")
+    var svg = d3.selectAll(".graph .chart").insert("svg", '.sidebar')
                 .attr("width", graphConfig.width)
                 .attr("height", graphConfig.height)
                 .append("g")

@@ -103,18 +103,21 @@ body
   content: ""
 
 .graph .chart
-  text-align: center
+  text-align: left
   background-color: #2980B9
-  width: 550px
-  height: 400px
+  width: 874px
+  min-height: 400px
   float: left
   margin-left: 26px
-  border-radius: 10px 0 0 10px
+  border-radius: 10px
+
+.graph .chart svg
+  float: left
 
 .graph .sidebar
   background-color: #34495E
   width: 323px
-  height: 400px
+  min-height: 400px
   float: left
   color: #1ABC9C
   border-radius: 0 10px 10px 0
@@ -125,7 +128,8 @@ body
 .graph .sidebar > ul > li
   list-style-type: none
   border-bottom: 2px solid #2C3E50
-  height: 80px
+  min-height: 80px
+  padding-bottom: 10px
   padding-left: 10px
   font-weight: 400
   overflow: hidden
@@ -147,7 +151,9 @@ body
   font-size: 20px
   line-height: 60px
   padding-left: 20px
-  height: 60px
+  padding-bottom: 0
+  min-height: 60px
+  margin-bottom: 10px
 
 .graph .sidebar li.navi
   border-bottom: none

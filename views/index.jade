@@ -69,16 +69,16 @@ block template
       .graph
         .chart
           input(type='hidden', class='dataname', value='{{@key}}')
-        .sidebar
-          ul
-            {{#each column}}
-            li
-              .icons.fui-menu-24
-              .text
-                h3 {{getScore ../this}} %
-                | {{this.display}}
-            {{/each}}
-            li.commits based on {{getCommitCount commits}} commits
+          .sidebar
+            ul
+              {{#each column}}
+              li
+                .icons.fui-menu-24
+                .text
+                  h3 {{getScore ../this}} %
+                  | {{this.display}}
+              {{/each}}
+              li.commits based on {{getCommitCount commits}} commits
       .examplebox
         {{#each column}}
         .example
