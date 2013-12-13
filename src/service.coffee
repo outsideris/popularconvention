@@ -312,7 +312,7 @@ findMongoImportCmd = (datetime, callback) ->
     which.on 'exit', (code) ->
       if (code is 0)
         # remove trailing new line
-        mongoImportCmd = mongoImportCmd.match(/([\w\/]+)/)[0]
+        mongoImportCmd = mongoImportCmd.match(/([\w\/]+)/)[0] if mongoImportCmd.match(/([\w\/]+)/)
         callback null, mongoImportCmd
       else
         logger.error "mongoimport doesn't exist."
