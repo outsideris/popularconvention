@@ -306,7 +306,7 @@ rubyParser = module.exports =
       commits: []
     ) unless convention.defArgs
 
-    omit = /^[\s\t]*def\s+\w+\s*[^()]*(#+.*)*$/
+    omit = /^[\s\t]*def\s+\w+\s+\w[^()]*(#+.*)*$/
     use = /^[\s\t]*def\s+\w+\s*\((\s*[\w=]+,?)+\s*/
 
     convention.defArgs.omit = convention.defArgs.omit + 1 if omit.test line

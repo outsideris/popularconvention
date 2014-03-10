@@ -305,6 +305,10 @@ describe 'ruby-parser >', ->
       convention = parser.defArgs 'def some_method(arg1, arg2)', {}
       convention.defArgs.omit.should.equal 0
 
+    it 'omit parenthenes #6', ->
+      convention = parser.defArgs 'def some_method', {}
+      convention.defArgs.omit.should.equal 0
+
     it 'use parenthenes #1', ->
       convention = parser.defArgs ' def some_method( arg1, arg2)', {}
       convention.defArgs.use.should.equal 1
@@ -328,3 +332,7 @@ describe 'ruby-parser >', ->
     it 'use parenthenes #6', ->
       convention = parser.defArgs 'def update_requirements(features, group_overrides, init_git_url=nil, user_env_vars=nil)', {}
       convention.defArgs.use.should.equal 1
+
+    it 'use parenthenes #7', ->
+      convention = parser.defArgs 'def some_method', {}
+      convention.defArgs.use.should.equal 0
