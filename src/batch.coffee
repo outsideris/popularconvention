@@ -53,17 +53,17 @@ schedule.scheduleJob descriptionRule, ->
   service.findDescription true, ->
 
 # batch to fetch json file from githubarchive and import to mongoDB
-archiveRule = new schedule.RecurrenceRule()
-archiveRule.hour = [new schedule.Range(0, 23)]
-archiveRule.minute = [5]
+#archiveRule = new schedule.RecurrenceRule()
+#archiveRule.hour = [new schedule.Range(0, 23)]
+#archiveRule.minute = [5]
 
-schedule.scheduleJob archiveRule, ->
-  datetime = getOneDayAgo()
-  service.fetchGithubArchive datetime, (err) ->
-    if err?
-      logger.error "fetcharchive", {err: err}
-    else
-      logger.info 'fetched githubarchive', {datetime: datetime}
+#schedule.scheduleJob archiveRule, ->
+#  datetime = getOneDayAgo()
+#  service.fetchGithubArchive datetime, (err) ->
+#    if err?
+#      logger.error "fetcharchive", {err: err}
+#    else
+#      logger.info 'fetched githubarchive', {datetime: datetime}
 
 getOneDayAgo = ->
   moment().add('d', -1).format("YYYY-MM-DD-H")
