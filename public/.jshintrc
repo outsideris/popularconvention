@@ -11,7 +11,13 @@
   "boss": true,
   "eqnull": true,
   "expr": true,
-  "node": true,
+  "browser": true,
+  "jquery": true,
   "predef": [
+    "define",
+    "Handlebars",
+    "requirejs",
+    "require",
+    "d3"
   ]
 }
