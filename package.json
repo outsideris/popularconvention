@@ -30,12 +30,14 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "should": "*",
-    "mocha": "*",
+    "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-watch": "~0.2.0",
+    "grunt-mocha-test": "^0.12.7",
     "grunt-simple-mocha": "~0.3.0",
-    "grunt": "~0.4.1"
+    "load-grunt-tasks": "^3.3.0",
+    "mocha": "*",
+    "should": "*"
   },
   "keywords": [],
   "dependencies": {
