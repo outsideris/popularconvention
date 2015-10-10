@@ -1,3 +1,5 @@
+'use strict';
+
 // parsing Java code
 var _ = require('underscore');
 
@@ -14,15 +16,13 @@ module.exports = {
     return convention = this.finalstaticorder(line, convention, commitUrl);
   },
   indent: function(line, convention, commitUrl) {
-    if (!convention) {
-      convention = { lang: this.lang };
-    }
+    if (!convention) { convention = { lang: this.lang }; }
+
     if (!convention.indent) {
       convention.indent = {
         title: "Space vs. Tab",
         column: [
-          {
-            key: "tab",
+          { key: "tab",
             display: "Tab",
             code: "public String getName() {\n    // use tab for indentation\n    return this.name;\n}"
           }, {
@@ -40,28 +40,21 @@ module.exports = {
     var tab = /^\t+.*/;
     var space = /^\s+.*/;
 
-    if (tab.test(line)) {
-      convention.indent.tab = convention.indent.tab + 1;
-    }
-    if (space.test(line)) {
-      convention.indent.space = convention.indent.space + 1;
-    }
-    if (tab.test(line) || space.test(line)) {
-      convention.indent.commits.push(commitUrl);
-    }
+    if (tab.test(line)) { convention.indent.tab = convention.indent.tab + 1; }
+    if (space.test(line)) { convention.indent.space = convention.indent.space + 1; }
+    if (tab.test(line) || space.test(line)) { convention.indent.commits.push(commitUrl); }
+
     convention.indent.commits = _.uniq(convention.indent.commits);
     return convention;
   },
   blockstatement: function(line, convention, commitUrl) {
-    if (!convention) {
-      convention = { lang: this.lang };
-    }
+    if (!convention) { convention = { lang: this.lang }; }
+
     if (!convention.blockstatement) {
       convention.blockstatement = {
         title: "How to write block statement",
         column: [
-          {
-            key: "onespace",
+          { key: "onespace",
             display: "Curlybrace with one space",
             code: "if (height < MIN_HEIGHT) {\n  //..\n}\n\nwhile (isTrue) {\n  //..\n}\n\nswitch (foo) {\n  //..\n}"
           }, {
@@ -81,35 +74,26 @@ module.exports = {
       };
     }
 
-    var onespace = /((if|while|switch|try).*\s+\{)|(}\s+(else|catch|finally).*\s+\{)/;
-    var nospace = /((if|while|switch).*\){)|(try|else|finally){|(}\s*(else|catch|finally).*\){)/;
+    var onespace = /((if|while|switch|try).*\s+\{)|(\}\s+(else|catch|finally).*\s+\{)/;
+    var nospace = /((if|while|switch).*\)\{)|(try|else|finally)\{|(\}\s*(else|catch|finally).*\)\{)/;
     var newline = /((if|while|switch).*\)\s*$)|((if|while|switch).*\)\s*\/[\/\*])|(try|else|finally)\s*\/[\/\*]|(^\s*(else|catch|finally))/;
 
-    if (onespace.test(line)) {
-      convention.blockstatement.onespace = convention.blockstatement.onespace + 1;
-    }
-    if (nospace.test(line)) {
-      convention.blockstatement.nospace = convention.blockstatement.nospace + 1;
-    }
-    if (newline.test(line)) {
-      convention.blockstatement.newline = convention.blockstatement.newline + 1;
-    }
-    if (onespace.test(line) || nospace.test(line) || newline.test(line)) {
-      convention.blockstatement.commits.push(commitUrl);
-    }
+    if (onespace.test(line)) { convention.blockstatement.onespace = convention.blockstatement.onespace + 1; }
+    if (nospace.test(line)) { convention.blockstatement.nospace = convention.blockstatement.nospace + 1; }
+    if (newline.test(line)) { convention.blockstatement.newline = convention.blockstatement.newline + 1; }
+    if (onespace.test(line) || nospace.test(line) || newline.test(line)) { convention.blockstatement.commits.push(commitUrl); }
+
     convention.blockstatement.commits = _.uniq(convention.blockstatement.commits);
     return convention;
   },
   constant: function(line, convention, commitUrl) {
-    if (!convention) {
-      convention = { lang: this.lang };
-    }
+    if (!convention) { convention = { lang: this.lang }; }
+
     if (!convention.constant) {
       convention.constant = {
         title: "Constant name is all caps?",
         column: [
-          {
-            key: "allcaps",
+          { key: "allcaps",
             display: "Constant name is all caps with underscore(_)",
             code: "final static String FOO_BAR = \"baz\";\n\nstatic final String FOO_BAR = \"baz\";"
           }, {
@@ -127,28 +111,21 @@ module.exports = {
     var allcaps = /^\s*\w*\s*(static\s+\w*\s*final\s|final\s+\w*\s*static\s)\w+\s[A-Z0-9_]+(\s|=|;)/;
     var notallcaps = /^\s*\w*\s*(static\s+\w*\s*final\s|final\s+\w*\s*static\s)\w+\s[a-zA-Z0-9_]+(\s|=|;)/;
 
-    if (allcaps.test(line)) {
-      convention.constant.allcaps = convention.constant.allcaps + 1;
-    }
-    if (!allcaps.test(line) && notallcaps.test(line)) {
-      convention.constant.notallcaps = convention.constant.notallcaps + 1;
-    }
-    if (allcaps.test(line || (!allcaps.test(line) && notallcaps.test(line)))) {
-      convention.constant.commits.push(commitUrl);
-    }
+    if (allcaps.test(line)) { convention.constant.allcaps = convention.constant.allcaps + 1; }
+    if (!allcaps.test(line) && notallcaps.test(line)) { convention.constant.notallcaps = convention.constant.notallcaps + 1; }
+    if (allcaps.test(line || (!allcaps.test(line) && notallcaps.test(line)))) { convention.constant.commits.push(commitUrl); }
+
     convention.constant.commits = _.uniq(convention.constant.commits);
     return convention;
   },
   conditionstatement: function(line, convention, commitUrl) {
-    if (!convention) {
-      convention = { lang: this.lang };
-    }
+    if (!convention) { convention = { lang: this.lang }; }
+
     if (!convention.conditionstatement) {
       convention.conditionstatement = {
         title: "How to write conditional statement",
         column: [
-          {
-            key: "onespace",
+          { key: "onespace",
             display: "Condition with one space",
             code: "if (true) {\n  //...\n}\n\nwhile (true) {\n  //...\n}\n\nswitch (v) {\n  //...\n}"
           }, {
@@ -166,28 +143,21 @@ module.exports = {
     var onespace = /(if|while|switch)\s+\(/;
     var nospace = /(if|while|switch)\(/;
 
-    if (onespace.test(line)) {
-      convention.conditionstatement.onespace = convention.conditionstatement.onespace + 1;
-    }
-    if (nospace.test(line)) {
-      convention.conditionstatement.nospace = convention.conditionstatement.nospace + 1;
-    }
-    if (onespace.test(line) || nospace.test(line)) {
-      convention.conditionstatement.commits.push(commitUrl);
-    }
+    if (onespace.test(line)) { convention.conditionstatement.onespace = convention.conditionstatement.onespace + 1; }
+    if (nospace.test(line)) { convention.conditionstatement.nospace = convention.conditionstatement.nospace + 1; }
+    if (onespace.test(line) || nospace.test(line)) { convention.conditionstatement.commits.push(commitUrl); }
+
     convention.conditionstatement.commits = _.uniq(convention.conditionstatement.commits);
     return convention;
   },
   argumentdef: function(line, convention, commitUrl) {
-    if (!convention) {
-      convention = { lang: this.lang };
-    }
+    if (!convention) { convention = { lang: this.lang }; }
+
     if (!convention.argumentdef) {
       convention.argumentdef = {
         title: "Arguments definition with one space vs. no space",
         column: [
-          {
-            key: "onespace",
+          { key: "onespace",
             display: "One space",
             code: "public void setName( String name ) {\n  // ...\n}\n\nif( isTrue ) {}\n\nwhile( isTrue ) {}"
           }, {
@@ -205,28 +175,21 @@ module.exports = {
     var onespace = /^(\s*|\t*)(\w+\s+\w+\s+\w+|if|while|switch)\s*\(\s+/;
     var nospace = /^(\s*|\t*)(\w+\s+\w+\s+\w+|if|while|switch)\s*\(\S+/;
 
-    if (onespace.test(line)) {
-      convention.argumentdef.onespace = convention.argumentdef.onespace + 1;
-    }
-    if (nospace.test(line)) {
-      convention.argumentdef.nospace = convention.argumentdef.nospace + 1;
-    }
-    if (onespace.test(line) || nospace.test(line)) {
-      convention.argumentdef.commits.push(commitUrl);
-    }
+    if (onespace.test(line)) { convention.argumentdef.onespace = convention.argumentdef.onespace + 1; }
+    if (nospace.test(line)) { convention.argumentdef.nospace = convention.argumentdef.nospace + 1; }
+    if (onespace.test(line) || nospace.test(line)) { convention.argumentdef.commits.push(commitUrl); }
+
     convention.argumentdef.commits = _.uniq(convention.argumentdef.commits);
     return convention;
   },
   linelength: function(line, convention, commitUrl) {
-    if (!convention) {
-      convention = { lang: this.lang };
-    }
+    if (!convention) { convention = { lang: this.lang }; }
+
     if (!convention.linelength) {
       convention.linelength = {
         title: "Line length is over 80 characters?",
         column: [
-          {
-            key: "char80",
+          { key: "char80",
             display: "Line length is within 80 characters.",
             code: "/* width is within 80 characters */"
           }, {
@@ -250,27 +213,22 @@ module.exports = {
     var tabcount = line.split('\t').length - 1;
     width += tabcount * 3;
 
-    if (width < 80) {
-      convention.linelength.char80 = convention.linelength.char80 + 1;
-    } else if (width < 120) {
-      convention.linelength.char120 = convention.linelength.char120 + 1;
-    } else {
-      convention.linelength.char150 = convention.linelength.char150 + 1;
-    }
+    if (width < 80) { convention.linelength.char80 = convention.linelength.char80 + 1; }
+    else if (width < 120) { convention.linelength.char120 = convention.linelength.char120 + 1; }
+    else { convention.linelength.char150 = convention.linelength.char150 + 1; }
+
     convention.linelength.commits.push(commitUrl);
     convention.linelength.commits = _.uniq(convention.linelength.commits);
     return convention;
   },
   staticvar: function(line, convention, commitUrl) {
-    if (!convention) {
-      convention = { lang: this.lang };
-    }
+    if (!convention) { convention = { lang: this.lang }; }
+
     if (!convention.staticvar) {
       convention.staticvar = {
         title: "Use special prefix for staticvar",
         column: [
-          {
-            key: "prefix",
+          { key: "prefix",
             display: "Special prefix",
             code: "static String _name;"
           }, {
@@ -288,22 +246,16 @@ module.exports = {
     var prefix = /static\s+\w+\s+(_|\$)\w+/;
     var noprefix = /static\s+\w+\s+[^_$]\w+/;
 
-    if (prefix.test(line)) {
-      convention.staticvar.prefix = convention.staticvar.prefix + 1;
-    }
-    if (noprefix.test(line)) {
-      convention.staticvar.noprefix = convention.staticvar.noprefix + 1;
-    }
-    if (prefix.test(line) || noprefix.test(line)) {
-      convention.staticvar.commits.push(commitUrl);
-    }
+    if (prefix.test(line)) { convention.staticvar.prefix = convention.staticvar.prefix + 1; }
+    if (noprefix.test(line)) { convention.staticvar.noprefix = convention.staticvar.noprefix + 1; }
+    if (prefix.test(line) || noprefix.test(line)) { convention.staticvar.commits.push(commitUrl); }
+
     convention.staticvar.commits = _.uniq(convention.staticvar.commits);
     return convention;
   },
   finalstaticorder: function(line, convention, commitUrl) {
-    if (!convention) {
-      convention = { lang: this.lang };
-    }
+    if (!convention) { convention = { lang: this.lang }; }
+
     if (!convention.finalstaticorder) {
       convention.finalstaticorder = {
         title: "order for final and static",
@@ -339,21 +291,14 @@ module.exports = {
     var finaccst = /^\w*\s*(final|volatile){1}\s+\w*\s*(public|private|protected){1}\s+\w*\s*(static){1}\s+\w+\s+[a-zA-Z0-9_]+(\s|=|;)/;
     var staccfin = /^\w*\s*(static){1}\s+\w*\s*(public|private|protected){1}\s+\w*\s*(final|volatile){1}\s+\w+\s+[a-zA-Z0-9_]+(\s|=|;)/;
 
-    if (accstfin.test(line)) {
-      convention.finalstaticorder.accstfin = convention.finalstaticorder.accstfin + 1;
-    }
-    if (accfinst.test(line)) {
-      convention.finalstaticorder.accfinst = convention.finalstaticorder.accfinst + 1;
-    }
-    if (finaccst.test(line)) {
-      convention.finalstaticorder.finaccst = convention.finalstaticorder.finaccst + 1;
-    }
-    if (staccfin.test(line)) {
-      convention.finalstaticorder.staccfin = convention.finalstaticorder.staccfin + 1;
-    }
+    if (accstfin.test(line)) { convention.finalstaticorder.accstfin = convention.finalstaticorder.accstfin + 1; }
+    if (accfinst.test(line)) { convention.finalstaticorder.accfinst = convention.finalstaticorder.accfinst + 1; }
+    if (finaccst.test(line)) { convention.finalstaticorder.finaccst = convention.finalstaticorder.finaccst + 1; }
+    if (staccfin.test(line)) { convention.finalstaticorder.staccfin = convention.finalstaticorder.staccfin + 1; }
     if (accstfin.test(line || accfinst.test(line || finaccst.test(line || staccfin.test(line))))) {
       convention.finalstaticorder.commits.push(commitUrl);
     }
+
     convention.finalstaticorder.commits = _.uniq(convention.finalstaticorder.commits);
     return convention;
   }

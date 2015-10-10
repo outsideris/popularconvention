@@ -1,6 +1,6 @@
-// parsing source
-var isSupportExt, supportExts;
+'use strict';
 
+// parsing source
 var helpers = require('../helpers'),
     path = require('path'),
     logger = (require('../helpers')).logger,
@@ -12,6 +12,22 @@ var helpers = require('../helpers'),
     csharpParser = require('./csharp-parser'),
     phpParser = require('./php-parser');
 
+var supportExts = [
+  '.js',
+  '.java',
+  '.py',
+  '.scala',
+  '.rb',
+  '.cs',
+  '.php'
+];
+
+var isSupportExt = function(ext) {
+  return supportExts.some(function(elem) {
+    return elem === ext;
+  });
+};
+
 var parser = module.exports = {
   parsePatch: function(commit) {
     if ('string' === helpers.extractType(commit)) {
@@ -20,43 +36,38 @@ var parser = module.exports = {
     return commit.files;
   },
   parseAdditionTokens: function(patch) {
-    var line, _i, _len, _results;
     patch = patch.split('\n');
 
-    _results = [];
-    for (_i = 0, _len = patch.length; _i < _len; _i++) {
-      line = patch[_i];
+    var results = [];
+    patch.forEach(function(line) {
       if (line.charAt(0) === '+') {
-        _results.push(line.substr(1));
+        results.push(line.substr(1));
       }
-    }
-    return _results;
+    });
+    return results;
   },
   parse: function(commit) {
     var conventions = [];
     try {
-      if ('string' === helpers.extractType(commit)) {
-        commit = JSON.parse(commit);
-      }
+      if ('string' === helpers.extractType(commit)) { commit = JSON.parse(commit); }
+
       commit.files.forEach(function(file) {
-        var convention, ext, key, lines, psr;
-        ext = path.extname(file.filename);
-        if (isSupportExt(ext) && (file.patch != null)) {
-          convention = {
-            lang: ext.substr(1)
-          };
+        var convention, key, lines, psr;
+        var ext = path.extname(file.filename);
+        if (isSupportExt(ext) && !!file.patch) {
+          convention = { lang: ext.substr(1) };
+
           psr = parser.getParser(ext);
           lines = parser.parseAdditionTokens(file.patch);
           lines.forEach(function(line) {
-            return convention = psr.parse(line, convention, commit.html_url);
+            convention = psr.parse(line, convention, commit.html_url);
           });
+          // delete convention description
           for (key in convention) {
             delete convention[key].title;
             delete convention[key].column;
           }
-          if (Object.keys(convention).length > 1) {
-            return conventions.push(convention);
-          }
+          if (Object.keys(convention).length > 1) { conventions.push(convention); }
         }
       });
       return conventions;
@@ -86,10 +97,4 @@ var parser = module.exports = {
   }
 };
 
-supportExts = ['.js', '.java', '.py', '.scala', '.rb', '.cs', '.php'];
 
-isSupportExt = function(ext) {
-  return supportExts.some(function(elem) {
-    return elem === ext;
-  });
-};
