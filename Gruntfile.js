@@ -11,6 +11,9 @@ module.exports = function(grunt) {
       },
       front: {
         src: ['Gruntfile.js', 'public/javascripts/**/*.js']
+      },
+      test: {
+        src: ['test/**/*.coffee']
       }
     },
     simplemocha: {
