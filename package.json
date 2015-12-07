@@ -30,18 +30,21 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "should": "*",
-    "mocha": "*",
+    "should": "~7.1.1",
+    "mocha": "~1.21.5",
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-watch": "~0.2.0",
-    "grunt-simple-mocha": "~0.3.0",
-    "grunt": "~0.4.1"
+    "grunt-simple-mocha": "~0.4.0",
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.13"
   },
   "keywords": [],
   "dependencies": {
+    "coffee-script": "~1.10.0",
+    "bower": "~1.6.5",
     "express": "~3.1.x",
-    "jade": "*",
-    "stylus": "*",
+    "jade": "~1.11.0",
+    "stylus": "~0.52.4",
     "restler": "~2.0.1",
     "winston": "~0.6.2",
     "mongodb": "~1.2.14",
