@@ -3,20 +3,20 @@ const _ = require('lodash');
 
 module.exports = {
   indent: (patch) => {
-    let score = { tab: 0, space: 0 };
-    let tab = /^\t+.*/;
-    let space = /^\s+.*/;
-    
+    const score = { tab: 0, space: 0 };
+    const tab = /^\t+.*/;
+    const space = /^\s+.*/;
+
     if (tab.test(patch)) { score.tab = score.tab + 1; }
     if (space.test(patch)) { score.space = score.space + 1; }
 
     return score;
   },
   blockstatement: (patch) => {
-    let score = { onespace: 0, nospace: 0, newline: 0 };
-    let onespace = /((if|while|switch|try).*\s+\{)|(\}\s+(else|catch|finally).*\s+\{)/;
-    let nospace = /((if|while|switch).*\)\{)|(try|else|finally)\{|(\}\s*(else|catch|finally).*\)\{)/;
-    let newline = /((if|while|switch).*\)\s*$)|((if|while|switch).*\)\s*\/[\/\*])|(try|else|finally)\s*\/[\/\*]|(^\s*(else|catch|finally))/;
+    const score = { onespace: 0, nospace: 0, newline: 0 };
+    const onespace = /((if|while|switch|try).*\s+\{)|(\}\s+(else|catch|finally).*\s+\{)/;
+    const nospace = /((if|while|switch).*\)\{)|(try|else|finally)\{|(\}\s*(else|catch|finally).*\)\{)/;
+    const newline = /((if|while|switch).*\)\s*$)|((if|while|switch).*\)\s*\/[\/\*])|(try|else|finally)\s*\/[\/\*]|(^\s*(else|catch|finally))/;
 
     if (onespace.test(patch)) { score.onespace = score.onespace + 1; }
     if (nospace.test(patch)) { score.nospace = score.nospace + 1; }
@@ -25,10 +25,10 @@ module.exports = {
     return score;
   },
   constant: (patch) => {
-    let score = { pascal: 0, allcaps: 0, notallcaps: 0 };
-    let pascal = /const\s+\w+\s+([A-Z][a-z0-9]+)+\s*=/;
-    let allcaps = /const\s+\w+\s+([A-Z0-9_]+)+\s*=/;
-    let notallcaps = /const\s+\w+\s+([a-z][A-Za-z0-9_]*)+\s*=/;
+    const score = { pascal: 0, allcaps: 0, notallcaps: 0 };
+    const pascal = /const\s+\w+\s+([A-Z][a-z0-9]+)+\s*=/;
+    const allcaps = /const\s+\w+\s+([A-Z0-9_]+)+\s*=/;
+    const notallcaps = /const\s+\w+\s+([a-z][A-Za-z0-9_]*)+\s*=/;
 
     if (pascal.test(patch)) { score.pascal = score.pascal + 1; }
     if (allcaps.test(patch)) { score.allcaps = score.allcaps + 1; }
@@ -37,9 +37,9 @@ module.exports = {
     return score;
   },
   conditionstatement: (patch) => {
-    let score = { onespace: 0, nospace: 0 };
-    let onespace = /(if|while|switch)\s+\(/;
-    let nospace = /(if|while|switch)\(/;
+    const score = { onespace: 0, nospace: 0 };
+    const onespace = /(if|while|switch)\s+\(/;
+    const nospace = /(if|while|switch)\(/;
 
     if (onespace.test(patch)) { score.onespace = score.onespace + 1; }
     if (nospace.test(patch)) { score.nospace = score.nospace + 1; }
@@ -47,9 +47,9 @@ module.exports = {
     return score;
   },
   argumentdef: (patch) => {
-    let score = { onespace: 0, nospace: 0 };
-    let onespace = /^(\s*|\t*)(\w+\s+\w+\s+\w+|if|while|switch)\s*\(\s+/;
-    let nospace = /^(\s*|\t*)(\w+\s+\w+\s+\w+|if|while|switch)\s*\(\S+/;
+    const score = { onespace: 0, nospace: 0 };
+    const onespace = /^(\s*|\t*)(\w+\s+\w+\s+\w+|if|while|switch)\s*\(\s+/;
+    const nospace = /^(\s*|\t*)(\w+\s+\w+\s+\w+|if|while|switch)\s*\(\S+/;
 
     if (onespace.test(patch)) { score.onespace = score.onespace + 1; }
     if (nospace.test(patch)) { score.nospace = score.nospace + 1; }
@@ -57,9 +57,9 @@ module.exports = {
     return score;
   },
   linelength: (patch) => {
-    let score = { char80: 0, char120: 0, char150: 0 };
+    const score = { char80: 0, char120: 0, char150: 0 };
     let width = patch.length;
-    let tabcount = patch.split('\t').length - 1;
+    const tabcount = patch.split('\t').length - 1;
     width += tabcount * 3;
 
     if (width < 80) { score.char80 = score.char80 + 1; }

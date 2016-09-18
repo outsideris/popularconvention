@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-let CsharpInfo = {
+const CsharpInfo = {
   indent: {
     title: "Space vs. Tab",
     column: [
