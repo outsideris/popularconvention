@@ -23,34 +23,23 @@
     }
   ],
   "main": "server.js",
-  "engines": {
-    "node": ">= 0.8.0"
-  },
   "scripts": {
-    "test": "grunt test"
+    "test": "mocha"
   },
   "devDependencies": {
-    "should": "~7.1.1",
-    "mocha": "~1.21.5",
-    "grunt-contrib-jshint": "~0.1.1",
-    "grunt-contrib-watch": "~0.2.0",
-    "grunt-simple-mocha": "~0.4.0",
-    "grunt": "~0.4.1",
-    "grunt-cli": "~0.1.13"
+    "chai": "^3.5.0",
+    "mocha": "*",
+    "should": "*"
   },
   "keywords": [],
   "dependencies": {
-    "coffee-script": "~1.10.0",
-    "bower": "~1.6.5",
-    "express": "~3.1.x",
-    "jade": "~1.11.0",
-    "stylus": "~0.52.4",
-    "restler": "~2.0.1",
-    "winston": "~0.6.2",
-    "mongodb": "~1.2.14",
-    "node-schedule": "~0.1.8",
-    "underscore": "~1.4.x",
-    "highlight.js": "~7.3.0",
-    "moment": "~2.1.0"
+    "express": "^4.13.4",
+    "lodash": "^4.13.1",
+    "moment": "^2.13.0",
+    "node-schedule": "^1.1.0",
+    "pug": "^2.0.0-alpha8",
+    "restler": "^3.4.0",
+    "stylus": "^0.54.5",
+    "winston": "^2.2.0"
   }
 }
