@@ -1,12 +1,17 @@
 const _ = require('lodash');
 
-let JsInfo = {
+module.exports = JsConf = {
+  lang: 'js',
+  simplify: function() {
+    return this;
+  },
+  // convention
   comma: {
     title: "Last comma vs. First comma",
     desc: [
       { key: "first",
         display: "First comma",
-        code: 
+        code: (
           `var foo = 1
             , bar = 2
             , baz = 3;
@@ -16,10 +21,11 @@ let JsInfo = {
             , bar: 2
             , baz: 3
           };`
+        .replace(/          /gm, ''))
       }, {
         key: "last",
         display: "Last comma",
-        code: 
+        code: (
           `var foo = 1,
               bar = 2,
               baz = 3;
@@ -29,6 +35,7 @@ let JsInfo = {
               bar: 2,
               baz: 3
           };`
+        .replace(/          /gm, ''))
       }
     ]
   },
@@ -37,18 +44,20 @@ let JsInfo = {
     column: [
       { key: "tab",
         display: "Tab",
-        code: 
+        code: (
           `function foo() {
               // use tab for indentation
               return "bar";
           }"`
+        .replace(/          /gm, ''))
       }, {
         key: "space",
         display: "Space",
-        code: 
+        code: (
           `function foo() {
             return "bar";
           }`
+        .replace(/          /gm, ''))
       }
     ]
   },
@@ -57,17 +66,19 @@ let JsInfo = {
     column: [
       { key: "onespace",
         display: "One space",
-        code: 
+        code: (
           `function foo () {
             return "bar";
           }`
+        .replace(/          /gm, ''))
       }, {
         key: "nospace",
         display: "No space",
-        code: 
+        code: (
           `function foo() {
             return "bar";
           }`
+        .replace(/          /gm, ''))
       }
     ]
   },
@@ -76,7 +87,7 @@ let JsInfo = {
     column: [
       { key: "onespace",
         display: "One space",
-        code: 
+        code: (
           `function fn( arg1, arg2 ) {
             // ...
           }
@@ -86,10 +97,11 @@ let JsInfo = {
           if ( true ) {
             // ...
           }`
+        .replace(/          /gm, ''))
       }, {
         key: "nospace",
         display: "No space",
-        code: 
+        code: (
           `function fn(arg1, arg2) {
           }
 
@@ -97,6 +109,7 @@ let JsInfo = {
 
           if (true) {
           }`
+        .replace(/          /gm, ''))
       }
     ],
   },
@@ -105,30 +118,33 @@ let JsInfo = {
     column: [
       { key: "tracespace",
         display: "Followed by space",
-        code: 
+        code: (
           `{
             foo: 1,
             bar: 2,
             baz: 3
           }`
+        .replace(/          /gm, ''))
       }, {
         key: "bothspace",
         display: "Using space in before/after",
-        code: 
+        code: (
           `{
             foo : 1,
             bar : 2,
             baz : 3
           }`
+        .replace(/          /gm, ''))
       }, {
         key: "nospace",
         display: "No space",
-        code: 
+        code: (
           `{
             foo:1,
             bar:2,
             baz:3
           }`
+        .replace(/          /gm, ''))
       }
     ]
   },
@@ -137,7 +153,7 @@ let JsInfo = {
     column: [
       { key: "onespace",
         display: "Condition with one space",
-        code: 
+        code: (
           `if (true) {
             //...
           }
@@ -149,10 +165,11 @@ let JsInfo = {
           switch (v) {
             //...
           }`
+        .replace(/          /gm, ''))
       }, {
         key: "nospace",
         display: "Condition with no space",
-        code:
+        code: (
           `if(true) {
             //...
           }
@@ -164,6 +181,7 @@ let JsInfo = {
           switch(v) {
             //...
           }`
+        .replace(/          /gm, ''))
       }
     ]
   },
@@ -172,7 +190,7 @@ let JsInfo = {
     column: [
       { key: "onespace",
         display: "Curlybrace with one space",
-        code: 
+        code: (
           `if (true) {
             // ...
           }
@@ -184,10 +202,11 @@ let JsInfo = {
           switch (v) {
             // ...
           }`
+        .replace(/          /gm, ''))
       }, {
         key: "nospace",
         display: "Curlybrace with no space",
-        code: 
+        code: (
           `if (true){
             // ...
           }
@@ -199,10 +218,11 @@ let JsInfo = {
           switch (v){  
             // ...
           }`
+        .replace(/          /gm, ''))
       }, {
         key: "newline",
         display: "Curlybrace at new line",
-        code: 
+        code: (
           `if (true)
           {
             // ...
@@ -217,6 +237,7 @@ let JsInfo = {
           {
             // ...
           }`
+        .replace(/          /gm, ''))
       }
     ]
   },
@@ -225,15 +246,15 @@ let JsInfo = {
     column: [
       { key: "char80",
         display: "Line length is within 80 characters.",
-        code: `/* width is within 80 characters */`
+        code: (`/* width is within 80 characters */`)
       }, {
         key: "char120",
         display: "Line length is within 120 characters",
-        code: `/* width is within 120 characters */`
+        code: (`/* width is within 120 characters */`)
       }, {
         key: "char150",
         display: "Line length is within 150 characters",
-        code: `/* width is within 150 characters */`
+        code: (`/* width is within 150 characters */`)
       }
     ]
   },
@@ -242,27 +263,20 @@ let JsInfo = {
     column: [
       { key: "singleQuote",
         display: "Single quote",
-        code: 
+        code: (
           `var foo = 'bar';
 
           var obj = { 'foo': 'bar'};`
+        .replace(/          /gm, ''))
       }, {
         key: "doubleQuote",
         display: "Double quotes",
-        code: 
+        code: (
           `var foo = "bar";
 
           var obj = { "foo": "bar"};`
+        .replace(/          /gm, ''))
       }
     ]
   }
 };
-
-for (let prop in JsInfo) {
-  CsharpInfo[prop].column = _.map(JsInfo[prop].column, (item) => {
-    item.code = item.code.replace(/          /gm, '');
-    return item;
-  });
-}
-
-module.exports = JsInfo;
