@@ -1,0 +1,1 @@
+{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "popular_convention2.conventions", "name" : "_id_" }, { "v" : 1, "key" : { "timestamp" : 1 }, "ns" : "popular_convention2.conventions", "name" : "timestamp_1" } ] }

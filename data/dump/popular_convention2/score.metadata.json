@@ -1,0 +1,1 @@
+{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "popular_convention2.score", "name" : "_id_" }, { "v" : 1, "key" : { "shortfile" : 1, "lang" : 1, "file" : 1 }, "ns" : "popular_convention2.score", "name" : "shortfile_1_lang_1_file_1" } ] }
