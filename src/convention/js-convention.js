@@ -41,7 +41,7 @@ let JsInfo = {
           `function foo() {
               // use tab for indentation
               return "bar";
-          }`
+          }"`
       }, {
         key: "space",
         display: "Space",
