@@ -1,7 +1,6 @@
-/*jshint node:true */ module.exports = function(grunt) {
+/*jshint node:true */
+module.exports = function(grunt) {
   'use strict';
-
-  require('load-grunt-tasks')(grunt);
 
   // Project configuration.
   grunt.initConfig({
@@ -14,19 +13,26 @@
         src: ['Gruntfile.js', 'public/javascripts/**/*.js']
       }
     },
-    watch: {},
-    mochaTest: {
-      options: {
-        reporter: 'spec'
-      },
+    simplemocha: {
       all: {
-        src: ['test/**/*.test.coffee']
+        src: '<%= jshint.test.src %>',
+        options: {
+          timeout: 4000,
+          ignoreLeaks: false,
+          ui: 'bdd',
+          reporter: 'spec'
+        }
       }
     }
   });
 
+  // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-simple-mocha');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
   // Default task.
-  grunt.registerTask('default', ['lint', 'test']);
-  grunt.registerTask('test', ['mochaTest']);
+  grunt.registerTask('default', ['simplemocha']);
+  grunt.registerTask('test', ['simplemocha']);
   grunt.registerTask('lint', ['jshint']);
 };
