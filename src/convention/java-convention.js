@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const JavaInfo = {
+let JavaInfo = {
   indent: {
     title: "Space vs. Tab",
     column: [
@@ -233,11 +233,11 @@ const JavaInfo = {
   }
 };
 
-for (let prop in JavaInfo) {
-  JavaInfo[prop].column = _.map(JavaInfo[prop].column, (item) => {
+for (let prop in JsInfo) {
+  CsharpInfo[prop].column = _.map(JsInfo[prop].column, (item) => {
     item.code = item.code.replace(/          /gm, '');
     return item;
   });
 }
 
-module.exports = JavaInfo;
+module.exports = JsInfo;

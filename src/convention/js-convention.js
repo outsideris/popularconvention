@@ -1,12 +1,12 @@
 const _ = require('lodash');
 
-const JsInfo = {
+let JsInfo = {
   comma: {
     title: "Last comma vs. First comma",
     desc: [
       { key: "first",
         display: "First comma",
-        code:
+        code: 
           `var foo = 1
             , bar = 2
             , baz = 3;
@@ -19,11 +19,11 @@ const JsInfo = {
       }, {
         key: "last",
         display: "Last comma",
-        code:
+        code: 
           `var foo = 1,
               bar = 2,
               baz = 3;
-
+              
           var obj = {
               foo: 1,
               bar: 2,
@@ -37,7 +37,7 @@ const JsInfo = {
     column: [
       { key: "tab",
         display: "Tab",
-        code:
+        code: 
           `function foo() {
               // use tab for indentation
               return "bar";
@@ -45,7 +45,7 @@ const JsInfo = {
       }, {
         key: "space",
         display: "Space",
-        code:
+        code: 
           `function foo() {
             return "bar";
           }`
@@ -57,14 +57,14 @@ const JsInfo = {
     column: [
       { key: "onespace",
         display: "One space",
-        code:
+        code: 
           `function foo () {
             return "bar";
           }`
       }, {
         key: "nospace",
         display: "No space",
-        code:
+        code: 
           `function foo() {
             return "bar";
           }`
@@ -76,7 +76,7 @@ const JsInfo = {
     column: [
       { key: "onespace",
         display: "One space",
-        code:
+        code: 
           `function fn( arg1, arg2 ) {
             // ...
           }
@@ -89,7 +89,7 @@ const JsInfo = {
       }, {
         key: "nospace",
         display: "No space",
-        code:
+        code: 
           `function fn(arg1, arg2) {
           }
 
@@ -105,7 +105,7 @@ const JsInfo = {
     column: [
       { key: "tracespace",
         display: "Followed by space",
-        code:
+        code: 
           `{
             foo: 1,
             bar: 2,
@@ -114,7 +114,7 @@ const JsInfo = {
       }, {
         key: "bothspace",
         display: "Using space in before/after",
-        code:
+        code: 
           `{
             foo : 1,
             bar : 2,
@@ -123,7 +123,7 @@ const JsInfo = {
       }, {
         key: "nospace",
         display: "No space",
-        code:
+        code: 
           `{
             foo:1,
             bar:2,
@@ -137,7 +137,7 @@ const JsInfo = {
     column: [
       { key: "onespace",
         display: "Condition with one space",
-        code:
+        code: 
           `if (true) {
             //...
           }
@@ -172,7 +172,7 @@ const JsInfo = {
     column: [
       { key: "onespace",
         display: "Curlybrace with one space",
-        code:
+        code: 
           `if (true) {
             // ...
           }
@@ -187,7 +187,7 @@ const JsInfo = {
       }, {
         key: "nospace",
         display: "Curlybrace with no space",
-        code:
+        code: 
           `if (true){
             // ...
           }
@@ -196,13 +196,13 @@ const JsInfo = {
             // ...
           }
 
-          switch (v){
+          switch (v){  
             // ...
           }`
       }, {
         key: "newline",
         display: "Curlybrace at new line",
-        code:
+        code: 
           `if (true)
           {
             // ...
@@ -242,14 +242,14 @@ const JsInfo = {
     column: [
       { key: "singleQuote",
         display: "Single quote",
-        code:
+        code: 
           `var foo = 'bar';
 
           var obj = { 'foo': 'bar'};`
       }, {
         key: "doubleQuote",
         display: "Double quotes",
-        code:
+        code: 
           `var foo = "bar";
 
           var obj = { "foo": "bar"};`
@@ -259,7 +259,7 @@ const JsInfo = {
 };
 
 for (let prop in JsInfo) {
-  JsInfo[prop].column = _.map(JsInfo[prop].column, (item) => {
+  CsharpInfo[prop].column = _.map(JsInfo[prop].column, (item) => {
     item.code = item.code.replace(/          /gm, '');
     return item;
   });
